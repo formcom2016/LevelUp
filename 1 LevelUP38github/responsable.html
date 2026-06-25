@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Form'Com — Responsable Pédagogique</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#060B18;--card:#0E1730;--border:#1E2D4F;--text:#F0F4FF;--muted:#8892A4;--blue:#2979FF;--navy:#1B2B8F;--gold:#F5A623;--red:#E8192C;--green:#00FF87}
+body.light{--bg:#F5F7FF;--card:#fff;--border:#DDE3F0;--text:#111827;--muted:#6B7280}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px}
+
+.gate{max-width:400px;margin:80px auto 0;padding:32px 24px;text-align:center}
+.gate-title{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:6px}
+.gate-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.gate-input{width:100%;padding:14px;background:var(--card);border:2px solid var(--border);border-radius:12px;font-size:16px;color:var(--text);font-family:'Exo 2',sans-serif;text-align:center;letter-spacing:2px;outline:none;margin-bottom:12px}
+.gate-input:focus{border-color:var(--gold)}
+.gate-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;cursor:pointer}
+
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;background:linear-gradient(90deg,#F5A623,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card)}
+.tab{flex:1;padding:13px;text-align:center;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+.tab.active{color:var(--gold);border-color:var(--gold)}
+
+.section{display:none;padding:16px}
+.section.active{display:block}
+
+/* RETRAIT */
+.search-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.search-label{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.search-tabs{display:flex;gap:6px;margin-bottom:12px}
+.search-tab{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
+.search-tab.active{background:rgba(41,121,255,.15);border-color:#2979FF;color:#60A5FA}
+.search-input{width:100%;padding:16px;background:rgba(255,255,255,.05);border:2px solid var(--border);border-radius:10px;font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:var(--text);text-align:center;letter-spacing:4px;outline:none;transition:border-color .2s;margin-bottom:10px}
+.search-input:focus{border-color:var(--gold)}
+.search-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px}
+.search-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;cursor:pointer}
+
+/* RESULT CARD */
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.result-header{padding:16px;background:linear-gradient(135deg,rgba(41,121,255,.1),transparent)}
+.result-code{font-family:'Exo 2',sans-serif;font-size:52px;font-weight:900;color:var(--gold);letter-spacing:4px;line-height:1}
+.result-ap{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-top:6px}
+.info-row{display:flex;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--border);font-size:13px}
+.info-lbl{color:var(--muted)}
+.info-val{font-family:'Exo 2',sans-serif;font-weight:700;color:var(--text)}
+.info-val.gold{color:var(--gold)}
+.info-val.green{color:#00D464}
+
+.btn-valider{width:100%;padding:16px;background:linear-gradient(135deg,#064E3B,#059652);color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin:16px 0 8px}
+.btn-valider:disabled{opacity:.5;cursor:not-allowed}
+
+/* MISSION */
+.mission{background:linear-gradient(135deg,#064E3B,#065F46);border-radius:14px;padding:24px;text-align:center;margin-bottom:16px}
+.mission-icon{font-size:56px;margin-bottom:8px}
+.mission-title{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:var(--green);margin-bottom:4px}
+.mission-sub{font-size:13px;color:rgba(255,255,255,.6)}
+.btn-nouveau{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer}
+
+/* PENDING */
+.pending-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s}
+.pending-item:hover{border-color:var(--blue)}
+.pending-code{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;color:var(--gold);flex-shrink:0;width:70px}
+.pending-info{flex:1}
+.pending-name{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.pending-detail{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ÉQUIPE */
+.equipe-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
+.equipe-av{width:40px;height:40px;border-radius:50%;background:rgba(41,121,255,.15);border:2px solid #2979FF;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:#2979FF;flex-shrink:0}
+.equipe-name{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--text)}
+.equipe-statut{font-size:11px;color:var(--muted);margin-top:2px}
+.btn-retirer{padding:7px 12px;background:rgba(232,25,44,.12);border:1px solid rgba(232,25,44,.3);color:#FF6B6B;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-left:auto}
+
+.loading{text-align:center;padding:30px;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:13px}
+.theme-btn{position:fixed;bottom:20px;right:20px;z-index:9999;width:56px;height:56px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;outline:none}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div id="gateScreen">
+  <div class="gate">
+    <div class="gate-title">⚔️ Responsable Pédagogique</div>
+    <div class="gate-sub">Form'Com Level Up · Espace réservé</div>
+    <input class="gate-input" type="password" id="gateInput" placeholder="Clef secrète" onkeydown="if(event.key==='Enter')checkGate()">
+    <button class="gate-btn" onclick="checkGate()">Accéder</button>
+  </div>
+</div>
+
+<div id="mainApp" class="hidden">
+  <div class="header">
+    <div>
+      <div class="header-title">⚔️ Responsable Pédagogique</div>
+      <div class="header-sub">Form'Com Level Up</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('retrait')">📦 Retrait</div>
+    <div class="tab" onclick="showTab('pending')">⏳ En attente</div>
+    <div class="tab" onclick="showTab('equipe')">👥 Mon équipe</div>
+  </div>
+
+  <!-- RETRAIT -->
+  <div class="section active" id="tab-retrait">
+    <div id="searchView">
+      <div class="search-box">
+        <div class="search-label">🔍 Rechercher un bon</div>
+        <div class="search-tabs">
+          <button class="search-tab active" onclick="setSearchType('code',this)">📋 Code</button>
+          <button class="search-tab" onclick="setSearchType('nom',this)">👤 Nom</button>
+          <button class="search-tab" onclick="setSearchType('tel',this)">📱 Téléphone</button>
+        </div>
+        <input class="search-input" type="text" id="searchInput" placeholder="1234" onkeydown="if(event.key==='Enter')doSearch()">
+        <div class="search-hint" id="searchHint">Entrez le code 4 chiffres du bon</div>
+        <button class="search-btn" onclick="doSearch()">🔍 Rechercher</button>
+      </div>
+      <div id="searchResult"></div>
+    </div>
+
+    <div id="missionView" class="hidden">
+      <div class="mission">
+        <div class="mission-icon">🏆</div>
+        <div class="mission-title">✅ Mission accomplie !</div>
+        <div class="mission-sub" id="missionSub">Articles remis avec succès</div>
+      </div>
+      <div id="ticketFinal" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:12px"></div>
+      <button class="btn-nouveau" onclick="resetSearch()">🔍 Nouveau bon</button>
+    </div>
+  </div>
+
+  <!-- EN ATTENTE -->
+  <div class="section" id="tab-pending">
+    <div id="pendingList"><div class="loading">Chargement...</div></div>
+  </div>
+
+  <!-- ÉQUIPE -->
+  <div class="section" id="tab-equipe">
+    <div id="equipeList"><div class="loading">Chargement...</div></div>
+    <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
+      <div style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">➕ Ajouter un apprenant</div>
+      <input id="addApprId" type="text" placeholder="ID apprenant (ex: ID-0005)" style="width:100%;padding:10px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:8px">
+      <button onclick="ajouterEquipe()" style="width:100%;padding:12px;background:rgba(0,255,135,.12);border:1px solid rgba(0,255,135,.25);color:#00FF87;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">➕ Ajouter à mon équipe</button>
+    </div>
+  </div>
+</div>
+
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+
+<!-- BOUTON RETOUR DASHBOARD -->
+<a href="index.html?admin=FC2026ADMIN" style="position:fixed;bottom:90px;right:20px;z-index:9999;width:56px;height:56px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:22px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center" title="Retour Dashboard">🏠</a>
+
+<script>
+var APPS_URL = 'https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
+var CLEF = 'FC2026GUILDE';
+var RESP_ID = 'RESP_GUILDE';
+var currentTx = null;
+var searchType = 'code';
+
+// ── ACCÈS ─────────────────────────────────────────────────────────────
+function checkGate(){
+  var val = document.getElementById('gateInput').value.trim();
+  if(val === CLEF){ openApp(); }
+  else { alert('Clef incorrecte.'); }
+}
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  if(p.get('clef') === CLEF) openApp();
+})();
+
+function openApp(){
+  document.getElementById('gateScreen').style.display='none';
+  document.getElementById('mainApp').classList.remove('hidden');
+  loadPending();
+  loadEquipe();
+}
+
+// ── ONGLETS ───────────────────────────────────────────────────────────
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(function(t,i){
+    t.classList.toggle('active',['retrait','pending','equipe'][i]===tab);
+  });
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='pending') loadPending();
+  if(tab==='equipe')  loadEquipe();
+}
+
+// ── RECHERCHE ─────────────────────────────────────────────────────────
+function setSearchType(type, btn){
+  searchType = type;
+  document.querySelectorAll('.search-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var input = document.getElementById('searchInput');
+  var hint  = document.getElementById('searchHint');
+  if(type==='code'){
+    input.placeholder='1234'; input.style.letterSpacing='4px'; input.style.fontSize='22px';
+    hint.textContent='Entrez le code 4 chiffres du bon';
+  } else if(type==='nom'){
+    input.placeholder='Prénom Nom'; input.style.letterSpacing='1px'; input.style.fontSize='16px';
+    hint.textContent='Entrez le nom ou prénom du client ou de l\'apprenant';
+  } else {
+    input.placeholder='06 12 34 56 78'; input.style.letterSpacing='1px'; input.style.fontSize='16px';
+    hint.textContent='Entrez le numéro de téléphone du client';
+  }
+  input.value='';
+}
+
+function doSearch(){
+  var query = document.getElementById('searchInput').value.trim();
+  if(!query){ alert('Entrez une valeur à rechercher.'); return; }
+  var el = document.getElementById('searchResult');
+  el.innerHTML='<div class="loading">Recherche en cours...</div>';
+
+  if(searchType==='code'){
+    fetch(APPS_URL+'?action=getTransaction&code='+encodeURIComponent(query))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d.found){ el.innerHTML='<div class="loading">❌ Bon '+query+' introuvable.</div>'; return; }
+        // Auto-corriger statut intermédiaire
+        if(d.statut==='EN ATTENTE CONFIRMATION') d.statut='EN ATTENTE RETRAIT';
+        currentTx=d; el.innerHTML=buildCard(d);
+      })
+      .catch(function(){ el.innerHTML='<div class="loading">Erreur réseau.</div>'; });
+  } else {
+    fetch(APPS_URL+'?action=searchTransactionV2&type='+searchType+'&query='+encodeURIComponent(query))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d.results||!d.results.length){ el.innerHTML='<div class="loading">❌ Aucun résultat pour "'+query+'".</div>'; return; }
+        if(d.results.length===1){ currentTx=d.results[0]; el.innerHTML=buildCard(d.results[0]); }
+        else {
+          el.innerHTML=d.results.map(function(tx){
+            return '<div class="pending-item" onclick="selectTx(\''+tx.code+'\')">'
+              +'<div class="pending-code">'+tx.code+'</div>'
+              +'<div class="pending-info"><div class="pending-name">'+tx.apprenant_prenom+' '+tx.apprenant_nom+'</div>'
+              +'<div class="pending-detail">'+tx.nb_articles+' article(s) · '+tx.statut+'</div></div></div>';
+          }).join('');
+        }
+      })
+      .catch(function(){ el.innerHTML='<div class="loading">Erreur réseau.</div>'; });
+  }
+}
+
+function selectTx(code){
+  document.getElementById('searchInput').value=code;
+  searchType='code';
+  document.querySelectorAll('.search-tab').forEach(function(b,i){b.classList.toggle('active',i===0);});
+  doSearch();
+}
+
+function buildCard(d){
+  var canValider = d.statut==='EN ATTENTE RETRAIT' || d.statut==='EN ATTENTE CONFIRMATION';
+  var html='<div class="result-card">'
+    +'<div class="result-header">'
+    +'<div class="result-code">'+d.code+'</div>'
+    +'<div class="result-ap">'+d.apprenant_prenom+' '+d.apprenant_nom+'</div>'
+    +'</div>'
+    +'<div class="info-row"><span class="info-lbl">Articles</span><span class="info-val gold">'+d.nb_articles+'</span></div>'
+    +'<div class="info-row"><span class="info-lbl">Mode paiement</span><span class="info-val">'+d.mode_paiement+'</span></div>'
+    +(d.participation_mensuelle>0?'<div class="info-row"><span class="info-lbl">Mensuel</span><span class="info-val green">'+d.participation_mensuelle+'€/mois</span></div>':'')
+    +'<div class="info-row"><span class="info-lbl">Date</span><span class="info-val">'+d.date_formulaire+'</span></div>'
+    +(d.statut==='RETIRÉ'?'<div class="info-row"><span class="info-lbl">Statut</span><span class="info-val green">✅ Déjà retiré</span></div>':'');
+
+  if(canValider){
+    html+='<div style="padding:16px"><button class="btn-valider" onclick="validerRemise()">✅ Articles remis — Valider</button></div>';
+  } else if(d.statut==='RETIRÉ'){
+    html+='<div style="padding:14px;text-align:center;color:#00D464;font-family:\'Exo 2\',sans-serif;font-weight:800">✅ Articles déjà remis</div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function validerRemise(){
+  if(!currentTx){ alert('Aucun bon sélectionné.'); return; }
+  if(!confirm('Confirmer la remise de '+currentTx.nb_articles+' article(s) pour le bon '+currentTx.code+' ?')) return;
+  var btn = document.querySelector('.btn-valider');
+  if(btn){ btn.disabled=true; btn.textContent='Validation...'; }
+
+  fetch(APPS_URL+'?action=validerRetraitResponsable&code='+encodeURIComponent(currentTx.code)+'&responsable_id='+encodeURIComponent(RESP_ID))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){ showMission(d); }
+      else { alert('Erreur : '+(d.message||'inconnue')); if(btn){btn.disabled=false;btn.textContent='✅ Articles remis — Valider';} }
+    })
+    .catch(function(){ alert('Erreur réseau.'); if(btn){btn.disabled=false;btn.textContent='✅ Articles remis — Valider';} });
+}
+
+function showMission(d){
+  var now=new Date();
+  var dStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()+' '+String(now.getHours()).padStart(2,'0')+'h'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('missionSub').textContent=d.nb_articles+' article(s) remis · '+dStr;
+  document.getElementById('ticketFinal').innerHTML=
+    '<strong>REÇU DE REMISE — Form\'Com Level Up</strong><br><br>'
+    +'Bon : <strong>'+d.code+'</strong><br>'
+    +'Apprenant : <strong>'+d.apprenant_prenom+' '+d.apprenant_nom+'</strong><br>'
+    +'Articles remis : <strong>'+d.nb_articles+'</strong><br>'
+    +'Paiement : <strong>'+d.mode_paiement+'</strong><br>'
+    +(d.participation_mensuelle>0?'Mensuel : <strong>'+d.participation_mensuelle+'€/mois</strong><br>':'')
+    +'Date : <strong>'+dStr+'</strong><br><br>'
+    +'FormCom · RNA W783006284 · SIRET 93269758400013<br>'
+    +'formcom2016@gmail.com · Trappes, Yvelines<br>'
+    +'© FormCom 2026';
+  document.getElementById('searchView').classList.add('hidden');
+  document.getElementById('missionView').classList.remove('hidden');
+}
+
+function resetSearch(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchResult').innerHTML='';
+  document.getElementById('searchView').classList.remove('hidden');
+  document.getElementById('missionView').classList.add('hidden');
+  currentTx=null;
+}
+
+// ── EN ATTENTE ────────────────────────────────────────────────────────
+function loadPending(){
+  var el=document.getElementById('pendingList');
+  el.innerHTML='<div class="loading">Chargement...</div>';
+  fetch(APPS_URL+'?action=listTransactions')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var list=(d.transactions||[]).filter(function(t){
+        return t.statut==='EN ATTENTE RETRAIT'||t.statut==='EN ATTENTE CONFIRMATION';
+      });
+      if(!list.length){el.innerHTML='<div class="loading">✅ Aucun bon en attente.</div>';return;}
+      el.innerHTML=list.map(function(t){
+        return '<div class="pending-item" onclick="selectTxFromPending(\''+t.code+'\')">'
+          +'<div class="pending-code">'+t.code+'</div>'
+          +'<div class="pending-info">'
+          +'<div class="pending-name">'+t.apprenant_prenom+' '+t.apprenant_nom+'</div>'
+          +'<div class="pending-detail">'+t.nb_articles+' article(s) · '+t.date_formulaire+'</div>'
+          +'</div>'
+          +'<span style="font-size:10px;font-weight:700;padding:4px 8px;border-radius:10px;background:rgba(245,166,35,.15);color:#F5A623">⏳</span>'
+          +'</div>';
+      }).join('');
+    }).catch(function(){el.innerHTML='<div class="loading">Erreur réseau.</div>';});
+}
+
+function selectTxFromPending(code){
+  showTab('retrait');
+  document.getElementById('searchInput').value=code;
+  searchType='code';
+  document.querySelectorAll('.search-tab').forEach(function(b,i){b.classList.toggle('active',i===0);});
+  doSearch();
+}
+
+// ── ÉQUIPE ────────────────────────────────────────────────────────────
+function loadEquipe(){
+  var el=document.getElementById('equipeList');
+  el.innerHTML='<div class="loading">Chargement...</div>';
+  fetch(APPS_URL+'?action=getEquipe&responsable_id='+encodeURIComponent(RESP_ID))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d.equipe||!d.equipe.length){el.innerHTML='<div class="loading">Aucun apprenant dans ton équipe.</div>';return;}
+      el.innerHTML=d.equipe.map(function(a){
+        return '<div class="equipe-item">'
+          +'<div class="equipe-av">'+a.prenom.charAt(0)+'</div>'
+          +'<div><div class="equipe-name">'+a.prenom+' '+a.nom+'</div>'
+          +'<div class="equipe-statut">'+a.id+' · '+a.statut+' · '+a.pts.toLocaleString('fr-FR')+' XP</div></div>'
+          +'<button class="btn-retirer" onclick="retirerEquipe(\''+a.id+'\')">Retirer</button>'
+          +'</div>';
+      }).join('');
+    }).catch(function(){el.innerHTML='<div class="loading">Erreur réseau.</div>';});
+}
+
+function ajouterEquipe(){
+  var id=document.getElementById('addApprId').value.trim();
+  if(!id){alert('Entrez un ID apprenant.');return;}
+  fetch(APPS_URL+'?action=gererEquipe&responsable_id='+encodeURIComponent(RESP_ID)+'&apprenant_id='+encodeURIComponent(id)+'&equipe_action=ajouter')
+    .then(function(r){return r.json();})
+    .then(function(){document.getElementById('addApprId').value='';loadEquipe();alert('✅ Apprenant ajouté à ton équipe.');})
+    .catch(function(){alert('Erreur réseau.');});
+}
+
+function retirerEquipe(id){
+  if(!confirm('Retirer cet apprenant de ton équipe ?'))return;
+  fetch(APPS_URL+'?action=gererEquipe&responsable_id='+encodeURIComponent(RESP_ID)+'&apprenant_id='+encodeURIComponent(id)+'&equipe_action=retirer')
+    .then(function(r){return r.json();})
+    .then(function(){loadEquipe();})
+    .catch(function(){alert('Erreur réseau.');});
+}
+
+// ── THÈME ─────────────────────────────────────────────────────────────
+function toggleTheme(){
+  var light=document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent=light?'🌙':'☀️';
+  try{localStorage.setItem('fc_theme',light?'light':'dark');}catch(e){}
+}
+(function(){
+  try{if(localStorage.getItem('fc_theme')==='light'){document.body.classList.add('light');document.getElementById('themeBtn').textContent='🌙';}}catch(e){}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Form'Com — Parfum Solidaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+:root{
+  --bg:#060B18;--card:#0E1730;
+  --border:rgba(255,255,255,.08);--text:#F0F4FF;--muted:#8892A4;
+  --blue:#2979FF;--navy:#1B2B8F;--gold:#F5A623;--red:#E8192C;--green:#06D6A0;--r:16px
+}
+body.light{--bg:#F0F4FF;--card:#fff;--border:#DDE3F0;--text:#111827;--muted:#6B7280}
+body.light .merci-block{background:rgba(41,121,255,.06);border-color:rgba(41,121,255,.2)}
+body.light .merci-title{color:#1B2B8F}
+body.light .merci-body{color:#374151;opacity:1}
+body.light .merci-body strong{color:#111827}
+body.light .retrait-note{color:#6B7280}
+body.light .mentions{color:#6B7280}
+body.light .mentions-title{color:#9CA3AF}
+body.light .ticket-top::after{background:#fff}
+body.light .sep-dot{background:#F0F4FF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px;transition:background .3s,color .3s}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo-form{font-family:'Exo 2',sans-serif;font-size:20px;font-weight:900;color:var(--text)}
+.logo-com{font-family:'Exo 2',sans-serif;font-size:20px;font-weight:900;color:var(--red)}
+.topbar-sub{font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-top:2px}
+.btn-close{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:var(--muted);text-decoration:none;flex-shrink:0}
+
+.wrap{max-width:420px;margin:0 auto;padding:20px 16px}
+
+.badge-top{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.3);border-radius:40px;padding:8px 20px;margin-bottom:20px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green)}
+
+.ticket{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+
+.ticket-top{background:var(--navy);padding:28px 24px 36px;text-align:center;position:relative}
+.ticket-top::after{content:'';position:absolute;bottom:0;left:0;right:0;height:24px;background:var(--card);clip-path:ellipse(52% 100% at 50% 100%)}
+
+.main-icon{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.12);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;gap:4px;animation:iconPop .5s cubic-bezier(.175,.885,.32,1.275) forwards}
+@keyframes iconPop{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.icon-diamond{font-size:36px;line-height:1}
+.icon-bow{font-size:26px;line-height:1;margin-top:4px}
+
+.ticket-title{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:6px}
+.ticket-sub{font-size:12px;color:rgba(255,255,255,.6);font-weight:600;letter-spacing:.5px}
+
+.bon-num{display:inline-block;margin-top:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 16px;font-family:monospace;font-size:13px;font-weight:700;color:#fff;letter-spacing:2px}
+
+.ticket-sep{display:flex;align-items:center}
+.sep-dot{width:20px;height:20px;border-radius:50%;background:var(--bg);border:1px solid var(--border);flex-shrink:0}
+.sep-dot.l{margin-left:-10px}
+.sep-dot.r{margin-right:-10px}
+.sep-line{flex:1;border-top:2px dashed var(--border)}
+
+.ticket-body{padding:16px 20px 8px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:var(--muted);font-weight:600;display:flex;align-items:center;gap:7px}
+.info-val{font-family:'Exo 2',sans-serif;font-weight:800;font-size:13px}
+
+.xp-pill{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);border-radius:40px;padding:10px 20px;margin:12px 20px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;color:var(--gold)}
+
+.retrait{background:rgba(41,121,255,.07);border:1px solid rgba(41,121,255,.2);border-radius:14px;padding:14px 16px;margin:0 20px 14px}
+.retrait-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.retrait-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13px;color:var(--text);font-weight:500;line-height:1.5}
+.retrait-item:last-child{margin-bottom:0}
+.retrait-icon{width:32px;height:32px;border-radius:8px;background:rgba(41,121,255,.15);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px}
+.retrait-note{font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.5;font-style:italic}
+
+.merci-block{margin:0 20px 14px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.15);border-radius:14px;padding:16px;text-align:center}
+.merci-title{font-family:'Exo 2',sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#60A5FA;margin-bottom:10px}
+.merci-body{font-size:13px;color:var(--text);opacity:.8;line-height:1.7;font-style:italic}
+.merci-body strong{color:var(--text);font-style:normal}
+
+.mentions{font-size:10px;color:var(--muted);line-height:1.8;text-align:left;padding:12px 20px 20px;border-top:1px solid var(--border);margin-top:4px}
+.mentions-title{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+
+.btn-share{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:14px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;text-decoration:none}
+.btn-wa-fallback{display:none;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);color:#25D366;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div><span class="logo-form">Form'</span><span class="logo-com">Com</span></div>
+    <div class="topbar-sub">Bon cadeau solidaire</div>
+  </div>
+  <a class="btn-close" onclick="window.close();return false;" href="#" title="Fermer">✕</a>
+</div>
+
+<div class="wrap">
+
+  <div class="badge-top">✦ Parfum solidaire débloqué !</div>
+
+  <div class="ticket">
+
+    <div class="ticket-top">
+      <div class="main-icon">
+        <span class="icon-diamond">💎</span>
+        <span class="icon-bow">🎀</span>
+      </div>
+      <div class="ticket-title">Parfum solidaire<br>à retirer</div>
+      <div class="ticket-sub">Offert grâce à votre générosité collective</div>
+      <div class="bon-num" id="bonNumTop">SOL-2026-—</div>
+    </div>
+
+    <div class="ticket-sep">
+      <div class="sep-dot l"></div><div class="sep-line"></div><div class="sep-dot r"></div>
+    </div>
+
+    <div class="ticket-body">
+      <div class="info-row">
+        <span class="info-lbl">🎓 Apprenant</span>
+        <span class="info-val" style="color:#60A5FA" id="infoPrenom">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-lbl">💶 Cagnotte collectée</span>
+        <span class="info-val" style="color:var(--gold)" id="infoMontant">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-lbl">📅 Date</span>
+        <span class="info-val" id="infoDate">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-lbl">🔢 Réf. bon</span>
+        <span class="info-val" style="font-family:monospace;font-size:11px;color:var(--muted)" id="infoBon">—</span>
+      </div>
+    </div>
+
+    <div class="xp-pill">⚡ +10 XP Solidaire débloqués</div>
+
+    <div class="ticket-sep" style="margin-bottom:14px">
+      <div class="sep-dot l"></div><div class="sep-line"></div><div class="sep-dot r"></div>
+    </div>
+
+    <div class="retrait">
+      <div class="retrait-title">📍 Retrait du parfum</div>
+      <div class="retrait-item">
+        <div class="retrait-icon">🏪</div>
+        <div>Point relais Form'Com — présentez ce bon au responsable pédagogique pour récupérer votre parfum.</div>
+      </div>
+      <div class="retrait-item">
+        <div class="retrait-icon">📞</div>
+        <div>Sur rendez-vous — contactez directement le responsable pédagogique. Votre apprenant peut vous communiquer son numéro.</div>
+      </div>
+      <div class="retrait-note">Dans certains cas, votre apprenant peut vous remettre le parfum directement sur le terrain.</div>
+    </div>
+
+    <div class="merci-block">
+      <div class="merci-title">✨ Merci du fond du cœur</div>
+      <div class="merci-body">
+        Merci pour votre générosité. Chaque euro versé contribue à <strong>financer des projets solidaires</strong> portés par Form'Com et à soutenir le parcours de nos apprenants.<br><br>
+        <strong>Vous faites partie de l'aventure.</strong>
+      </div>
+    </div>
+
+    <div class="mentions">
+      <div class="mentions-title">Mentions légales</div>
+      <strong style="color:var(--muted)">Nature du bon :</strong> Ce bon ne constitue pas un avoir monétaire et ne peut être échangé contre de l'argent.<br>
+      <strong style="color:var(--muted)">Validité :</strong> Valable uniquement le jour de sa délivrance. Non reportable.<br>
+      <strong style="color:var(--muted)">Retrait :</strong> Un bon = un parfum. Non cumulable. Sur présentation de ce bon uniquement.<br>
+      <strong style="color:var(--muted)">Don :</strong> La participation volontaire est un don libre et non remboursable effectué dans le cadre du programme solidaire Form'Com.<br>
+      <strong style="color:var(--muted)">RGPD :</strong> Les données figurant sur ce bon sont traitées dans le cadre du programme Form'Com, conformément au RGPD. Non transmises à des tiers sans votre consentement explicite. Droit d'accès et suppression : <a href="mailto:formcom2016@gmail.com" style="color:var(--blue);text-decoration:none">formcom2016@gmail.com</a><br><br>
+      <strong style="color:var(--muted)">Form'Com</strong> — Association loi 1901 · Travailleurs Sans Frontières (TSF) · Programme Level Up 2026 · © Form'Com 2026
+    </div>
+
+  </div>
+
+  <button class="btn-share" id="btnShare" onclick="partager()">
+    📤 Partager ce bon
+  </button>
+  <a class="btn-wa-fallback" id="btnWaFallback" href="#" target="_blank">
+    📲 Envoyer par WhatsApp
+  </a>
+
+</div>
+
+<script>
+var p = new URLSearchParams(window.location.search);
+var prenom  = p.get('prenom') || 'Apprenant';
+var nom     = p.get('nom')    || '';
+var bonNum  = p.get('bon')    || '—';
+var dateBon = p.get('date')   || new Date().toLocaleDateString('fr-FR');
+var montant = parseFloat(p.get('montant')) || 10;
+var nomComplet = prenom + (nom ? ' ' + nom : '');
+
+document.getElementById('infoPrenom').textContent  = nomComplet;
+document.getElementById('infoMontant').textContent = montant.toFixed(2).replace('.',',') + ' \u20ac';
+document.getElementById('infoDate').textContent    = dateBon;
+document.getElementById('infoBon').textContent     = bonNum;
+document.getElementById('bonNumTop').textContent   = bonNum;
+
+var shareText = '\uD83D\uDCE6 Bon parfum solidaire Form\u2019Com\n\n'
+  + 'Pour\u00a0: ' + nomComplet + '\n'
+  + 'R\u00e9f.\u00a0: ' + bonNum + '\n'
+  + 'Date\u00a0: ' + dateBon + '\n\n'
+  + 'Pr\u00e9sentez ce bon \u00e0 votre apprenant ou au responsable p\u00e9dagogique pour retirer votre parfum.\n\n'
+  + 'Merci pour votre g\u00e9n\u00e9rosit\u00e9 \uD83D\uDC9C';
+
+function partager(){
+  if(navigator.share){
+    navigator.share({
+      title: 'Bon parfum solidaire Form\u2019Com',
+      text: shareText
+    }).catch(function(){});
+  } else {
+    document.getElementById('btnWaFallback').style.display = 'flex';
+  }
+}
+
+document.getElementById('btnWaFallback').href = 'https://wa.me/?text=' + encodeURIComponent(shareText);
+
+window.addEventListener('load', function(){
+  if(!navigator.share){
+    document.getElementById('btnShare').style.display = 'none';
+    document.getElementById('btnWaFallback').style.display = 'flex';
+  }
+  if(typeof confetti === 'function'){
+    setTimeout(function(){
+      confetti({particleCount:120,spread:80,origin:{y:.3},colors:['#F5A623','#FFD700','#06D6A0','#fff','#2979FF']});
+      setTimeout(function(){
+        confetti({particleCount:60,angle:60,spread:55,origin:{x:0,y:.5},colors:['#F5A623','#06D6A0']});
+        confetti({particleCount:60,angle:120,spread:55,origin:{x:1,y:.5},colors:['#FFD700','#2979FF']});
+      },400);
+    },300);
+  }
+});
+
+function toggleTheme(){
+  var light = document.body.classList.toggle('light');
+  try{ localStorage.setItem('fc_theme', light?'light':'dark'); }catch(e){}
+}
+(function(){
+  try{ if(localStorage.getItem('fc_theme')==='light') document.body.classList.add('light'); }catch(e){}
+})();
+</script>
+</body>
+</html>

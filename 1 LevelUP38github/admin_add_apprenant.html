@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Form'Com — Ajouter un apprenant</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#060B18;--card:#0E1730;--border:#1E2D4F;--text:#fff;--muted:#8892A4;--blue:#2979FF;--navy:#1B2B8F;--gold:#F5A623;--red:#E8192C;--green:#00FF87}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px}
+
+.header{text-align:center;margin-bottom:32px}
+.title{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;background:linear-gradient(90deg,#2979FF,#00D4FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.sub{font-size:12px;color:var(--muted)}
+
+.container{max-width:500px;margin:0 auto}
+
+/* FORM */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 20px;margin-bottom:16px}
+.card-title{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-bottom:18px}
+.field{margin-bottom:14px}
+.label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+.input{width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'Inter',sans-serif;color:var(--text);outline:none;transition:border-color .2s}
+.input:focus{border-color:var(--blue)}
+.input::placeholder{color:var(--muted)}
+
+.btn{width:100%;padding:16px;background:linear-gradient(135deg,#C0001F,#E8192C,#FF3347);color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;cursor:pointer;letter-spacing:.5px;box-shadow:0 0 20px rgba(232,25,44,.4);animation:pulsebtn 2s infinite;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.97);animation:none}
+.btn:disabled{opacity:.5;cursor:not-allowed;animation:none}
+@keyframes pulsebtn{0%,100%{box-shadow:0 0 20px rgba(232,25,44,.4)}50%{box-shadow:0 0 35px rgba(232,25,44,.7)}}
+
+/* RESULT */
+.result{display:none;background:rgba(0,255,135,.06);border:1px solid rgba(0,255,135,.2);border-radius:16px;padding:20px;margin-bottom:16px}
+.result-id{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;color:var(--green);text-align:center;margin-bottom:4px}
+.result-name{font-size:14px;color:var(--muted);text-align:center;margin-bottom:20px}
+
+.links-grid{display:flex;flex-direction:column;gap:10px}
+.link-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.link-type{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.link-url{font-size:11px;color:var(--muted);word-break:break-all;line-height:1.5;margin-bottom:8px}
+.copy-btn{padding:6px 14px;border-radius:8px;border:none;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s}
+.copy-btn:hover{filter:brightness(1.2)}
+.copy-cockpit{background:rgba(41,121,255,.2);color:#2979FF}
+.copy-form{background:rgba(255,184,0,.15);color:#FFB800}
+.copy-pass{background:rgba(0,212,100,.12);color:#00D464}
+
+.back-link{display:block;text-align:center;margin-top:20px;color:var(--muted);font-size:13px;text-decoration:none}
+.back-link:hover{color:var(--text)}
+
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:10px 20px;border-radius:20px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title">➕ Nouvel apprenant</div>
+  <div class="sub">Form'Com Level Up · Admin</div>
+</div>
+
+<div class="container">
+
+  <div class="card" id="formCard">
+    <div class="card-title">Informations de l'apprenant</div>
+    <div class="field">
+      <label class="label">Prénom</label>
+      <input class="input" type="text" id="inputPrenom" placeholder="Ex: Rahma" autocomplete="off">
+    </div>
+    <div class="field">
+      <label class="label">Nom</label>
+      <input class="input" type="text" id="inputNom" placeholder="Ex: Baybah" autocomplete="off">
+    </div>
+
+    <button type="button" onclick="toggleCoordonnees()" id="btnToggleCoord" style="width:100%;padding:10px;background:transparent;border:1px dashed var(--border);color:var(--muted);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px">+ Ajouter coordonnées (facultatif)</button>
+
+    <div id="coordonneesWrap" style="display:none">
+      <div class="field">
+        <label class="label">Téléphone</label>
+        <input class="input" type="tel" id="inputTel" placeholder="06 12 34 56 78" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="label">Email</label>
+        <input class="input" type="email" id="inputEmail" placeholder="prenom@email.com" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="label">Adresse</label>
+        <input class="input" type="text" id="inputAdresse" placeholder="Adresse postale" autocomplete="off">
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">💡 Le dossier (pièce d'identité incluse) pourra être complété plus tard depuis la fiche apprenant</div>
+    </div>
+
+    <button class="btn" id="btnAdd" onclick="addApprenant()">⚡ Créer la fiche apprenant</button>
+  </div>
+
+  <div class="result" id="resultCard">
+    <div class="result-id" id="resultId">ID-0000</div>
+    <div class="result-name" id="resultName">Prénom Nom · Niv.0 · Débutant</div>
+
+    <!-- PIN AUTO-GÉNÉRÉ -->
+    <div style="background:rgba(245,166,35,.1);border:1.5px solid rgba(245,166,35,.3);border-radius:12px;padding:14px;text-align:center;margin-bottom:16px">
+      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#F5A623;margin-bottom:6px">🔑 Code PIN personnel</div>
+      <div style="font-family:'Exo 2',sans-serif;font-size:40px;font-weight:900;color:#FFD700;letter-spacing:8px" id="resultPin">••••</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Confidentiel — envoyer séparément</div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button onclick="envoyerPin('wa')" style="flex:1;padding:10px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);color:#25D366;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer">📱 WhatsApp PIN</button>
+        <button onclick="envoyerPin('copy')" style="flex:1;padding:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer">📋 Copier PIN</button>
+      </div>
+    </div>
+
+    <!-- SÉLECTION À LA CARTE -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2979FF;margin-bottom:12px">📤 Sélectionner ce à envoyer</div>
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text)">
+        <input type="checkbox" id="chkBienvenue" checked onchange="updatePreview()" style="width:18px;height:18px;accent-color:#2979FF">
+        💬 Message de bienvenue
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text)">
+        <input type="checkbox" id="chkCockpit" checked onchange="updatePreview()" style="width:18px;height:18px;accent-color:#2979FF">
+        🎮 Cockpit
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text)">
+        <input type="checkbox" id="chkPasseport" checked onchange="updatePreview()" style="width:18px;height:18px;accent-color:#2979FF">
+        🏆 Passeport
+      </label>
+      <label style="display:flex;align-items:center;gap:10px;padding:8px 0;cursor:pointer;font-size:13px;color:var(--text)">
+        <input type="checkbox" id="chkFormulaire" onchange="updatePreview()" style="width:18px;height:18px;accent-color:#2979FF">
+        📋 Formulaire client
+      </label>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button onclick="toutCocher(true)" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">Tout cocher</button>
+        <button onclick="toutCocher(false)" style="flex:1;padding:8px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">Tout décocher</button>
+      </div>
+    </div>
+
+    <!-- APERÇU MESSAGE -->
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px">
+      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Aperçu du message</div>
+      <div id="msgPreview" style="font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;font-family:monospace"></div>
+    </div>
+
+    <!-- BOUTONS ENVOI -->
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button onclick="envoyer('wa')" style="flex:2;padding:13px;background:linear-gradient(135deg,#128C7E,#25D366);color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer">📱 WhatsApp</button>
+      <button onclick="envoyer('copy')" style="flex:1;padding:13px;background:rgba(41,121,255,.15);border:1px solid rgba(41,121,255,.3);color:#60A5FA;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">📋 Copier</button>
+      <button onclick="envoyer('email')" style="flex:1;padding:13px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">✉️ Email</button>
+    </div>
+
+    <button class="btn" style="margin-top:4px;background:linear-gradient(135deg,#1B2B8F,#2979FF);animation:none;box-shadow:none" onclick="resetForm()">➕ Ajouter un autre apprenant</button>
+  </div>
+
+  <a class="back-link" href="index.html?admin=FC2026ADMIN">← Retour au Dashboard</a>
+</div>
+
+<div class="toast" id="toast">✅ Copié !</div>
+
+<script>
+var APPS_URL = 'https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
+var BASE_URL = new URL('./', window.location.href).href;
+var currentData = {};
+
+function toggleCoordonnees(){
+  var wrap = document.getElementById('coordonneesWrap');
+  var btn  = document.getElementById('btnToggleCoord');
+  var open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '+ Ajouter coordonnées (facultatif)' : '− Masquer coordonnées';
+}
+
+function addApprenant(){
+  var prenom = document.getElementById('inputPrenom').value.trim();
+  var nom    = document.getElementById('inputNom').value.trim();
+  if(!prenom || !nom){ alert('Prénom et nom obligatoires.'); return; }
+  var tel     = (document.getElementById('inputTel')||{value:''}).value.trim();
+  var email   = (document.getElementById('inputEmail')||{value:''}).value.trim();
+  var adresse = (document.getElementById('inputAdresse')||{value:''}).value.trim();
+  var btn = document.getElementById('btnAdd');
+  btn.disabled = true; btn.textContent = 'Création en cours...';
+  fetch(APPS_URL + '?action=addApprenant&prenom=' + encodeURIComponent(prenom) + '&nom=' + encodeURIComponent(nom)
+    + '&telephone=' + encodeURIComponent(tel) + '&email=' + encodeURIComponent(email) + '&adresse=' + encodeURIComponent(adresse))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.status !== 'ok'){ alert('Erreur : ' + (data.message||'inconnue')); btn.disabled=false; btn.textContent='⚡ Créer la fiche apprenant'; return; }
+      showResult(data.id, data.prenom, data.nom, data.pin);
+    })
+    .catch(function(){ alert('Erreur réseau. Réessaie.'); btn.disabled=false; btn.textContent='⚡ Créer la fiche apprenant'; });
+}
+
+function buildUrl(page, id, prenom, nom){
+  return BASE_URL + page + '?id=' + id;
+}
+
+function showResult(id, prenom, nom, pin){
+  currentData = {id:id, prenom:prenom, nom:nom, pin:pin||'????'};
+  document.getElementById('resultId').textContent   = id;
+  document.getElementById('resultName').textContent = prenom + ' ' + nom + ' · Niv.0 · Débutant';
+  if(pin) document.getElementById('resultPin').textContent = pin;
+  document.getElementById('formCard').style.display   = 'none';
+  document.getElementById('resultCard').style.display = 'block';
+  updatePreview();
+}
+
+function toutCocher(val){
+  ['chkBienvenue','chkCockpit','chkPasseport','chkFormulaire'].forEach(function(id){
+    document.getElementById(id).checked = val;
+  });
+  updatePreview();
+}
+
+function buildMessage(){
+  var d = currentData;
+  if(!d.id) return '';
+  var cockpit = buildUrl('journee.html', d.id, d.prenom, d.nom);
+  var form    = buildUrl('formcom-v2.html', d.id, d.prenom, d.nom);
+  var pass    = BASE_URL + 'profil.html?id=' + d.id;
+  var chkB    = document.getElementById('chkBienvenue').checked;
+  var chkC    = document.getElementById('chkCockpit').checked;
+  var chkP    = document.getElementById('chkPasseport').checked;
+  var chkF    = document.getElementById('chkFormulaire').checked;
+  var msg     = '';
+  if(chkB){
+    msg += '⚔️ '+d.prenom+', bienvenue dans LevelUp by Form\'Com.\n\n';
+    msg += 'Le jeu qui va révéler la meilleure version de toi-même.\n\n';
+    msg += 'Pas une formation classique.\nPas un cours magistral.\nUn terrain. Une aventure. Un jeu réel.\n\n';
+    msg += 'Chaque jour tu vas aller à la rencontre de vraies personnes, développer de vraies compétences, et accumuler de vraies récompenses.\n\n';
+    msg += 'La règle est simple :\nPlus tu joues, plus tu grandis.\nPlus tu grandis, plus tu gagnes.\n\n';
+    msg += 'Ton cockpit t\'attend.\nTon aventure commence maintenant.\n\n';
+  }
+  if(chkC) msg += '🎮 Mon Cockpit :\n' + cockpit + '\n\n';
+  if(chkP) msg += '🏆 Mon Passeport :\n' + pass + '\n\n';
+  if(chkF) msg += '📋 Mon Formulaire :\n' + form + '\n\n';
+  if(chkB) msg += 'Form\'Com · Programme Level Up\n"Le terrain est ton meilleur professeur."';
+  return msg.trim();
+}
+
+function updatePreview(){
+  var el = document.getElementById('msgPreview');
+  if(el) el.textContent = buildMessage() || '(Aucun élément sélectionné)';
+}
+
+function envoyer(mode){
+  var msg = buildMessage();
+  if(!msg){ alert('Sélectionne au moins un élément à envoyer.'); return; }
+  if(mode==='wa'){
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  } else if(mode==='copy'){
+    navigator.clipboard.writeText(msg).then(function(){
+      var t = document.getElementById('toast'); t.classList.add('show');
+      setTimeout(function(){ t.classList.remove('show'); }, 2000);
+    }).catch(function(){ alert(msg); });
+  } else if(mode==='email'){
+    window.location.href = 'mailto:?subject=Bienvenue dans Form\'Com Level Up&body='+encodeURIComponent(msg);
+  }
+}
+
+function envoyerPin(mode){
+  var d = currentData;
+  var msg = '🔑 Form\'Com Level Up — Ton code PIN personnel\n\nCode PIN : ' + d.pin + '\n\n⚠️ Garde ce code confidentiel — ne le partage à personne.\nForm\'Com · Programme Level Up';
+  if(mode==='wa'){
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  } else {
+    navigator.clipboard.writeText(d.pin).then(function(){
+      var t = document.getElementById('toast'); t.textContent='✅ PIN copié !'; t.classList.add('show');
+      setTimeout(function(){ t.textContent='✅ Copié !'; t.classList.remove('show'); }, 2000);
+    }).catch(function(){ alert('PIN : '+d.pin); });
+  }
+}
+
+function resetForm(){
+  document.getElementById('inputPrenom').value = '';
+  document.getElementById('inputNom').value    = '';
+  var btn = document.getElementById('btnAdd');
+  btn.disabled = false; btn.textContent = '⚡ Créer la fiche apprenant';
+  document.getElementById('formCard').style.display   = 'block';
+  document.getElementById('resultCard').style.display = 'none';
+  currentData = {};
+}
+
+document.addEventListener('keydown', function(e){ if(e.key==='Enter') addApprenant(); });
+</script>
+</body>
+</html>
