@@ -99,7 +99,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 </div>
 
 <!-- ============ ADMIN DASHBOARD ============ -->
-<div id="adminWrap" class="admin-wrap" style="display:none">
+<div id="adminWrap" class="admin-wrap" style="display:none;padding-bottom:70px">
   <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
   <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
 
@@ -114,6 +114,12 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
         <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes Sheet</button>
       </div>
     </div>
+  </div>
+
+  <!-- BANDEAU ALERTES -->
+  <div id="alertBanner" style="display:none;background:rgba(232,25,44,.08);border-bottom:1px solid rgba(232,25,44,.2);padding:8px 16px;display:flex;align-items:center;gap:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#FF6B6B">
+    <span style="font-size:14px">&#9888;</span>
+    <span id="alertText">Chargement alertes...</span>
   </div>
 
   <!-- BANDEAU CA / MRR -->
@@ -206,7 +212,13 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   </div>
 </div>
 
-<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="bottom:20px;right:20px">&#127769;</button>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="bottom:70px;right:16px;z-index:9999">&#127769;</button>
+
+<!-- BARRE FIXE BAS -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;z-index:9990">
+  <a href="admin_add_apprenant.html" target="_blank" style="padding:12px;background:#2979FF;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">&#10133; Nouvel apprenant</a>
+  <button onclick="toggleAdminMenu()" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">&#9881;&#65039; Admin</button>
+</div>
 <select id="langSelect" onchange="setLang(this.value)" style="position:fixed;bottom:30px;right:90px;z-index:9999;background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:6px 8px;font-size:14px;font-weight:700;cursor:pointer;outline:none">
   <option value="fr">🇫🇷 FR</option>
   <option value="en">🇬🇧 EN</option>
@@ -636,16 +648,17 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   }
   function statRing(val, max, color, label){
     var pct = max > 0 ? Math.min(100, val/max*100) : (val>0?100:0);
-    var offset = Math.round(113 - (pct/100)*113);
-    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 4px;text-align:center">'
-      +'<div style="position:relative;width:48px;height:48px;margin:0 auto 6px">'
-        +'<svg width="48" height="48" viewBox="0 0 48 48" style="transform:rotate(-90deg)">'
-          +'<circle cx="24" cy="24" r="18" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="3"/>'
-          +'<circle cx="24" cy="24" r="18" fill="none" stroke="'+color+'" stroke-width="3" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="'+offset+'"/>'
+    var circ = 2 * Math.PI * 26;
+    var offset = Math.round(circ - (pct/100)*circ);
+    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 6px;text-align:center">'
+      +'<div style="position:relative;width:66px;height:66px;margin:0 auto 8px">'
+        +'<svg width="66" height="66" viewBox="0 0 66 66" style="transform:rotate(-90deg)">'
+          +'<circle cx="33" cy="33" r="26" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="4"/>'
+          +'<circle cx="33" cy="33" r="26" fill="none" stroke="'+color+'" stroke-width="4" stroke-linecap="round" stroke-dasharray="'+Math.round(circ)+'" stroke-dashoffset="'+offset+'"/>'
         +'</svg>'
-        +'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:12px;font-weight:900;color:'+color+'">'+val+'</div>'
+        +'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:'+color+'">'+val+'</div>'
       +'</div>'
-      +'<div style="font-size:9px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif;font-weight:700;line-height:1.2">'+label+'</div>'
+      +'<div style="font-size:10px;color:rgba(255,255,255,.5);font-family:Exo 2,sans-serif;font-weight:700;line-height:1.3">'+label+'</div>'
     +'</div>';
   }
   function caCard(val, label, color){
@@ -684,14 +697,14 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   // ─── ONGLET 0 : STATS ─────────────────────────────────────────────
   +'<div id="ftabContent0">'
     +'<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px;font-family:Exo 2,sans-serif">Statistiques terrain</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">'
-      +statRing(stats.nb_evals||0, maxStat, '#2979FF', 'Évals')
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">'
+      +statRing(stats.nb_evals||0, maxStat, '#2979FF', 'Évaluateurs')
+      +statRing(stats.nb_ventes||0, maxStat, '#00C853', 'Articles')
+      +statRing(abosTotal, maxStat, '#A78BFA', 'Abonnements')
+      +statRing(talentsTotal, maxStat, '#06D6A0', 'Talents')
+      +statRing(solTotal, maxStat, '#F59E0B', 'Solidaires')
       +statRing(stats.nb_contacts||0, maxStat, '#F5A623', 'Contacts')
       +statRing(stats.nb_refus||0, maxStat, '#E8192C', 'Refus')
-      +statRing(stats.nb_ventes||0, maxStat, '#00C853', 'Articles')
-      +statRing(abosTotal, maxStat, '#A78BFA', 'Abonnts')
-      +statRing(solTotal, maxStat, '#F59E0B', 'Solidaires')
-      +statRing(talentsTotal, maxStat, '#06D6A0', 'Talents')
       +statRing(stats.nb_demons||0, maxStat, '#60A5FA', 'Démos')
     +'</div>'
     +'<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px;font-family:Exo 2,sans-serif">Activité</div>'
@@ -817,6 +830,26 @@ function renderFicheApprenant(a, stats, abos, solidaire){
 
   el.removeEventListener('click', admClick);
   el.addEventListener('click', admClick);
+}
+
+function updateAlertBanner(apprenants, bourseOk){
+  var alertes = [];
+  if(typeof apprenants !== 'undefined'){
+    apprenants.forEach(function(a){
+      if(a.bourse_debloquee === false && a.statut === 'ACTIF'){
+        alertes.push('Bourse '+a.prenom+' à débloquer');
+      }
+    });
+  }
+  var banner = document.getElementById('alertBanner');
+  var txt    = document.getElementById('alertText');
+  if(!banner || !txt) return;
+  if(alertes.length > 0){
+    banner.style.display = 'flex';
+    txt.textContent = alertes.length+' alerte'+(alertes.length>1?'s':'')+' · '+alertes.slice(0,2).join(' · ');
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 function switchFicheTab(n){
