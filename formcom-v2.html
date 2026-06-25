@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jury Terrain — Level Up</title>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@700&display=swap" rel="stylesheet"></noscript>
+<style>
+:root{
+  --bg:#060B18;--card:#0E1730;--card2:#111F3A;
+  --border:rgba(255,255,255,.08);--text:#F0F4FF;--muted:#8892A4;
+  --blue:#2979FF;--navy:#1B2B8F;--gold:#F5A623;--red:#E8192C;--green:#00C853;
+  --r:14px;--rs:10px
+}
+body.light{
+  --bg:#F0F4FF;--card:#fff;--card2:#F5F7FF;
+  --border:rgba(0,0,0,.1);--text:#111827;--muted:#6B7280;
+}
+body.light .hero{background:linear-gradient(135deg,#1B2B8F,#2979FF)}
+body.light .hero-jury-badge{background:rgba(245,166,35,.2);border-color:rgba(245,166,35,.5)}
+body.light input[type=text],body.light input[type=tel],body.light textarea{background:#fff;color:#111827;border-color:rgba(0,0,0,.15)}
+body.light .nps-btn{background:#f0f4ff;color:#111827}
+body.light .recruit-btn{background:#f0f4ff;color:#111827}
+body.light .total-band{background:linear-gradient(135deg,#1B2B8F,#2979FF)}
+body.light .certif-card{background:rgba(41,121,255,.08);border-color:rgba(41,121,255,.2)}
+.theme-btn{position:fixed;top:16px;right:16px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(14,23,48,.85);border:1px solid rgba(255,255,255,.15);font-size:18px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;outline:none;backdrop-filter:blur(8px)}
+body.light .theme-btn{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.15)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px}
+
+/* TOPBAR */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+.topbar-logo{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700}
+.topbar-logo span{color:var(--red)}
+.topbar-tag{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:3px}
+
+/* HERO APPRENANT */
+.hero{background:linear-gradient(135deg,#0D1B6E,#1B2B8F);padding:20px 16px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(41,121,255,.3),transparent 70%);pointer-events:none}
+.hero-jury-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);border-radius:40px;padding:5px 14px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.hero-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#2979FF,#1B2B8F);border:3px solid rgba(245,166,35,.4);display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:26px;font-weight:900;color:#fff;margin:0 auto 12px;position:relative;z-index:1}
+.hero-name{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
+.hero-level{font-size:12px;color:rgba(255,255,255,.6);font-weight:600;margin-bottom:14px}
+.hero-xp-bar-wrap{background:rgba(0,0,0,.3);border-radius:99px;height:8px;overflow:hidden;margin:0 0 6px}
+.hero-xp-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,#F5A623,#FFD700);transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.hero-xp-row{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.5)}
+.hero-xp-pts{font-family:'Exo 2',sans-serif;font-weight:700;color:var(--gold)}
+.hero-mission{margin-top:12px;background:rgba(0,0,0,.2);border-radius:10px;padding:8px 14px;font-size:12px;color:rgba(255,255,255,.7);line-height:1.5}
+.hero-mission strong{color:#fff}
+
+/* XP LIVE COUNTER */
+.xp-live{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--navy);border-bottom:2px solid var(--gold);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;transform:translateY(-100%);transition:transform .4s}
+.xp-live.show{transform:translateY(0)}
+.xp-live-label{font-size:11px;color:rgba(255,255,255,.6);font-weight:600}
+.xp-live-val{font-family:'Exo 2',sans-serif;font-size:18px;font-weight:900;color:var(--gold)}
+
+/* WRAP */
+.wrap{max-width:480px;margin:0 auto;padding:16px}
+
+/* SECTION TITRE */
+.sec-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;gap:8px;margin:20px 0 10px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* MISSION CARD (skill) */
+.mission-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;transition:border-color .3s,box-shadow .3s}
+.mission-card.rated{border-color:var(--blue);box-shadow:0 0 0 3px rgba(41,121,255,.1)}
+.mission-card.rated-perfect{border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+.mission-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.mission-num{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.mission-badge{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.06);color:var(--muted);transition:all .3s}
+.mission-badge.lit{background:var(--blue);color:#fff}
+.mission-badge.gold{background:var(--gold);color:#1B2B8F}
+.mission-title{font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;color:var(--text);margin-bottom:3px}
+.mission-desc{font-size:12px;color:var(--muted);line-height:1.4;margin-bottom:12px}
+.stars{display:flex;gap:6px}
+.star{font-size:36px;cursor:pointer;line-height:1;color:rgba(255,255,255,.1);transition:color .15s,transform .1s;user-select:none}
+.star.on{color:var(--gold)}
+.star:active{transform:scale(1.25)}
+.mission-feedback{min-height:20px;margin-top:8px;display:flex;align-items:center;gap:8px}
+.fb-pts{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--green);opacity:0;transform:translateY(4px);transition:all .3s}
+.fb-pts.show{opacity:1;transform:translateY(0)}
+.fb-word{font-size:12px;color:var(--muted)}
+.mission-tip{margin-top:8px;background:rgba(245,166,35,.08);border-left:3px solid var(--gold);border-radius:0 var(--rs) var(--rs) 0;padding:8px 12px;font-size:12px;color:rgba(245,166,35,.9);line-height:1.5;display:none}
+.mission-tip.show{display:block}
+
+/* PERFECT BANNER */
+.perfect-banner{background:linear-gradient(135deg,#1B2B8F,#2979FF);border-radius:var(--r);padding:14px 18px;text-align:center;margin-bottom:10px;display:none;border:1px solid rgba(245,166,35,.3)}
+.perfect-banner.show{display:block}
+.perfect-banner-text{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:#fff}
+
+/* FEEDBACK PÉDAGOGIQUE */
+.feedback-section{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.feedback-q{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px}
+.feedback-grid{display:flex;flex-wrap:wrap;gap:8px}
+.feedback-chip{padding:8px 14px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:40px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.feedback-chip:active{transform:scale(.95)}
+.feedback-chip.sel-pos{background:rgba(0,200,83,.12);border-color:rgba(0,200,83,.4);color:#00C853}
+.feedback-chip.sel-neg{background:rgba(232,25,44,.1);border-color:rgba(232,25,44,.3);color:#FF6B6B}
+
+/* NPS & PROGRAMME */
+.nps-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nps-btn{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--rs);padding:13px 10px;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;font-weight:600;color:var(--text)}
+.nps-btn:active{transform:scale(.97)}
+.nps-sub{font-size:11px;color:var(--muted);margin-top:3px;font-weight:500}
+.nps-btn.s-yes{border-color:var(--green);background:rgba(0,200,83,.08);color:#00C853}
+.nps-btn.s-prob{border-color:var(--blue);background:rgba(41,121,255,.08);color:#60A5FA}
+.nps-btn.s-maybe{border-color:var(--gold);background:rgba(245,166,35,.08);color:var(--gold)}
+.nps-btn.s-no{border-color:var(--red);background:rgba(232,25,44,.06);color:#FF6B6B}
+
+/* STARS PROGRAMME */
+.prog-stars{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.prog-star{font-size:38px;cursor:pointer;color:rgba(255,255,255,.1);transition:color .15s,transform .1s;user-select:none}
+.prog-star.on{color:var(--gold)}
+.prog-star:active{transform:scale(1.2)}
+
+/* RECRUTEMENT */
+.recruit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.recruit-btn{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--rs);padding:12px;text-align:center;cursor:pointer;font-size:14px;font-weight:700;color:var(--text);transition:all .2s}
+.recruit-btn.sel-oui{border-color:var(--green);background:rgba(0,200,83,.08);color:#00C853}
+.recruit-btn.sel-non{border-color:var(--border);color:var(--muted)}
+
+/* TOTAL BAND */
+.total-band{background:linear-gradient(135deg,#0D1B6E,#1B2B8F);border-radius:var(--r);padding:18px;margin-bottom:12px;text-align:center;border:1px solid rgba(245,166,35,.2)}
+.total-label{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:4px}
+.total-num{font-family:'Exo 2',sans-serif;font-size:48px;font-weight:900;color:var(--gold);line-height:1}
+.total-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:4px}
+.total-xp{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;color:rgba(255,255,255,.6)}
+
+/* IDENTITE */
+.identity-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.identity-note{font-size:12px;color:rgba(245,166,35,.8);font-style:italic;margin-bottom:14px;line-height:1.5;padding:10px 12px;background:rgba(245,166,35,.06);border-radius:var(--rs);border-left:3px solid var(--gold)}
+.field-row{display:flex;gap:10px;margin-bottom:10px}
+.field-group{flex:1}
+.field-label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.opt{font-weight:400;color:rgba(255,255,255,.2);text-transform:none;font-size:10px}
+input[type=text],input[type=tel]{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'Inter',sans-serif;color:var(--text);background:rgba(255,255,255,.04);outline:none;transition:border-color .2s}
+input[type=text]:focus,input[type=tel]:focus{border-color:var(--blue);background:rgba(41,121,255,.06)}
+input[type=text]::placeholder,input[type=tel]::placeholder{color:rgba(255,255,255,.2)}
+
+/* COMMENTAIRE */
+textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:14px;font-family:'Inter',sans-serif;color:var(--text);background:rgba(255,255,255,.04);outline:none;resize:none;height:80px;transition:border-color .2s}
+textarea:focus{border-color:var(--blue)}
+textarea::placeholder{color:rgba(255,255,255,.2)}
+
+/* CERTIFICATION */
+.certif-card{background:rgba(41,121,255,.06);border:1.5px solid rgba(41,121,255,.2);border-radius:var(--r);padding:14px;margin-bottom:12px}
+
+/* BOUTON SUBMIT */
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,#1B2B8F,#2979FF);color:#fff;border:none;border-radius:14px;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;cursor:pointer;margin-bottom:8px;box-shadow:0 4px 20px rgba(41,121,255,.3);letter-spacing:.5px;transition:opacity .2s}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+.submit-note{font-size:11px;color:var(--muted);text-align:center}
+
+/* SUCCESS */
+.success{display:none;padding:40px 20px;text-align:center;max-width:480px;margin:0 auto}
+.success.show{display:block}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success-title{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;color:var(--gold);margin-bottom:8px}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.pts-hero-card{background:linear-gradient(135deg,#0D1B6E,#1B2B8F);border-radius:var(--r);padding:24px;border:1px solid rgba(245,166,35,.25)}
+.pts-hero-label{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px}
+.pts-hero-num{font-family:'Exo 2',sans-serif;font-size:56px;font-weight:900;color:var(--gold);line-height:1}
+.pts-hero-name{font-size:13px;color:rgba(255,255,255,.5);margin-top:6px}
+
+.form-content.hidden{display:none}
+</style>
+</head>
+<body>
+
+<!-- XP LIVE TICKER -->
+<div class="xp-live" id="xpLive">
+  <div class="xp-live-label">⚡ XP accordés jusqu'ici</div>
+  <div class="xp-live-val" id="xpLiveVal">+0 XP</div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo"><span style="color:#2979FF">Form'</span><span style="color:#E8192C">Com</span></div>
+  <div class="topbar-tag">⚔️ Jury Terrain Level Up</div>
+</div>
+
+<!-- BOUTON THÈME -->
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+
+<!-- BOUTON FERMER → retour cockpit -->
+<button onclick="fermerFormulaire()" style="position:fixed;top:16px;left:16px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(14,23,48,.85);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;outline:none;backdrop-filter:blur(8px)" title="Retour au cockpit">✕</button>
+
+<!-- HERO APPRENANT -->
+<div class="hero">
+  <div class="hero-jury-badge">⭐ Vous êtes juré terrain</div>
+  <div class="hero-avatar" id="heroAvatar">?</div>
+  <div class="hero-name" id="heroPrenom">—</div>
+  <div class="hero-level" id="heroLevel">Niveau 0 · Débutant</div>
+  <div class="hero-xp-bar-wrap">
+    <div class="hero-xp-bar" id="heroBar" style="width:0%"></div>
+  </div>
+  <div class="hero-xp-row">
+    <span id="heroPts" class="hero-xp-pts">0 XP</span>
+    <span id="heroGoal" style="color:rgba(255,255,255,.4)">—</span>
+  </div>
+  <div class="hero-mission">
+    Mission du jour : <strong id="heroMission">Atteindre la zone verte</strong>
+  </div>
+</div>
+
+<div class="wrap">
+<div id="formContent">
+
+<!-- IDENTITÉ JURÉ -->
+<div class="sec-title">👤 Votre identité</div>
+<div class="identity-card">
+  <div class="identity-note">💬 « J'ai besoin de votre prénom pour prouver à mes examinateurs que ce sont de vraies personnes inconnues qui me jugent. »</div>
+  <div class="field-row">
+    <div class="field-group"><label class="field-label">Prénom <span class="opt">(facultatif)</span></label><input type="text" placeholder="Votre prénom" id="clientPrenom"></div>
+    <div class="field-group"><label class="field-label">Nom <span class="opt">(facultatif)</span></label><input type="text" placeholder="Votre nom" id="clientNom"></div>
+  </div>
+  <div class="field-group"><label class="field-label">Profession <span class="opt">(facultatif)</span></label><input type="text" placeholder="Ex : commerçant, cadre, retraité…" id="clientProfession"></div>
+</div>
+
+<!-- PARTIE 1 : ÉVALUATION APPRENANT -->
+<div class="sec-title">⚔️ Partie 1 — Évaluation</div>
+<p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5">Chaque note peut faire gagner jusqu'à <strong style="color:var(--text)">+25 XP</strong>. Soyez honnête — c'est ce qui l'aide vraiment à progresser.</p>
+
+<div class="perfect-banner" id="perfectBanner">
+  <div class="perfect-banner-text">🏆 Performance parfaite — Verdict exceptionnel !</div>
+</div>
+
+<div id="skillsContainer"></div>
+
+<!-- PARTIE 2 : FEEDBACK PÉDAGOGIQUE -->
+<div class="sec-title">🎯 Partie 2 — Feedback terrain</div>
+
+<div class="feedback-section">
+  <div class="feedback-q">💪 Quelle est sa plus grande qualité ?</div>
+  <div class="feedback-grid" id="qualiteGrid">
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Énergie')">⚡ Énergie</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Politesse')">🤝 Politesse</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Persévérance')">💪 Persévérance</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Clarté')">💡 Clarté</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Confiance')">🦁 Confiance</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Écoute')">👂 Écoute</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'qualite','Motivation')">🔥 Motivation</div>
+  </div>
+</div>
+
+<div class="feedback-section">
+  <div class="feedback-q">🎯 Quel point devrait-il améliorer ?</div>
+  <div class="feedback-grid" id="amelioGrid">
+    <div class="feedback-chip" onclick="selectFeedback(this,'amelio','Confiance')">Confiance</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'amelio','Gestion du stress')">Gestion du stress</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'amelio','Fluidité')">Fluidité</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'amelio','Écoute')">Écoute</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'amelio','Argumentation')">Argumentation</div>
+    <div class="feedback-chip" onclick="selectFeedback(this,'amelio','Gestion des objections')">Objections</div>
+  </div>
+</div>
+
+<div class="feedback-section">
+  <label class="field-label" style="margin-bottom:8px;display:block">💬 Un mot d'encouragement ? <span class="opt">(facultatif)</span></label>
+  <textarea id="commentaire" placeholder="Ex : Belle énergie, continuez comme ça !" maxlength="200"></textarea>
+  <div style="font-size:11px;color:var(--muted);margin-top:5px;text-align:right"><span id="charCount">0</span>/200</div>
+</div>
+
+<!-- PARTIE 3 : ÉVALUATION DU PROGRAMME -->
+<div class="sec-title">🌟 Partie 3 — Évaluation du programme</div>
+
+<div class="feedback-section" style="margin-bottom:10px">
+  <div class="feedback-q" style="margin-bottom:6px">Pensez-vous que ce programme soit utile aux jeunes ?</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Notez le programme Level Up</div>
+  <div class="prog-stars" id="progStarsWrap">
+    <span class="prog-star" onclick="rateProgram(1)" data-v="1">★</span>
+    <span class="prog-star" onclick="rateProgram(2)" data-v="2">★</span>
+    <span class="prog-star" onclick="rateProgram(3)" data-v="3">★</span>
+    <span class="prog-star" onclick="rateProgram(4)" data-v="4">★</span>
+    <span class="prog-star" onclick="rateProgram(5)" data-v="5">★</span>
+  </div>
+  <div style="text-align:center;margin-top:8px;font-family:'Exo 2',sans-serif;font-size:13px;color:var(--muted)" id="progStarLabel"></div>
+</div>
+
+<div class="feedback-section" style="margin-bottom:10px">
+  <div class="feedback-q" style="margin-bottom:10px">Seriez-vous prêt à recommander cette formation à une personne de votre entourage ?</div>
+  <div class="nps-grid">
+    <div class="nps-btn" onclick="selectNps(this,'s-yes',100,'Oui absolument')">✅ Oui, sans hésiter<div class="nps-sub">+100 XP</div></div>
+    <div class="nps-btn" onclick="selectNps(this,'s-prob',50,'Probablement')">🤔 Probablement<div class="nps-sub">+50 XP</div></div>
+    <div class="nps-btn" onclick="selectNps(this,'s-maybe',25,'Peut-être')">💭 Peut-être<div class="nps-sub">+25 XP</div></div>
+    <div class="nps-btn" onclick="selectNps(this,'s-no',0,'Non')">❌ Non<div class="nps-sub">+0 XP</div></div>
+  </div>
+</div>
+
+<div class="feedback-section" style="margin-bottom:16px">
+  <div class="feedback-q" style="margin-bottom:10px">Connaissez-vous un jeune qui pourrait bénéficier de ce programme ?</div>
+  <div class="recruit-grid">
+    <div class="recruit-btn" id="recruitOui" onclick="selectRecruit(true)">✅ Oui</div>
+    <div class="recruit-btn" id="recruitNon" onclick="selectRecruit(false)">❌ Non</div>
+  </div>
+  <div id="recruitFields" style="display:none">
+    <input type="text" placeholder="Prénom (facultatif)" id="recruitPrenom" style="margin-bottom:8px">
+    <input type="tel" placeholder="Téléphone (facultatif)" id="recruitTel">
+    <div style="font-size:11px;color:var(--muted);margin-top:6px">Ces informations resteront confidentielles.</div>
+  </div>
+</div>
+
+<!-- TOTAL -->
+<div class="total-band">
+  <div class="total-label">⚡ XP accordés à <span id="totalName">l'apprenant</span></div>
+  <div class="total-num" id="totalNum">+0</div>
+  <div class="total-xp">points d'expérience</div>
+  <div class="total-sub">Mis à jour en temps réel</div>
+</div>
+
+<!-- CERTIFICATION -->
+<div class="certif-card">
+  <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+    <input type="checkbox" id="certifCheck" style="margin-top:2px;accent-color:var(--blue);width:16px;height:16px;flex-shrink:0">
+    <span style="font-size:12px;color:var(--muted);line-height:1.5">Je certifie l'authenticité de cette évaluation terrain et accepte le traitement confidentiel de mes données.</span>
+  </label>
+</div>
+
+<button class="btn-submit" id="btnSubmit" onclick="submitForm()">⚔️ Rendre mon verdict</button>
+<p class="submit-note">Données transmises au jury Form'Com · Confidentielles</p>
+
+</div><!-- /form-content -->
+
+<!-- SUCCESS -->
+<div class="success" id="successScreen">
+  <div class="success-icon">⚡</div>
+  <div class="success-title">Verdict rendu !</div>
+  <p class="success-sub">Votre jugement aide réellement <strong id="successPrenom">l'apprenant</strong> à progresser.<br>Vous venez de contribuer à son avenir professionnel.</p>
+  <div class="pts-hero-card">
+    <div class="pts-hero-label">Points d'expérience accordés</div>
+    <div class="pts-hero-num" id="finalPts">+0</div>
+    <div class="pts-hero-name" id="finalName">—</div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
+
+var FOUNDER_KEY = 'FC2026SECRET';
+var p = new URLSearchParams(window.location.search);
+var isFounder = p.get('founder') === FOUNDER_KEY;
+
+var AP;
+try {
+  AP = {
+    id:         p.get('id')          || 'AP001',
+    prenom:     p.get('prenom')      || 'Apprenant',
+    nom:        p.get('nom')         || '',
+    niveau:     p.get('niveau')      || '0',
+    niveauLabel:p.get('niveau_label')|| 'Débutant',
+    pts:        parseInt(p.get('XP'))|| 0,
+    ptsMax:     parseInt(p.get('pts_max'))||10000,
+    objectif:   p.get('objectif')   || 'Explorateur',
+    promo:      p.get('promo')      || '2026',
+  };
+} catch(e) {
+  AP = {id:'AP001',prenom:'Apprenant',nom:'',niveau:'0',niveauLabel:'Débutant',pts:0,ptsMax:10000,objectif:'Explorateur',promo:'2026'};
+}
+
+// Bloquer si DIPLÔMÉ/NEUTRALISÉ
+if(AP.id && AP.id !== 'AP001'){
+  fetch(APPS_SCRIPT_URL + '?action=getStatutDepart&apprenant_id=' + encodeURIComponent(AP.id))
+    .then(function(r){ return r.json(); })
+    .then(function(sd){
+      if(sd.statut_depart === 'DIPLÔMÉ' || sd.statut_depart === 'NEUTRALISÉ'){
+        document.body.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#060B18;color:#8892A4;font-family:Inter,sans-serif;text-align:center;padding:32px"><div style="font-size:48px;margin-bottom:16px">'+(sd.statut_depart==='DIPLÔMÉ'?'🎓':'🚫')+'</div><div style="font-size:16px;font-weight:600">Ce formulaire n\'est plus disponible.</div></div>';
+      }
+    }).catch(function(){});
+}
+
+// Verrouillage par appareil + apprenant + jour
+function getLockKey(appId){ return 'fc_eval_' + appId + '_' + new Date().toISOString().slice(0,10); }
+function isLocked(appId){ if(isFounder) return false; try{ return !!localStorage.getItem(getLockKey(appId)); }catch(e){ return false; } }
+function setLock(appId,total){ try{ localStorage.setItem(getLockKey(appId),JSON.stringify({total:total,ts:new Date().toISOString()})); }catch(e){} }
+
+// DONNÉES
+var skills = [
+  {id:'accueil',   name:'Accueil et présentation',       desc:'L\'apprenant était-il poli, souriant et professionnel ?',       num:'Mission 1'},
+  {id:'clarte',    name:'Clarté du discours',             desc:'Avez-vous compris facilement ce qui vous a été présenté ?',      num:'Mission 2'},
+  {id:'attention', name:'Capacité à capter l\'attention', desc:'L\'échange était-il intéressant et engageant ?',                 num:'Mission 3'},
+  {id:'ecoute',    name:'Qualité d\'écoute',              desc:'L\'apprenant a-t-il pris en compte vos réactions et questions ?',num:'Mission 4'},
+  {id:'argumen',   name:'Qualité de l\'argumentation',    desc:'Les explications étaient-elles pertinentes et convaincantes ?',  num:'Mission 5'},
+  {id:'recom',     name:'Recommanderiez-vous cet apprenant ?', desc:'Le conseilleriez-vous à quelqu\'un de votre entourage ?',   num:'Mission 6'},
+];
+var starPts = [5,10,15,20,25];
+var starWords = ['Passable','Correct','Bien','Très bien','Excellent !'];
+var tips = {
+  accueil:   'Le premier sourire change tout. Un regard franc et chaleureux crée la connexion.',
+  clarte:    'Un bon discours tient en 3 phrases. Moins on dit, plus on retient l\'attention.',
+  attention: 'Capter l\'attention dès les premières secondes, c\'est la clé du reste.',
+  ecoute:    'La confiance se transmet. Un apprenant qui écoute vraiment rassure instantanément.',
+  argumen:   'Convaincre c\'est montrer le bénéfice concret pour la personne en face.',
+  recom:     'Une recommandation sincère est le plus beau cadeau qu\'on puisse faire à quelqu\'un.',
+};
+
+var ratings = {};
+var npsPts = 0, npsLabel = '';
+var feedbackQualite = '';
+var feedbackAmelio = '';
+var programRating = 0;
+var recruitOuiVal = false;
+var evaluateursAujourdhui = 0;
+var ptsAujourdhui = 0;
+
+var MICRO_BONUS = [
+  {n:1,  pts:50,  msg:'Premier juré de la journée ! +50 XP bonus !'},
+  {n:5,  pts:100, msg:'5 jurés — tu es lancé ! +100 XP bonus !'},
+  {n:10, pts:200, msg:'10 jurés — excellente cadence ! +200 XP bonus !'},
+  {n:20, pts:500, msg:'20 jurés — tu es en feu ! +500 XP bonus !'},
+  {n:30, pts:1000,msg:'Objectif journalier atteint ! +1 000 XP bonus !'},
+  {n:50, pts:2000,msg:'ÉLITE — performance légendaire ! +2 000 XP bonus !'},
+];
+
+function calcTotal(){
+  var sk = 0;
+  for(var k in ratings) sk += (ratings[k] > 0 ? starPts[ratings[k]-1] : 0);
+  return sk + npsPts;
+}
+
+function updateTotal(){
+  var t = calcTotal();
+  document.getElementById('totalNum').textContent = '+' + t.toLocaleString('fr-FR');
+  // XP live ticker
+  var live = document.getElementById('xpLive');
+  var liveVal = document.getElementById('xpLiveVal');
+  if(t > 0){
+    liveVal.textContent = '+' + t.toLocaleString('fr-FR') + ' XP';
+    live.classList.add('show');
+  } else {
+    live.classList.remove('show');
+  }
+}
+
+function initHero(){
+  var pct = Math.round(AP.pts / AP.ptsMax * 100);
+  var heroPrenom = document.getElementById('heroPrenom');
+  if(heroPrenom) heroPrenom.textContent = AP.prenom + (AP.nom ? ' ' + AP.nom : '');
+  var heroAvatar = document.getElementById('heroAvatar');
+  if(heroAvatar) heroAvatar.textContent = AP.prenom[0] ? AP.prenom[0].toUpperCase() : '?';
+  var heroLevel = document.getElementById('heroLevel');
+  if(heroLevel) heroLevel.textContent = 'Niveau ' + AP.niveau + ' · ' + AP.niveauLabel;
+  var heroPts = document.getElementById('heroPts');
+  if(heroPts) heroPts.textContent = AP.pts.toLocaleString('fr-FR') + ' XP';
+  var heroGoal = document.getElementById('heroGoal');
+  if(heroGoal) heroGoal.innerHTML = 'Plus que <strong style="color:var(--gold)">' + (AP.ptsMax - AP.pts).toLocaleString('fr-FR') + ' XP</strong>';
+  var heroBar = document.getElementById('heroBar');
+  if(heroBar) setTimeout(function(){ heroBar.style.width = pct + '%'; }, 300);
+  var totalName = document.getElementById('totalName');
+  if(totalName) totalName.textContent = AP.prenom;
+  var successPrenom = document.getElementById('successPrenom');
+  if(successPrenom) successPrenom.textContent = AP.prenom;
+  var finalName = document.getElementById('finalName');
+  if(finalName) finalName.textContent = AP.prenom + ' ' + AP.nom + ' · Niveau ' + AP.niveau + ' ' + AP.niveauLabel;
+  var heroMission = document.getElementById('heroMission');
+  if(heroMission) heroMission.textContent = 'Atteindre ' + AP.objectif + ' (' + AP.ptsMax.toLocaleString('fr-FR') + ' XP)';
+}
+
+function buildSkills(){
+  var c = document.getElementById('skillsContainer');
+  skills.forEach(function(sk){
+    ratings[sk.id] = 0;
+    var d = document.createElement('div');
+    d.className = 'mission-card';
+    d.id = 'card-' + sk.id;
+    var sh = '';
+    for(var i = 1; i <= 5; i++) sh += '<span class="star" onclick="rate(\'' + sk.id + '\',' + i + ')" data-v="' + i + '">★</span>';
+    d.innerHTML = '<div class="mission-header"><div class="mission-num">' + sk.num + '</div><div class="mission-badge" id="badge-' + sk.id + '">max +25</div></div>'
+      + '<div class="mission-title">' + sk.name + '</div>'
+      + '<div class="mission-desc">' + sk.desc + '</div>'
+      + '<div class="stars" id="stars-' + sk.id + '">' + sh + '</div>'
+      + '<div class="mission-feedback"><span class="fb-pts" id="fbpts-' + sk.id + '"></span><span class="fb-word" id="fbword-' + sk.id + '"></span></div>'
+      + '<div class="mission-tip" id="tip-' + sk.id + '">' + (tips[sk.id]||'') + '</div>';
+    c.appendChild(d);
+  });
+}
+
+function rate(id, val){
+  ratings[id] = val;
+  var pts = starPts[val-1];
+  var stars = document.querySelectorAll('#stars-' + id + ' .star');
+  for(var i = 0; i < stars.length; i++){
+    stars[i].classList.toggle('on', i < val);
+    stars[i].style.color = i < val ? 'var(--gold)' : 'rgba(255,255,255,.1)';
+  }
+  var fb = document.getElementById('fbpts-' + id);
+  fb.textContent = '+' + pts + ' XP';
+  fb.classList.remove('show'); void fb.offsetWidth; fb.classList.add('show');
+  document.getElementById('fbword-' + id).textContent = starWords[val-1];
+  var badge = document.getElementById('badge-' + id);
+  badge.textContent = '+' + pts + ' XP';
+  badge.className = val === 5 ? 'mission-badge gold' : 'mission-badge lit';
+  var card = document.getElementById('card-' + id);
+  card.className = val === 5 ? 'mission-card rated-perfect' : 'mission-card rated';
+  var tip = document.getElementById('tip-' + id);
+  if(val <= 2) tip.classList.add('show'); else tip.classList.remove('show');
+  // Perfect check
+  var allP = skills.every(function(sk){ return ratings[sk.id] === 5; });
+  var banner = document.getElementById('perfectBanner');
+  if(allP){ banner.classList.add('show'); if(typeof confetti==='function') confetti({particleCount:80,spread:60,origin:{y:.6},colors:['#F5A623','#1B2B8F','#fff']}); }
+  else banner.classList.remove('show');
+  updateTotal();
+}
+
+function selectFeedback(el, type, val){
+  var selClass = type === 'qualite' ? 'sel-pos' : 'sel-neg';
+  var grid = el.parentElement;
+  var chips = grid.querySelectorAll('.feedback-chip');
+
+  // Si déjà sélectionné → désélectionner
+  if(el.classList.contains(selClass)){
+    el.classList.remove(selClass);
+    updateFeedbackVal(type, grid, selClass);
+    return;
+  }
+
+  // Max 2 sélections — désélectionner la plus ancienne si déjà 2
+  var selected = Array.from(chips).filter(function(c){ return c.classList.contains(selClass); });
+  if(selected.length >= 2){ selected[0].classList.remove(selClass); }
+
+  el.classList.add(selClass);
+  updateFeedbackVal(type, grid, selClass);
+}
+
+function updateFeedbackVal(type, grid, selClass){
+  var selected = Array.from(grid.querySelectorAll('.feedback-chip.' + selClass));
+  var vals = selected.map(function(c){
+    return c.textContent.replace(/^[^\s]+\s/,'').trim();
+  });
+  if(type === 'qualite') feedbackQualite = vals.join(', ');
+  else feedbackAmelio = vals.join(', ');
+}
+
+function rateProgram(val){
+  programRating = val;
+  var stars = document.querySelectorAll('.prog-star');
+  stars.forEach(function(s,i){
+    s.classList.toggle('on', i < val);
+    s.style.color = i < val ? 'var(--gold)' : 'rgba(255,255,255,.1)';
+  });
+  var labels = ['','Pas utile','Peu utile','Utile','Très utile','Indispensable !'];
+  var lbl = document.getElementById('progStarLabel');
+  if(lbl) lbl.textContent = labels[val] || '';
+}
+
+function selectNps(el, cls, pts, label){
+  document.querySelectorAll('.nps-btn').forEach(function(b){ b.className='nps-btn'; });
+  el.className = 'nps-btn ' + cls;
+  npsPts = pts; npsLabel = label;
+  updateTotal();
+}
+
+function selectRecruit(oui){
+  recruitOuiVal = oui;
+  document.getElementById('recruitOui').className = 'recruit-btn' + (oui ? ' sel-oui' : '');
+  document.getElementById('recruitNon').className = 'recruit-btn' + (!oui ? ' sel-non' : '');
+  document.getElementById('recruitFields').style.display = oui ? 'block' : 'none';
+}
+
+function fetchApprenantStats(){
+  fetch(APPS_SCRIPT_URL + '?action=getApprenant&id=' + AP.id)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data.found && data.pts > 0){
+        AP.pts = data.pts;
+        if(data.pts>=100000){AP.niveau='5';AP.niveauLabel='Expert Terrain';AP.objectif="Élite Form'Com";AP.ptsMax=200000;}
+        else if(data.pts>=50000){AP.niveau='4';AP.niveauLabel='Ambassadeur';AP.objectif='Expert Terrain';AP.ptsMax=100000;}
+        else if(data.pts>=25000){AP.niveau='3';AP.niveauLabel='Communicant';AP.objectif='Ambassadeur';AP.ptsMax=50000;}
+        else if(data.pts>=10000){AP.niveau='2';AP.niveauLabel='Explorateur';AP.objectif='Communicant';AP.ptsMax=25000;}
+        else if(data.pts>=1000){AP.niveau='1';AP.niveauLabel='Débutant+';AP.objectif='Explorateur';AP.ptsMax=10000;}
+        else{AP.niveau='0';AP.niveauLabel='Débutant';AP.objectif='Explorateur';AP.ptsMax=10000;}
+        initHero();
+      }
+    }).catch(function(){});
+}
+
+function fetchDailyStats(){
+  fetch(APPS_SCRIPT_URL + '?action=getDaily&id=' + AP.id)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      evaluateursAujourdhui = data.evaluateurs_jour || 0;
+      ptsAujourdhui = data.pts_jour || 0;
+    }).catch(function(){});
+}
+
+function submitForm(){
+  var total = calcTotal();
+  if(!document.getElementById('certifCheck').checked){ alert('Merci de certifier l\'authenticité de votre évaluation.'); return; }
+  var btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = 'Envoi en cours…';
+
+  var payload = {
+    timestamp: new Date().toISOString(),
+    apprenant_id:     AP.id,
+    apprenant_prenom: AP.prenom,
+    apprenant_nom:    AP.nom,
+    promo:    AP.promo,
+    niveau:   AP.niveau,
+    client_prenom:     document.getElementById('clientPrenom').value,
+    client_nom:        document.getElementById('clientNom').value,
+    client_profession: document.getElementById('clientProfession').value,
+    accueil:    ratings.accueil   || 0,
+    clarte:     ratings.clarte    || 0,
+    attention:  ratings.attention || 0,
+    ecoute:     ratings.ecoute    || 0,
+    argumen:    ratings.argumen   || 0,
+    recom_stars:ratings.recom     || 0,
+    demo:       'Non',
+    demo_pts:   0,
+    demo_qualite:    0,
+    demo_convaincre: 0,
+    demo_objections_pts: 0,
+    ventes_ponctuelles: 0, ventes_pts: 0,
+    recur_euros: 0, recur_pts: 0,
+    nps:      npsLabel,
+    nps_pts:  npsPts,
+    feedback_qualite: feedbackQualite,
+    feedback_amelio:  feedbackAmelio,
+    program_rating:   programRating,
+    recruit_oui:      recruitOuiVal ? 'OUI' : 'NON',
+    recruit_prenom:   recruitOuiVal ? (document.getElementById('recruitPrenom').value||'') : '',
+    recruit_tel:      recruitOuiVal ? (document.getElementById('recruitTel').value||'') : '',
+    commentaire:      document.getElementById('commentaire').value,
+    evaluateurs_jour: evaluateursAujourdhui + 1,
+    pts_jour:         ptsAujourdhui + total,
+    total_pts:        total
+  };
+
+  var saveUrl = APPS_SCRIPT_URL + '?action=save&' + Object.keys(payload).map(function(k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]);
+  }).join('&');
+
+  fetch(saveUrl, {method:'GET', keepalive:true})
+    .then(function(r){ return r.json(); })
+    .catch(function(){ return {}; })
+    .then(function(data){
+      setLock(AP.id, total);
+      try{ sessionStorage.setItem('fc_submitted','1'); }catch(e){}
+
+  // Afficher succès
+  document.getElementById('formContent').classList.add('hidden');
+  var ss = document.getElementById('successScreen');
+  ss.style.display = 'block';
+  document.getElementById('finalPts').textContent = '+' + total.toLocaleString('fr-FR');
+  if(typeof confetti === 'function') confetti({particleCount:120,spread:80,origin:{y:.4},colors:['#F5A623','#1B2B8F','#fff','#00C853']});
+
+  // Après 3 secondes : fermer l'onglet pour revenir au cockpit de l'apprenant
+  // Si window.close() est bloqué (onglet pas ouvert par JS), rediriger vers merci.html
+  var bd = [];
+  skills.forEach(function(sk){ var v=ratings[sk.id]; if(v>0) bd.push({n:sk.name,p:starPts[v-1]}); });
+  if(npsPts>0) bd.push({n:'Recommandation',p:npsPts});
+  var url = 'merci.html'
+    + '?prenom=' + encodeURIComponent(AP.prenom)
+    + '&nom='    + encodeURIComponent(AP.nom)
+    + '&id='     + encodeURIComponent(AP.id)
+    + '&total='  + total
+    + '&bd='     + encodeURIComponent(JSON.stringify(bd));
+      setTimeout(function(){
+        window.location.href = url;
+      }, 800);
+    });
+}
+
+// Compteur caractères
+document.getElementById('commentaire').addEventListener('input', function(){
+  document.getElementById('charCount').textContent = this.value.length;
+});
+
+// ── FERMER FORMULAIRE → retour cockpit ─────────────────────────────────────
+function fermerFormulaire(){
+  window.close();
+  setTimeout(function(){ history.back(); }, 300);
+}
+
+// ── THÈME ──────────────────────────────────────────────────────────────────
+function toggleTheme(){
+  var light = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = light ? '🌙' : '☀️';
+  try{ localStorage.setItem('fc_theme', light ? 'light' : 'dark'); }catch(e){}
+}
+try{
+  if(localStorage.getItem('fc_theme') === 'light'){
+    document.body.classList.add('light');
+    document.getElementById('themeBtn').textContent = '🌙';
+  }
+}catch(e){}
+
+// Init — pas de verrou, l'apprenant peut évaluer autant de fois que nécessaire
+try{ initHero(); }catch(e){}
+try{ buildSkills(); }catch(e){}
+try{ fetchApprenantStats(); }catch(e){}
+try{ fetchDailyStats(); }catch(e){}
+</script>
+</body>
+</html>

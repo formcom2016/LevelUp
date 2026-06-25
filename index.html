@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Form'Com · Level Up</title>
+<style>
+:root{
+  --bg:#060B18; --card:#0E1730; --border:#1E2D4F; --text:#FFFFFF; --muted:#8892A4;
+  --blue:#2979FF; --navy:#1B2B8F; --gold:#F5A623; --red:#E8192C;
+}
+body.light{
+  --bg:#F5F7FF; --card:#FFFFFF; --border:#DDE3F0; --text:#1A1A2E; --muted:#6B7280;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+
+/* TAB BAR */
+.shell-tabs{
+  display:flex; gap:6px; padding:8px 12px; background:var(--card);
+  border-bottom:1px solid var(--border); position:sticky; top:0; z-index:1000;
+}
+.shell-tab{
+  flex:1; text-align:center; padding:10px 8px; border-radius:10px;
+  font-weight:800; font-size:13px; letter-spacing:.5px; text-transform:uppercase;
+  color:var(--muted); cursor:pointer; transition:.15s; user-select:none;
+}
+.shell-tab.active{background:var(--blue); color:#fff}
+
+/* IFRAME VIEWPORT */
+.shell-frame-wrap{position:relative; height:calc(100vh - 56px)}
+.shell-frame{width:100%; height:100%; border:none; display:block}
+
+/* THEME BUTTON (uniforme avec les autres pages) */
+.theme-btn{position:fixed;bottom:20px;right:20px;z-index:9999;width:60px;height:60px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:30px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;outline:none;backdrop-filter:blur(10px)}
+
+/* ADMIN DASHBOARD RPG — adaptatif jour/nuit */
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&display=swap');
+.admin-wrap{max-width:960px;margin:0 auto;padding:24px 16px}
+.admin-title{font-family:Exo 2,sans-serif;font-size:22px;font-weight:900;background:linear-gradient(90deg,#2979FF,#00D4FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.admin-sub{font-size:11px;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:8px;font-family:Exo 2,sans-serif}
+.live-dot{width:7px;height:7px;background:#00FF87;border-radius:50%;display:inline-block;animation:livepulse 1.5s infinite;flex-shrink:0}
+@keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TABLE */
+.admin-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+.admin-table th{background:#1B2B8F;color:rgba(255,255,255,.8);text-align:left;padding:11px 16px;font-family:Exo 2,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+.admin-table th:nth-child(3){text-align:center}
+.admin-table th:nth-child(4){text-align:right}
+.admin-table td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;font-family:Exo 2,sans-serif}
+.admin-table tr:last-child td{border-bottom:none}
+.admin-table tr:hover td{background:rgba(41,121,255,.04)}
+
+/* IDENTITY */
+.rpg-identity{display:flex;align-items:center;gap:10px}
+.rpg-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;flex-shrink:0;border:2px solid var(--lc,#2979FF);background:rgba(41,121,255,.08);color:var(--lc,#2979FF)}
+.rpg-name{font-weight:800;font-size:14px;color:var(--text)}
+.rpg-role{font-size:11px;font-weight:700;color:var(--lc,#2979FF);margin-top:2px}
+
+/* ID */
+.rpg-id{font-size:13px;font-weight:600;color:var(--muted)}
+
+/* XP */
+.rpg-xp-wrap{text-align:center}
+.rpg-xp-num{font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:var(--lc,#2979FF)}
+.rpg-bar{height:4px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.rpg-bar-fill{height:100%;border-radius:2px;background:var(--lc,#2979FF)}
+
+/* CHIP NIVEAU */
+.rpg-niv-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;border:1.5px solid var(--lc,#2979FF);color:var(--lc,#2979FF);background:var(--card);white-space:nowrap;font-family:Exo 2,sans-serif;margin-top:6px}
+
+/* TAGS ACCÈS */
+.admin-links{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.admin-links a{font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;border:1.5px solid;transition:all .15s;text-decoration:none}
+.admin-links a:hover{filter:brightness(1.2);transform:scale(1.05)}
+.admin-links a.tag-cockpit{background:rgba(41,121,255,.12);color:#2979FF;border-color:rgba(41,121,255,.5)}
+.admin-links a.tag-form{background:rgba(255,184,0,.1);color:#D4940A;border-color:rgba(255,184,0,.5)}
+.admin-links a.tag-pass{background:rgba(0,180,80,.1);color:#059652;border-color:rgba(0,180,80,.4)}
+/* mode nuit : tags plus lumineux */
+body:not(.light) .admin-links a.tag-form{color:#FFB800;border-color:rgba(255,184,0,.5)}
+body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,100,.4)}
+
+.admin-loading{color:var(--muted);font-size:13px;padding:20px;text-align:center;font-family:Exo 2,sans-serif}
+
+</style>
+</head>
+<body>
+
+<!-- ============ APPRENTI / CLIENT : SHELL AVEC ONGLETS ============ -->
+<div id="shellNav" class="shell-tabs" style="display:none">
+  <div class="shell-tab" data-view="cockpit" data-i18n="tab_cockpit">Cockpit</div>
+  <div class="shell-tab" data-view="form" data-i18n="tab_form">Formulaire</div>
+  <div class="shell-tab" data-view="passeport" data-i18n="tab_passeport">Passeport</div>
+  <a id="backToAdmin" href="?admin=FC2026ADMIN" style="display:none;flex:0 0 auto;text-align:center;padding:10px 14px;border-radius:10px;font-weight:800;font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--red);text-decoration:none;cursor:pointer;white-space:nowrap">&#8592; Admin</a>
+</div>
+
+<div id="shellFrameWrap" class="shell-frame-wrap" style="display:none">
+  <iframe id="shellFrame" class="shell-frame"></iframe>
+</div>
+
+<!-- ============ ADMIN DASHBOARD ============ -->
+<div id="adminWrap" class="admin-wrap" style="display:none">
+  <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
+  <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
+
+  <!-- NAVIGATION GLOBALE -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+    <a href="admin_add_apprenant.html" target="_blank" style="flex:1;min-width:140px;padding:12px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">➕ Nouvel apprenant</a>
+    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="flex:1;min-width:140px;padding:12px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">⚔️ Responsable Péd.</a>
+    <button onclick="ouvrirEmargementDuJour()" style="flex:1;min-width:140px;padding:12px;background:rgba(0,212,100,.1);border:1.5px solid rgba(0,212,100,.3);color:#00D464;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📋 Émargement du jour</button>
+    <button onclick="voirTousLesPins()" style="flex:1;min-width:140px;padding:12px;background:rgba(245,166,35,.1);border:1.5px solid rgba(245,166,35,.3);color:#FFD700;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">🔑 Générer PINs</button>
+    <!-- MENU ADMIN ⚙️ -->
+    <div style="position:relative;flex:1;min-width:140px">
+      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="width:100%;padding:12px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">⚙️ Admin ▾</button>
+      <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:180px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
+        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes Sheet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANDEAU CA / MRR -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-family:Exo 2,sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">CA Jour</div>
+      <div id="caJour" style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#00D464">—</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-family:Exo 2,sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">MRR</div>
+      <div id="caMRR" style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#2979FF">—</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-family:Exo 2,sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">CA Total</div>
+      <div id="caTotal" style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#F5A623">—</div>
+    </div>
+  </div>
+  <!-- ONGLETS ADMIN -->
+  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin:16px 0 0">
+    <button onclick="switchAdminTab('apprenants')" id="tabBtnApprenants" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid #2979FF;color:#2979FF;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Apprenants</button>
+    <button onclick="switchAdminTab('talents')" id="tabBtnTalents" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Talents <span id="talentsBadge" style="display:none;background:#E8192C;color:#fff;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:4px">0</span></button>
+    <button onclick="switchAdminTab('emargement')" id="tabBtnEmargement" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Emargement</button>
+  </div>
+
+  <!-- SECTION APPRENANTS -->
+  <div id="sectionApprenants" style="padding-top:16px">
+  <div style="position:relative;margin-bottom:14px">
+    <input id="searchApprenant" oninput="filtrerListeApprenants(this.value)" placeholder="Rechercher un apprenant..." style="width:100%;padding:12px 14px 12px 38px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+    <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px">&#x1F50D;</span>
+  </div>
+  <div id="adminListWrap"></div>
+  </div>
+
+  <!-- FICHE DÉTAIL APPRENANT — panneau plein écran -->
+  <div id="ficheApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
+    <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
+      <button onclick="fermerFicheApprenant()" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+      <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">Fiche apprenant</div>
+    </div>
+    <div id="ficheApprenantContent" style="padding:16px;padding-bottom:60px"></div>
+  </div>
+
+  <!-- SECTION TALENTS -->
+  <div id="sectionTalents" style="display:none;padding-top:16px">
+    <div id="talentsFiltres" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+    <div id="talentsCount" style="font-family:Exo 2,sans-serif;font-size:11px;color:var(--muted);margin-bottom:12px"></div>
+    <div id="parrainagesList">
+      <div class="admin-loading">Chargement...</div>
+    </div>
+  </div>
+
+  <!-- SECTION EMARGEMENT -->
+  <div id="sectionEmargement" style="display:none;padding-top:16px;margin-bottom:40px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:#2979FF">Feuille d'émargement</div>
+      <select id="emarSelectAp" onchange="loadEmargement(this.value)" style="background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;font-family:Exo 2,sans-serif;font-weight:700;outline:none">
+        <option value="">Choisir un apprenant</option>
+      </select>
+    </div>
+    <div id="emarTable" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;padding:12px">
+      <div class="admin-loading">Sélectionnez un apprenant</div>
+    </div>
+  </div>
+</div>
+
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="bottom:20px;right:20px">&#127769;</button>
+<select id="langSelect" onchange="setLang(this.value)" style="position:fixed;bottom:30px;right:90px;z-index:9999;background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:6px 8px;font-size:14px;font-weight:700;cursor:pointer;outline:none">
+  <option value="fr">🇫🇷 FR</option>
+  <option value="en">🇬🇧 EN</option>
+  <option value="de">🇩🇪 DE</option>
+  <option value="es">🇪🇸 ES</option>
+</select>
+
+<script>
+var APPS_URL='https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
+
+// ================= I18N =================
+var I18N = {};
+var CURRENT_LANG = 'fr';
+try { CURRENT_LANG = localStorage.getItem('fc_lang') || 'fr'; } catch(e){}
+
+function applyI18n(){
+  var dict = I18N[CURRENT_LANG] || I18N.fr || {};
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if(dict[key]) el.textContent = dict[key];
+  });
+  // Met a jour les libelles de niveau utilises ailleurs (ex: dashboard admin)
+  if(dict.niveaux){
+    for(var i=0;i<NIVEAUX.length && i<dict.niveaux.length;i++){
+      NIVEAUX[i].label = dict.niveaux[i];
+    }
+  }
+}
+
+function setLang(lang){
+  CURRENT_LANG = lang;
+  try{ localStorage.setItem('fc_lang', lang); }catch(e){}
+  applyI18n();
+  // Reconstruit le tableau admin si visible avec les nouveaux libelles
+  if(document.getElementById('adminWrap').style.display !== 'none'){
+    loadAdminDashboard();
+  }
+  // Transmet la langue a l'iframe via l'URL (parametre lang)
+  var frame = document.getElementById('shellFrame');
+  if(frame && frame.src){
+    var u = new URL(frame.src, window.location.href);
+    u.searchParams.set('lang', lang);
+    frame.src = u.pathname + '?' + u.searchParams.toString();
+  }
+}
+
+function loadI18n(){
+  fetch('lang.json')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      I18N = data;
+      document.getElementById('langSelect').value = CURRENT_LANG;
+      applyI18n();
+    })
+    .catch(function(){});
+}
+
+
+var p = new URLSearchParams(window.location.search);
+var ADMIN_KEY = 'FC2026ADMIN';
+
+var NIVEAUX = [
+  {min:0,     max:999,   num:'0',label:'Debutant'},
+  {min:1000,  max:9999,  num:'1',label:'Explorateur'},
+  {min:10000, max:24999, num:'2',label:'Communicant'},
+  {min:25000, max:49999, num:'3',label:'Ambassadeur'},
+  {min:50000, max:99999, num:'4',label:'Expert Terrain'},
+  {min:100000,max:999999,num:'5',label:"Elite Form'Com"}
+];
+function getNiveau(pts){
+  for(var i=NIVEAUX.length-1;i>=0;i--) if(pts>=NIVEAUX[i].min) return NIVEAUX[i];
+  return NIVEAUX[0];
+}
+
+// Liste des apprenants connus (utilisee par le dashboard admin)
+var APPRENANTS = []; // Chargé dynamiquement depuis le Sheet
+
+function chargerListeApprenants(callback){
+  var FALLBACK = [
+    {id:'ID-0001',prenom:'Khaled',nom:'Nassiri'},
+    {id:'ID-0002',prenom:'Mohamed',nom:'Nassiri'},
+    {id:'ID-0003',prenom:'Mohammed',nom:'Nassiri'},
+    {id:'ID-0004',prenom:'Camille',nom:'Nassiri'},
+    {id:'ID-0005',prenom:'Hamza',nom:'Ourarhi'},
+    {id:'ID-0006',prenom:'Safiya',nom:'Nassiri'},
+    {id:'ID-0007',prenom:'Samira',nom:'Nassiri'},
+    {id:'ID-0008',prenom:'Rachid',nom:'Nassiri'},
+    {id:'ID-0009',prenom:'Laila',nom:'Nassiri'},
+    {id:'ID-0010',prenom:'Anas',nom:'Baybah'},
+    {id:'ID-0011',prenom:'Hicham',nom:'Nassiri'},
+    {id:'ID-0012',prenom:'Naim',nom:'Nassiri'},
+    {id:'ID-0013',prenom:'Hilel',nom:'Nassiri'},
+    {id:'ID-0014',prenom:'Bouyousfi',nom:'Baqtatouche'},
+    {id:'ID-0015',prenom:'Hafed',nom:'El Messaoudi'},
+    {id:'ID-0016',prenom:'Iyad',nom:'Nassiri'},
+    {id:'ID-0017',prenom:'Soumaya',nom:'Nassiri'},
+    {id:'ID-0018',prenom:'Amana',nom:'Nassiri'},
+    {id:'ID-0019',prenom:'Aliyah',nom:'Nassiri'},
+    {id:'ID-0020',prenom:'Nabila',nom:'Boudchiche'}
+  ];
+
+  fetch(APPS_URL+'?action=listApprenants&_t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var liste = d.apprenants || d.rows || [];
+      if(liste.length > 0){
+        // Filtrer les entrées valides (ID non vide)
+        var valides = liste.filter(function(a){ return a.id && String(a.id).trim(); });
+        APPRENANTS = valides.length > 0 ? valides : FALLBACK;
+      } else {
+        APPRENANTS = FALLBACK;
+      }
+      if(typeof callback === 'function') callback();
+    })
+    .catch(function(){
+      APPRENANTS = FALLBACK;
+      if(typeof callback === 'function') callback();
+    });
+}
+
+
+// ================= ROUTAGE =================
+function buildUrl(view, extra){
+  var qp = new URLSearchParams(window.location.search);
+  if(view) qp.set('view', view); else qp.delete('view');
+  if(extra){ for(var k in extra) qp.set(k, extra[k]); }
+  return '?' + qp.toString();
+}
+
+function targetSrc(view){
+  // Reconstruit la query string SANS le parametre "view" pour les pages enfants,
+  // puis ajoute leurs propres parametres attendus
+  var qp = new URLSearchParams(window.location.search);
+  qp.delete('view');
+  qp.delete('admin');
+  var qs = qp.toString();
+  if(view === 'cockpit')   return 'journee.html'   + (qs ? '?' + qs + '&admin=FC2026ADMIN' : '?admin=FC2026ADMIN');
+  if(view === 'passeport') return 'profil.html'    + (qs ? '?' + qs : '');
+  return 'formcom-v2.html' + (qs ? '?' + qs : ''); // form (defaut, compat QR existants)
+}
+
+function setActiveTab(view){
+  document.querySelectorAll('.shell-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.view === view);
+  });
+}
+
+function showView(view, push){
+  var frame = document.getElementById('shellFrame');
+  frame.src = targetSrc(view);
+  setActiveTab(view);
+  if(push){
+    var url = buildUrl(view === 'form' ? null : view);
+    history.replaceState(null, '', url);
+  }
+}
+
+function initShell(){
+  var adminParam = p.get('admin');
+  var view = p.get('view');
+  var id = p.get('id');
+
+  // Dashboard Admin : uniquement si aucune "view" n'est demandee (sinon on va vers la vue ciblee)
+  if(adminParam === ADMIN_KEY && !view){
+    document.getElementById('adminWrap').style.display = 'block';
+    chargerListeApprenants(function(){
+      loadAdminDashboard();
+      initAdminExtras();
+    });
+    setInterval(loadAdminDashboard, 25000);
+    return;
+  }
+
+  // Pas de "view" + id present -> comportement historique : formulaire seul (QR codes deja imprimes)
+  if(!view && id){
+    var wrap = document.getElementById('shellFrameWrap');
+    wrap.style.display = 'block';
+    document.getElementById('shellFrame').src = targetSrc('form');
+    return;
+  }
+
+  // Sinon : shell avec onglets (Cockpit / Formulaire / Passeport)
+  document.getElementById('shellNav').style.display = 'flex';
+  document.getElementById('shellFrameWrap').style.display = 'block';
+
+  // Si on vient du dashboard admin (lien ?admin=...&view=...&id=...), afficher le retour
+  if(adminParam === ADMIN_KEY){
+    document.getElementById('backToAdmin').style.display = 'block';
+  }
+
+  document.querySelectorAll('.shell-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      showView(this.dataset.view, true);
+    });
+  });
+
+  showView(view || 'cockpit', false);
+}
+
+// Couleur et emoji par niveau
+function getNivColor(num){
+  var map={'0':'rgba(255,255,255,.25)','1':'#2979FF','2':'#00FF87','3':'#FFB800','4':'#FF6B00','5':'#FFD700'};
+  return map[String(num)] || '#2979FF';
+}
+function getNivEmoji(num){
+  var map={'0':'⬜','1':'🚀','2':'⚡','3':'🎯','4':'🔥','5':'👑'};
+  return map[String(num)] || '⚡';
+}
+function getNivPct(pts, num){
+  var ranges=[{min:0,max:1000},{min:1000,max:10000},{min:10000,max:25000},{min:25000,max:50000},{min:50000,max:100000},{min:100000,max:200000}];
+  var r=ranges[Math.min(num,5)];
+  return Math.min(100,Math.round((pts-r.min)/(r.max-r.min)*100));
+}
+
+// ================= DASHBOARD ADMIN =================
+function renderTableImmediat(){
+  var wrap = document.getElementById('adminListWrap');
+  if(!wrap) return;
+  var html = '';
+  APPRENANTS.forEach(function(a){
+    var isFond = (a.id==='ID-0001'||a.id==='ID-0002');
+    var letter = a.prenom.charAt(0).toUpperCase();
+    html += '<div class="adm-list-card" data-search="'+(a.prenom+' '+a.nom+' '+a.id).toLowerCase()+'" onclick="ouvrirFicheApprenant(\''+a.id+'\')" id="row_'+a.id+'" style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;cursor:pointer">'
+      +'<div class="rpg-av" id="av_'+a.id+'" style="border-color:#8892A4;color:#8892A4;width:42px;height:42px;flex-shrink:0">'+letter+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+(isFond?' &#x1F451;':'')+'</div>'
+        +'<div id="xp_'+a.id+'" style="font-size:12px;color:#8892A4;margin-top:2px">—</div>'
+      +'</div>'
+      +'<div id="statut_'+a.id+'" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(136,146,164,.1);color:#8892A4;white-space:nowrap;flex-shrink:0">—</div>'
+      +'<span style="color:var(--muted);font-size:16px;flex-shrink:0">&#x203A;</span>'
+    +'</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function filtrerListeApprenants(q){
+  q = (q||'').toLowerCase().trim();
+  document.querySelectorAll('.adm-list-card').forEach(function(card){
+    var match = card.getAttribute('data-search').indexOf(q) > -1;
+    card.style.display = match ? 'flex' : 'none';
+  });
+}
+
+function admClick(e){
+  var btn = e.target.closest('.adm-btn');
+  if(!btn) return;
+  var action=btn.dataset.action, id=btn.dataset.id, prenom=btn.dataset.prenom||'';
+  if(action==='stats') showStatsLive(id);
+  else if(action==='pin')  editPin(id, prenom);
+  else if(action==='bloq') toggleBloquer(id);
+  else if(action==='brs')  debloquerBourse(id, prenom);
+  else if(action==='brsreset') resetBourse(id, prenom);
+  else if(action==='projetEnregistrer') enregistrerProjet(id);
+  else if(action==='projetActiver')     toggleProjet(id, true);
+  else if(action==='projetDesactiver')  toggleProjet(id, false);
+  else if(action==='dipl') diplomerApprenant(id, prenom);
+  else if(action==='neut') neutraliserApprenant(id, prenom);
+  else if(action==='react') reactiverApprenant(id, prenom);
+  else if(action==='reset') resetApprenant(id, prenom);
+  else if(action==='supprimer') supprimerApprenantBtn(id, prenom);
+  else if(action==='completer') completerDossier(id, prenom);
+  else if(action==='copierLien') copierLienApprenant(id, prenom);
+}
+
+
+function loadAdminDashboard(){
+  // Charger la liste depuis le Sheet (inclut les nouveaux apprenants)
+  chargerListeApprenants(function(){
+    renderTableImmediat();
+    // Chargement XP + CA en arrière-plan
+  var txPromise = fetch(APPS_URL+'?action=listTransactions&_t='+Date.now())
+    .then(function(r){return r.json();})
+    .catch(function(){return {transactions:[]};});
+
+  var apPromises = APPRENANTS.map(function(a){
+    return fetch(APPS_URL+'?action=getApprenant&id='+a.id+'&_t='+Date.now())
+      .then(function(r){return r.json();})
+      .then(function(data){return {a:a,data:data};})
+      .catch(function(){return {a:a,data:{found:false}};});
+  });
+
+  // Mise à jour carte par carte dès qu'une réponse arrive
+  apPromises.forEach(function(p){
+    p.then(function(res){
+      var a=res.a, data=res.data;
+      if(!data||!data.found) return;
+      var pts = Number(data.pts)||0;
+      var niv = getNiveau(pts);
+      var lc  = getNivColor(niv.num);
+      var pct = getNivPct(pts, Number(niv.num));
+      var emoji = getNivEmoji(niv.num);
+
+      // Mettre à jour avatar couleur
+      var av = document.getElementById('av_'+a.id);
+      if(av){ av.style.borderColor=lc; av.style.color=lc; }
+      // Role
+      // XP
+      var xpEl = document.getElementById('xp_'+a.id);
+      if(xpEl){ xpEl.style.color=lc; xpEl.textContent=pts.toLocaleString('fr-FR')+' XP · '+emoji+' Niv.'+niv.num; }
+      // Statut
+      var statEl = document.getElementById('statut_'+a.id);
+      if(statEl){
+        var st = String(data.statut||'INITIATION');
+        var stColor = st==='ACTIF'?'#00D464':st==='AMBASSADEUR'?'#F5A623':st==='RESPONSABLE'?'#A78BFA':'#60A5FA';
+        statEl.style.background='rgba('+stColor.replace('#','').match(/.{2}/g).map(function(h){return parseInt(h,16);}).join(',')+',.1)';
+        statEl.style.color=stColor;
+        statEl.textContent=st;
+      }
+    });
+  });
+
+  // CA global après toutes les transactions
+  txPromise.then(function(txData){
+    var txList = txData.transactions||[];
+    var today = new Date();
+    var dd=String(today.getDate()).padStart(2,'0');
+    var mm=String(today.getMonth()+1).padStart(2,'0');
+    var todayFmt=dd+'/'+mm;
+    var caJourTotal=0, mrrTotal=0, caTotalCumul=0;
+    var caByAp={};
+    txList.forEach(function(tx){
+      if(tx.statut==='SOLIDAIRE') return;
+      var apId=tx.apprenant_id;
+      if(!caByAp[apId]) caByAp[apId]={jour:0,mrr:0,total:0};
+      var m=Number(tx.montant)||0;
+      var men=Number(tx.participation_mensuelle)||0;
+      caByAp[apId].total+=m; caTotalCumul+=m;
+      if(men>0){caByAp[apId].mrr+=men; mrrTotal+=men;}
+      if(tx.date_formulaire&&tx.date_formulaire.indexOf(todayFmt)>-1){caByAp[apId].jour+=m; caJourTotal+=m;}
+    });
+    // Mettre à jour bandeau global
+    var cj=document.getElementById('caJour');   if(cj) cj.textContent=caJourTotal.toLocaleString('fr-FR')+'€';
+    var cm=document.getElementById('caMRR');    if(cm) cm.textContent=mrrTotal.toLocaleString('fr-FR')+'€/mois';
+    var ct=document.getElementById('caTotal');  if(ct) ct.textContent=caTotalCumul.toLocaleString('fr-FR')+'€';
+    // CA par apprenant
+    var _caParApprenant = {};
+    APPRENANTS.forEach(function(a){
+      _caParApprenant[a.id] = caByAp[a.id]||{jour:0,mrr:0,total:0};
+    });
+    window._caParApprenant = _caParApprenant;
+  });
+
+  // Remplir select émargement
+  var sel=document.getElementById('emarSelectAp');
+  if(sel&&sel.options.length===1){
+    APPRENANTS.forEach(function(a){
+      var opt=document.createElement('option');
+      opt.value=a.id; opt.textContent=a.prenom+' '+a.nom;
+      sel.appendChild(opt);
+    });
+  }
+  }); // fin chargerListeApprenants
+}
+
+
+function fermerFicheApprenant(){
+  var panel = document.getElementById('ficheApprenantPanel');
+  if(panel) panel.style.display='none';
+}
+
+function ouvrirFicheApprenant(id){
+  var a = APPRENANTS.find(function(x){return x.id===id;});
+  if(!a) return;
+  var panel = document.getElementById('ficheApprenantPanel');
+  var content = document.getElementById('ficheApprenantContent');
+  if(!panel||!content) return;
+  panel.style.display='block';
+  content.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)">Chargement...</div>';
+
+  Promise.all([
+    fetch(APPS_URL+'?action=getStatsLive&apprenant_id='+encodeURIComponent(id)+'&_t='+Date.now()).then(function(r){return r.json();}).catch(function(){return {};}),
+    fetch(APPS_URL+'?action=getAbonnements&apprenant_id='+encodeURIComponent(id)+'&_t='+Date.now()).then(function(r){return r.json();}).catch(function(){return {};}),
+    fetch(APPS_URL+'?action=getParticipationsVolontaires&apprenant_id='+encodeURIComponent(id)+'&_t='+Date.now()).then(function(r){return r.json();}).catch(function(){return {};})
+  ]).then(function(results){
+    renderFicheApprenant(a, results[0]||{}, results[1]||{}, results[2]||{});
+  });
+}
+
+function renderFicheApprenant(a, stats, abos, solidaire){
+  var content = document.getElementById('ficheApprenantContent');
+  if(!content) return;
+
+  var pts = stats.pts_total||0;
+  var niv = getNiveau(pts);
+  var lc  = getNivColor(niv.num);
+  var letter = a.prenom.charAt(0).toUpperCase();
+  var statut = stats.statut||'INITIATION';
+  var statutAcces = stats.statut_acces||'ACTIF';
+  var bourseOk = stats.bourse_debloquee===true;
+  var pin = stats.pin||'????';
+  var dateInscription = stats.date_inscription||'—';
+  var telephone = stats.telephone||'';
+  var email = stats.email||'';
+  var adresse = stats.adresse||'';
+  var derniereConnexion = (stats.derniere_connexion && stats.derniere_connexion !== '0' && stats.derniere_connexion !== 0) ? stats.derniere_connexion : '—';
+  var streak = stats.streak||0;
+  var tauxConversion = stats.taux_conversion||0;
+  var dossierComplet = telephone && email;
+
+  var baseQ = 'id='+encodeURIComponent(a.id);
+
+  var daily = stats.daily||{};
+  var xpJour = daily.pts_jour||0;
+  var abosTotal = stats.nb_recurents||0;
+  var abosJour = abos.nb_abos_jour||0;
+  var solTotal = stats.nb_solidaires||0;
+  var solJour = solidaire.nb_jour||0;
+  var solMontantTotal = solidaire.montant_total||0;
+  var talentsTotal = stats.nb_talents||0;
+  var talentsJour = daily.talents||0;
+  var parfumsJour = daily.parfums_offerts_jour||0;
+  var cagnotteJour = Number(daily.cumul_solidaire)||0;
+
+  function metricRow(icon, label, totalTxt, jourTxt, jourColor){
+    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px">'
+      +'<span style="font-size:18px;flex-shrink:0">'+icon+'</span>'
+      +'<span style="font-family:Exo 2,sans-serif;font-size:13px;color:var(--text);flex:1">'+label+'</span>'
+      +'<div style="text-align:right">'
+        +'<div style="font-size:10px;color:var(--muted)">Total</div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">'+totalTxt+'</div>'
+      +'</div>'
+      +'<div style="text-align:right;min-width:56px">'
+        +'<div style="font-size:10px;color:var(--muted)">Aujourd\'hui</div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:'+jourColor+'">'+jourTxt+'</div>'
+      +'</div>'
+    +'</div>';
+  }
+
+  function actionBtn(action, id2, label, icon, color, prenom2){
+    return '<button class="adm-btn" data-action="'+action+'" data-id="'+id2+'" data-prenom="'+(prenom2||'')+'" style="width:100%;padding:12px;background:'+color+'15;border:1px solid '+color+'40;color:'+color+';border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left">'+icon+' '+label+'</button>';
+  }
+
+  function linkBtn(href, label, icon, color){
+    return '<a href="'+href+'" target="_blank" style="width:100%;padding:12px;background:'+color+'15;border:1px solid '+color+'40;color:'+color+';border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;text-decoration:none;box-sizing:border-box">'+icon+' '+label+'</a>';
+  }
+
+  content.innerHTML =
+    // ── IDENTITÉ ───────────────────────────────────────
+    '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px">'
+      +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">'
+        +'<div class="rpg-av" style="border-color:'+lc+';color:'+lc+';width:54px;height:54px;font-size:20px">'+letter+'</div>'
+        +'<div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
+          +'<div style="font-size:12px;color:var(--muted)">'+a.id+' · '+niv.label+' · Niv.'+niv.num+'</div>'
+        +'</div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--border);padding-top:12px">'
+        +'<div style="background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px">'
+          +'<div style="font-size:10px;color:var(--muted)">🔑 Code PIN</div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text);letter-spacing:1px">'+pin+'</div>'
+        +'</div>'
+        +'<div style="background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px">'
+          +'<div style="font-size:10px;color:var(--muted)">📅 Inscrit le</div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">'+dateInscription+'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+
+    // ── COORDONNÉES ────────────────────────────────────
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#2979FF;text-transform:uppercase;letter-spacing:1px">📇 Coordonnées '+(dossierComplet?'':'<span style="color:#F5A623">· incomplet</span>')+'</div>'
+    +'</div>'
+    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px">'
+      +'<div style="font-size:12px;color:var(--text);margin-bottom:4px">📞 '+(telephone||'<span style="color:var(--muted)">Non renseigné</span>')+'</div>'
+      +'<div style="font-size:12px;color:var(--text);margin-bottom:4px">✉️ '+(email||'<span style="color:var(--muted)">Non renseigné</span>')+'</div>'
+      +'<div style="font-size:12px;color:var(--text)">📍 '+(adresse||'<span style="color:var(--muted)">Non renseignée</span>')+'</div>'
+    +'</div>'
+    +actionBtn('completer', a.id, 'Compléter le dossier', '✏️', '#2979FF', a.prenom)
+    +(stats.piece_identite_lien
+        ? '<a href="'+stats.piece_identite_lien+'" target="_blank" style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:10px 12px;background:rgba(0,212,100,.08);border:1px solid rgba(0,212,100,.3);border-radius:8px;color:#00D464;font-size:12px;font-family:Exo 2,sans-serif;font-weight:700;text-decoration:none">📄 Voir la pièce d\'identité</a>'
+        : '<div style="margin-top:8px"><input type="file" id="filePieceIdentite_'+a.id+'" accept="image/*,.pdf" style="display:none" onchange="uploadPieceIdentiteBtn(\''+a.id+'\',\''+a.prenom+'\')"><button onclick="document.getElementById(\'filePieceIdentite_'+a.id+'\').click()" style="width:100%;padding:10px 12px;background:rgba(245,166,35,.08);border:1px dashed rgba(245,166,35,.4);border-radius:8px;color:#F5A623;font-size:12px;font-family:Exo 2,sans-serif;font-weight:700;cursor:pointer">📎 Ajouter pièce d\'identité</button></div>')
+    +'<div style="margin-bottom:20px"></div>'
+
+    // ── ACTIVITÉ ───────────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#2979FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">📡 Activité</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'
+      +'<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">'
+        +'<div style="font-size:10px;color:var(--muted)">Dernière connexion</div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-top:2px">'+derniereConnexion+'</div>'
+      +'</div>'
+      +'<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px">'
+        +'<div style="font-size:10px;color:var(--muted)">Jours consécutifs</div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:'+(streak>=3?'#F5A623':'var(--text)')+'">'+streak+(streak>=3?' 🔥':'')+'</div>'
+      +'</div>'
+    +'</div>'
+
+    // ── PRODUCTION ─────────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#2979FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">📊 Production</div>'
+    +metricRow('⚡','XP', pts.toLocaleString('fr-FR'), '+'+xpJour.toLocaleString('fr-FR'), '#00FF87')
+    +metricRow('🔁','Abonnements', abosTotal, '+'+abosJour, '#00FF87')
+    +metricRow('🤝','Solidaires', solTotal+' · '+solMontantTotal.toFixed(2)+'€', '+'+solJour, '#00FF87')
+    +metricRow('🌱','Talents révélés', talentsTotal, '+'+talentsJour, '#00FF87')
+    +metricRow('💜','Parfums offerts', '—', parfumsJour > 0 ? '🎁 '+parfumsJour : '0', parfumsJour > 0 ? '#C084FC' : 'var(--muted)')
+    +metricRow('🔥','Cagnotte solidaire', '— €/jour', cagnotteJour.toFixed(2).replace('.',',')+' € / 10 €', cagnotteJour >= 10 ? '#06D6A0' : '#F5A623')
+    +metricRow('🎯','Taux de conversion', tauxConversion+'%', stats.nb_contacts||0, 'var(--muted)')
+    +'<div style="margin-bottom:12px"></div>'
+
+    // ── ACCÈS RAPIDE ───────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#2979FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🚀 Accès rapide</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+      +linkBtn('journee.html?'+baseQ+'&admin=FC2026ADMIN&founder=FC2026SECRET','Cockpit','🎮','#2979FF')
+      +linkBtn('formcom-v2.html?'+baseQ+'&admin=FC2026ADMIN','Formulaire','📋','#F5A623')
+      +linkBtn('profil.html?id='+a.id+'&admin=FC2026ADMIN','Passeport','🏆','#FFD700')
+      +actionBtn('pin', a.id, 'Modifier PIN', '🔑', '#2979FF', a.prenom)
+    +'</div>'
+    +actionBtn('copierLien', a.id, 'Envoyer les liens à '+a.prenom, '📤', '#00FF87', a.prenom)
+    +'<div style="margin-bottom:12px"></div>'
+
+    // ── BOURSE ─────────────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#2979FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">💎 Bourse de formation</div>'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:10px 12px;background:'+(bourseOk?'rgba(0,255,135,.08)':'rgba(136,146,164,.08)')+';border-radius:10px">'
+      +'<span style="font-size:18px">'+(bourseOk?'💎':'🔒')+'</span>'
+      +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:'+(bourseOk?'#00FF87':'var(--muted)')+'">'+(bourseOk?'Débloquée':'Bloquée')+'</span>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'
+      +actionBtn('brs', a.id, bourseOk?'Rebloquer':'Débloquer', '💎', '#00FF87', a.prenom)
+      +actionBtn('brsreset', a.id, 'Réinitialiser bourse', '🔄', '#A78BFA', a.prenom)
+    +'</div>'
+
+    // ── ACCÈS ET STATUT ────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#2979FF;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">⚙️ Accès et statut</div>'
+    +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:10px 12px;background:rgba(136,146,164,.08);border-radius:10px">'
+      +'<span style="font-family:Exo 2,sans-serif;font-size:12px;color:var(--muted)">Statut :</span>'
+      +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+statut+'</span>'
+      +'<span style="margin-left:auto;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;color:'+(statutAcces==='ACTIF'?'#00D464':'#FF6B6B')+'">'+(statutAcces==='ACTIF'?'✅ Accès actif':'🔒 Bloqué')+'</span>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">'
+      +actionBtn('bloq', a.id, 'Bloquer accès', '🔒', '#FF6B6B', a.prenom)
+      +actionBtn('react', a.id, 'Réactiver', '🔓', '#60A5FA', a.prenom)
+      +actionBtn('dipl', a.id, 'Diplômer', '🎓', '#00D464', a.prenom)
+      +actionBtn('neut', a.id, 'Neutraliser', '🚫', '#FF6B6B', a.prenom)
+    +'</div>'
+
+    // ── QUÊTE DE FINANCEMENT ──────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#F5A623;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🎯 Quête de financement</div>'
+    +'<div style="background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:14px;margin-bottom:12px">'
+    +'<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:10px">Définir le projet de financement de '+a.prenom+'</div>'
+    +'<select id="projetType_'+a.id+'" style="width:100%;padding:10px;background:#0E1730;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-family:Exo 2,sans-serif;font-size:13px;margin-bottom:8px">'
+    +'<option value="">-- Aucun projet défini --</option>'
+    +'<option value="formation" '+(stats.projet_type==='formation'?'selected':'')+'>🎓 Financement formation</option>'
+    +'<option value="permis" '+(stats.projet_type==='permis'?'selected':'')+'>🚗 Permis de conduire</option>'
+    +'<option value="pro" '+(stats.projet_type==='pro'?'selected':'')+'>💼 Projet professionnel</option>'
+    +'</select>'
+    +'<input id="projetLabel_'+a.id+'" type="text" placeholder="Intitulé du projet professionnel (si applicable)" value="'+(stats.projet_label||'')+'" style="width:100%;padding:10px;background:#0E1730;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-family:Exo 2,sans-serif;font-size:13px;margin-bottom:8px">'
+    +'<input id="projetMontant_'+a.id+'" type="number" placeholder="Montant objectif (€)" value="'+(stats.projet_montant||'')+'" style="width:100%;padding:10px;background:#0E1730;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#fff;font-family:Exo 2,sans-serif;font-size:13px;margin-bottom:10px">'
+    +'<button class="adm-btn" data-action="projetEnregistrer" data-id="'+a.id+'" style="width:100%;padding:12px;background:linear-gradient(135deg,#78350F,#F59E0B);color:#fff;border:none;border-radius:8px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:8px">&#128190; Enregistrer le projet</button>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+    +'<button class="adm-btn" data-action="projetActiver" data-id="'+a.id+'" style="padding:10px;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:#00C853;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer">✅ Activer</button>'
+    +'<button class="adm-btn" data-action="projetDesactiver" data-id="'+a.id+'" style="padding:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer">🔒 Désactiver</button>'
+    +'</div>'
+    +'</div>'
+
+    // ── ZONE SENSIBLE ──────────────────────────────────
+    +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:800;color:#E8192C;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">⚠️ Zone sensible</div>'
+    +'<button class="adm-btn" data-action="reset" data-id="'+a.id+'" data-prenom="'+a.prenom+'" style="width:100%;padding:14px;background:rgba(232,25,44,.12);border:1.5px solid rgba(232,25,44,.4);color:#E8192C;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px">🔄 Réinitialiser totalement</button>'
+    +'<button class="adm-btn" data-action="supprimer" data-id="'+a.id+'" data-prenom="'+a.prenom+'" style="width:100%;padding:14px;background:#E8192C;border:1.5px solid #E8192C;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">🗑️ Supprimer définitivement la fiche</button>';
+
+  content.removeEventListener('click', admClick);
+  content.addEventListener('click', admClick);
+}
+
+function toggleProjet(id, activer){
+  var msg = activer
+    ? 'Activer la quete de financement ?\n\nLa barre de progression sera visible dans le cockpit.'
+    : 'Desactiver la quete de financement ?\n\nL\'encart verrouille s\'affichera a la place.';
+  if(!confirm(msg)) return;
+  fetch(APPS_URL+'?action=setProjet&id='+encodeURIComponent(id)
+    +'&admin=FC2026ADMIN'
+    +'&projet_actif='+(activer?'OUI':'NON'))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok') alert(activer ? '✅ Quête activée ! Le cockpit affichera la barre de progression.' : '🔒 Quête désactivée.');
+      else alert('Erreur : '+(d.message||'inconnue'));
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+function enregistrerProjet(id){
+  var type    = (document.getElementById('projetType_'+id)||{}).value || '';
+  var label   = (document.getElementById('projetLabel_'+id)||{}).value || '';
+  var montant = (document.getElementById('projetMontant_'+id)||{}).value || '0';
+  if(!type){ alert('Sélectionnez un type de projet.'); return; }
+  if(!montant || Number(montant) <= 0){ alert('Saisissez un montant valide.'); return; }
+  fetch(APPS_URL+'?action=setProjet&id='+encodeURIComponent(id)
+    +'&admin=FC2026ADMIN'
+    +'&projet_type='+encodeURIComponent(type)
+    +'&projet_label='+encodeURIComponent(label)
+    +'&projet_montant='+encodeURIComponent(montant))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok') alert('✅ Projet enregistré pour cet apprenant !');
+      else alert('Erreur : '+(d.message||'inconnue'));
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+function repairerEntetes(){
+  if(!confirm('🔧 Réparer les en-têtes du Google Sheet ?\n\nCela va corriger les colonnes sans nom dans tous les onglets.\nLes données existantes ne seront pas modifiées.')) return;
+  fetch(APPS_URL+'?action=repairerEntetes')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){
+        alert('✅ En-têtes réparés !\n\n'+d.fixed.join('\n'));
+      } else {
+        alert('Erreur: '+(d.message||'inconnue'));
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+// ── ACTIONS ADMIN — Fonctions des boutons par apprenant ──────────────
+
+function rafraichirApresAction(id){
+  loadAdminDashboard();
+  var panel = document.getElementById('ficheApprenantPanel');
+  if(panel && panel.style.display==='block') ouvrirFicheApprenant(id);
+}
+
+function editPin(id, prenom){
+  var newPin = prompt('Nouveau PIN pour '+prenom+' (4 chiffres) :');
+  if(!newPin) return;
+  if(!/^\d{4}$/.test(newPin)){ alert('Le PIN doit être exactement 4 chiffres.'); return; }
+  fetch(APPS_URL+'?action=updatePin&apprenant_id='+encodeURIComponent(id)+'&pin='+encodeURIComponent(newPin)+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){ alert('✅ PIN de '+prenom+' changé : '+newPin); })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function toggleBloquer(id){
+  var bloq = confirm('Bloquer cet apprenant ?\n\nOK = Bloquer\nAnnuler = Débloquer');
+  var statut = bloq ? 'BLOQUÉ' : 'ACTIF';
+  fetch(APPS_URL+'?action=setAccesApprenant&apprenant_id='+encodeURIComponent(id)+'&statut='+statut+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(){ rafraichirApresAction(id); alert(bloq?'🔒 Apprenant bloqué':'🔓 Apprenant débloqué'); })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function debloquerBourse(id, prenom){
+  if(!confirm('🔄 Débloquer / Rebloquer la bourse de formation de '+prenom+' ?\n\n(Bascule l\'état actuel)')) return;
+  fetch(APPS_URL+'?action=debloquerBourse&apprenant_id='+encodeURIComponent(id)+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.debloquee){ alert('💎 Bourse de '+prenom+' débloquée !'); }
+      else { alert('🔒 Bourse de '+prenom+' rebloquée.'); }
+      rafraichirApresAction(id);
+    })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function resetBourse(id, prenom){
+  if(!confirm('⚠️ Réinitialiser la bourse de '+prenom+' ?\n\nLa bourse versée repasse à 0€.\nXP, badges et talents restent intacts.\n\nConfirmer ?')) return;
+  fetch(APPS_URL+'?action=resetBourse&apprenant_id='+encodeURIComponent(id)+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){ alert('🔄 Bourse de '+prenom+' réinitialisée.'); rafraichirApresAction(id); }
+      else { alert('Erreur: '+(d.message||'inconnue')); }
+    })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function diplomerApprenant(id, prenom){
+  if(!confirm('🎓 Diplômer '+prenom+' ?\n\nSon passeport sera figé définitivement.\nConfirmer ?')) return;
+  fetch(APPS_URL+'?action=setStatutDepart&apprenant_id='+encodeURIComponent(id)+'&statut=DIPLÔMÉ&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.status==='ok'){alert('🎓 '+prenom+' diplômé(e) — Passeport figé.');rafraichirApresAction(id);}else{alert('Erreur: '+(d.message||''));} })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function neutraliserApprenant(id, prenom){
+  if(!confirm('🚫 Neutraliser '+prenom+' ?\n\nTout accès sera coupé immédiatement.\nConfirmer ?')) return;
+  fetch(APPS_URL+'?action=setStatutDepart&apprenant_id='+encodeURIComponent(id)+'&statut=NEUTRALISÉ&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.status==='ok'){alert('🚫 '+prenom+' neutralisé(e).');rafraichirApresAction(id);}else{alert('Erreur: '+(d.message||''));} })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function reactiverApprenant(id, prenom){
+  if(!confirm('🔓 Réactiver '+prenom+' ?\n\nSes accès seront rétablis.')) return;
+  fetch(APPS_URL+'?action=setStatutDepart&apprenant_id='+encodeURIComponent(id)+'&statut=ACTIF&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.status==='ok'){alert('🔓 '+prenom+' réactivé(e).');rafraichirApresAction(id);}else{alert('Erreur: '+(d.message||''));} })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function resetApprenant(id, prenom){
+  if(!confirm('⚠️ RÉINITIALISER '+prenom+' (ID: '+id+') ?\n\nCeci va EFFACER DÉFINITIVEMENT :\n- Total XP\n- Stats du jour (articles, fidel, solidaires, talents)\n- Historique évaluations\n- Talents révélés\n- Contacts/Refus/Solidaires cumulés\n\nCette action est IRRÉVERSIBLE.')) return;
+  if(!confirm('Dernière confirmation : effacer TOUTES les données de '+prenom+' ?')) return;
+  fetch(APPS_URL+'?action=resetApprenant&id='+encodeURIComponent(id)+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){
+        alert('🔄 '+prenom+' a été réinitialisé(e) avec succès.\n\nLignes supprimées :\n- Stats jour : '+(d.stats_journalieres_lignes_supprimees||0)+'\n- Évaluations : '+(d.evaluations_lignes_supprimees||0)+'\n- Talents : '+(d.parrainages_lignes_supprimees||0));
+        rafraichirApresAction(id);
+      } else {
+        alert('Erreur: '+(d.message||'inconnue'));
+      }
+    })
+    .catch(function(){ alert('Erreur réseau lors de la réinitialisation'); });
+}
+
+function uploadPieceIdentiteBtn(id, prenom){
+  var input = document.getElementById('filePieceIdentite_'+id);
+  if(!input || !input.files || !input.files[0]) return;
+  var file = input.files[0];
+  if(file.size > 8*1024*1024){ alert('Fichier trop volumineux (max 8 Mo).'); return; }
+
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var base64 = e.target.result.split(',')[1];
+    fetch(APPS_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        action:'uploadPieceIdentite',
+        apprenant_id: id,
+        admin: 'FC2026ADMIN',
+        fichier_base64: base64,
+        nom_fichier: file.name,
+        mime_type: file.type || 'application/octet-stream'
+      })
+    })
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){
+        alert('✅ Pièce d\'identité de '+prenom+' enregistrée.');
+        rafraichirApresAction(id);
+      } else {
+        alert('Erreur: '+(d.message||'inconnue'));
+      }
+    })
+    .catch(function(){ alert('Erreur réseau lors de l\'upload'); });
+  };
+  reader.readAsDataURL(file);
+}
+
+var _envoi_id = '', _envoi_prenom = '';
+
+function copierLienApprenant(id, prenom){
+  _envoi_id     = id;
+  _envoi_prenom = prenom;
+  document.getElementById('modalEnvoiPrenom').textContent = 'Pour ' + prenom;
+  document.getElementById('selectMotivation').value = '';
+  document.getElementById('customMotivation').style.display = 'none';
+  document.getElementById('customMotivation').value = '';
+  ['chkCockpit','chkFormulaire','chkPasseport','chkBienvenue'].forEach(function(el){
+    document.getElementById(el).checked = true;
+  });
+  document.getElementById('modalEnvoiLiens').style.display = 'flex';
+}
+
+function fermerModalEnvoi(){
+  document.getElementById('modalEnvoiLiens').style.display = 'none';
+}
+
+function onMotivationChange(){
+  var val = document.getElementById('selectMotivation').value;
+  document.getElementById('customMotivation').style.display = val === 'custom' ? 'block' : 'none';
+}
+
+var MOTIVATIONS = {
+  mindset1:  "Ta zone de confort est ton pire ennemi aujourd'hui. Brise-la contact par contact.",
+  mindset2:  "Les meilleurs apprenants Form'Com ont tous eu des journ\u00e9es difficiles. La diff\u00e9rence c'est qu'ils ont continu\u00e9.",
+  mindset3:  "Chaque \u00e9valuateur que tu rencontres \u00e9crit une ligne de ton histoire. Fais-la belle.",
+  objectif1: "La zone verte n'attend que toi. 20 articles. Focus. Ex\u00e9cution. R\u00e9sultat.",
+  objectif2: "Aujourd'hui tu ne vends pas \u2014 tu cr\u00e9es des connexions humaines. La vente c'est juste la cons\u00e9quence.",
+  objectif3: "Le terrain appartient \u00e0 ceux qui y sont. Tu y es. Les autres sont chez eux. Avantage \u00e0 toi."
+};
+
+function envoyerLiens(){
+  var base   = window.location.origin;
+  var id     = _envoi_id;
+  var prenom = _envoi_prenom;
+  var parties = [];
+
+  if(document.getElementById('chkBienvenue').checked)
+    parties.push('Bienvenue dans Form\u2019Com Level Up, ' + prenom + ' !\nVoici tes liens personnels :');
+  if(document.getElementById('chkCockpit').checked)
+    parties.push('\uD83C\uDFAE Ton cockpit :\n' + base + '/journee.html?id=' + encodeURIComponent(id));
+  if(document.getElementById('chkFormulaire').checked)
+    parties.push('\uD83D\uDCCB Lien \u00e9valuateur (pour tes clients) :\n' + base + '/formcom-v2.html?id=' + encodeURIComponent(id));
+  if(document.getElementById('chkPasseport').checked)
+    parties.push('\uD83C\uDFC6 Ton passeport comp\u00e9tences :\n' + base + '/profil.html?id=' + encodeURIComponent(id));
+
+  var sel   = document.getElementById('selectMotivation').value;
+  var motiv = sel === 'custom'
+    ? document.getElementById('customMotivation').value.trim()
+    : (MOTIVATIONS[sel] || '');
+  if(motiv) parties.push('\uD83D\uDD25 ' + motiv);
+
+  if(parties.length === 0){ alert('S\u00e9lectionne au moins un \u00e9l\u00e9ment.'); return; }
+  parties.push('Form\u2019Com Level Up \uD83D\uDE80');
+  var msg = parties.join('\n\n');
+
+  fermerModalEnvoi();
+
+  if(navigator.share){
+    navigator.share({title:'Liens Form\u2019Com', text:msg}).catch(function(){ _ouvrirWA(msg); });
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      if(confirm('Message copi\u00e9 !\nOuvrir WhatsApp pour envoyer \u00e0 ' + prenom + ' ?')){
+        _ouvrirWA(msg);
+      }
+    }).catch(function(){ _ouvrirWA(msg); });
+  }
+}
+
+function _ouvrirWA(msg){
+  var a = document.createElement('a');
+  a.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+
+function completerDossier(id, prenom){
+  var tel     = prompt('📞 Téléphone de '+prenom+' :', '') || '';
+  var email   = prompt('✉️ Email de '+prenom+' :', '') || '';
+  var adresse = prompt('📍 Adresse de '+prenom+' :', '') || '';
+  if(!tel && !email && !adresse){ return; }
+  fetch(APPS_URL+'?action=mettreAJourCoordonnees&apprenant_id='+encodeURIComponent(id)
+    +'&telephone='+encodeURIComponent(tel)
+    +'&email='+encodeURIComponent(email)
+    +'&adresse='+encodeURIComponent(adresse)
+    +'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){
+        alert('✅ Coordonnées de '+prenom+' mises à jour.');
+        rafraichirApresAction(id);
+      } else {
+        alert('Erreur: '+(d.message||'inconnue'));
+      }
+    })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function supprimerApprenantBtn(id, prenom){
+  if(!confirm('🗑️ SUPPRIMER DÉFINITIVEMENT '+prenom+' (ID: '+id+') ?\n\nCeci va EFFACER COMPLÈTEMENT sa fiche :\n- La ligne apprenant elle-même\n- Tout son historique (XP, ventes, évaluations, talents, émargements)\n\nCette action est IRRÉVERSIBLE et ne peut pas être annulée.')) return;
+  if(!confirm('Dernière confirmation : supprimer TOTALEMENT '+prenom+' du système ?')) return;
+  fetch(APPS_URL+'?action=supprimerApprenant&id='+encodeURIComponent(id)+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.status==='ok'){
+        alert('🗑️ '+prenom+' a été supprimé(e) définitivement.');
+        fermerFicheApprenant();
+        loadAdminDashboard();
+      } else {
+        alert('Erreur: '+(d.message||'inconnue'));
+      }
+    })
+    .catch(function(){ alert('Erreur réseau lors de la suppression'); });
+}
+
+function changerStatutAdmin(id){
+  var sel = document.getElementById('statutSel_'+id);
+  if(!sel) return;
+  var statut = sel.value;
+  fetch(APPS_URL+'?action=changerStatut&apprenant_id='+encodeURIComponent(id)+'&statut='+encodeURIComponent(statut)+'&admin=FC2026ADMIN')
+    .then(function(r){return r.json();})
+    .then(function(){ alert('✅ Statut changé : '+statut); loadAdminDashboard(); var m=document.getElementById('statsLiveModal'); if(m)m.remove(); })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+// ── MENU ADMIN ────────────────────────────────────────────────────────
+function toggleAdminMenu(){
+  var m = document.getElementById('adminMenu');
+  if(m) m.style.display = m.style.display==='none' ? 'block' : 'none';
+}
+function closeAdminMenu(){
+  var m = document.getElementById('adminMenu');
+  if(m) m.style.display='none';
+}
+// Fermer si clic ailleurs
+document.addEventListener('click',function(e){
+  var btn=document.getElementById('adminMenuBtn');
+  var menu=document.getElementById('adminMenu');
+  if(menu&&btn&&!btn.contains(e.target)&&!menu.contains(e.target)) menu.style.display='none';
+});
+
+// ── ÉMARGEMENT DU JOUR ────────────────────────────────────────────────
+function ouvrirEmargementDuJour(){
+  var modal = document.createElement('div');
+  modal.id = 'emarModal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;display:flex;align-items:flex-end;justify-content:center';
+  modal.innerHTML='<div style="background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:520px;border-top:3px solid #00D464;max-height:88vh;overflow-y:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+      +'<div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:17px;font-weight:900;color:#00D464">📋 Émargement du jour</div>'
+        +'<div id="emarDate" style="font-size:11px;color:var(--muted);margin-top:2px">Chargement...</div>'
+      +'</div>'
+      +'<button id="closeEmarBtn" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer">✕</button>'
+    +'</div>'
+    +'<div id="emarDayContent" style="text-align:center;color:var(--muted);padding:20px">Chargement...</div>'
+    +'</div>';
+  document.body.appendChild(modal);
+  document.getElementById('closeEmarBtn').onclick=function(){ modal.remove(); };
+
+  // Afficher la date
+  var now=new Date();
+  var jours=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  var mois=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  document.getElementById('emarDate').textContent=jours[now.getDay()]+' '+now.getDate()+' '+mois[now.getMonth()]+' '+now.getFullYear();
+
+  // Charger les émargements
+  fetch(APPS_URL+'?action=getEmargement&_t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById('emarDayContent'); if(!el) return;
+      var today=new Date().toLocaleDateString('fr-FR');
+      var emarList=(d.emargements||[]).filter(function(e){ return e.date===today; });
+      var absent=APPRENANTS.filter(function(a){
+        return !emarList.find(function(e){ return e.apprenant_id===a.id; });
+      });
+
+      var html='';
+      // Présents
+      if(emarList.length){
+        html+='<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#00D464;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">✅ Présents ('+emarList.length+')</div>';
+        emarList.forEach(function(e){
+          html+='<div style="display:flex;align-items:center;gap:10px;padding:8px;background:rgba(0,212,100,.06);border-radius:8px;margin-bottom:4px">'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(0,212,100,.2);border:2px solid #00D464;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-weight:900;color:#00D464;font-size:12px">'+(e.prenom||'?').charAt(0)+'</div>'
+            +'<div><div style="font-weight:700;font-size:13px;color:var(--text)">'+(e.prenom||'')+' '+(e.nom||'')+'</div>'
+            +'<div style="font-size:11px;color:var(--muted)">'+e.heure_arrivee+' · '+e.apprenant_id+'</div></div>'
+          +'</div>';
+        });
+      }
+      // Absents
+      if(absent.length){
+        html+='<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#FF6B6B;text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px">⏳ Pas encore émargé ('+absent.length+')</div>';
+        absent.forEach(function(a){
+          html+='<div style="display:flex;align-items:center;gap:10px;padding:8px;background:rgba(232,25,44,.04);border-radius:8px;margin-bottom:4px">'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(136,146,164,.1);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-weight:900;color:var(--muted);font-size:12px">'+a.prenom.charAt(0)+'</div>'
+            +'<div style="font-weight:600;font-size:13px;color:var(--muted)">'+a.prenom+' '+a.nom+'</div>'
+          +'</div>';
+        });
+      }
+      if(!emarList.length && !absent.length){
+        html='<div style="color:var(--muted);padding:20px;text-align:center">Aucune donnée pour aujourd\'hui.</div>';
+      }
+      el.innerHTML=html;
+    }).catch(function(){
+      var el=document.getElementById('emarDayContent');
+      if(el) el.innerHTML='<div style="color:#FF6B6B">Erreur réseau</div>';
+    });
+}
+
+function loadEmargement(apprenantId){
+  var table = document.getElementById('emarTable');
+  if(!table) return;
+  if(!apprenantId){
+    table.innerHTML = '<div class="admin-loading">Sélectionnez un apprenant</div>';
+    return;
+  }
+  table.innerHTML = '<div class="admin-loading">Chargement...</div>';
+  fetch(APPS_URL+'?action=getEmargement&apprenant_id='+encodeURIComponent(apprenantId)+'&_t='+Date.now())
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var rows = d.emargements || [];
+      if(!rows.length){
+        table.innerHTML = '<div class="admin-loading">Aucun émargement pour cet apprenant.</div>';
+        return;
+      }
+      rows = rows.slice().reverse();
+
+      // Calculer le total d'heures et nb jours présents
+      var totalMinutes = 0, joursPresents = 0;
+      rows.forEach(function(e){
+        if(e.duree){
+          var parts = e.duree.match(/(\d+)h(\d+)/);
+          if(parts){ totalMinutes += parseInt(parts[1])*60 + parseInt(parts[2]); }
+        }
+        if(e.heure) joursPresents++;
+      });
+      var totH = Math.floor(totalMinutes/60), totM = totalMinutes%60;
+      var totalLabel = totH+'h'+(totM<10?'0':'')+totM;
+
+      var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">'
+        +'<div style="background:rgba(41,121,255,.08);border-radius:10px;padding:12px">'
+          +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px">Total heures formation</div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:22px;font-weight:900;color:#2979FF;margin-top:4px">'+totalLabel+'</div>'
+        +'</div>'
+        +'<div style="background:rgba(0,212,100,.08);border-radius:10px;padding:12px">'
+          +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px">Jours présents</div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:22px;font-weight:900;color:#00D464;margin-top:4px">'+joursPresents+'</div>'
+        +'</div>'
+      +'</div>';
+
+      html += rows.map(function(e){
+        var dateParts = (e.date||'').split('/');
+        var jour = dateParts[0]||'-';
+        var moisNum = parseInt(dateParts[1])||0;
+        var moisLabels = ['','Jan','Fév','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+        var moisLabel = moisLabels[moisNum]||'';
+
+        var badgeColor = '#E8192C', badgeBg = 'rgba(232,25,44,.1)', badgeTxt = '—';
+        if(e.duree){
+          var parts = e.duree.match(/(\d+)h(\d+)/);
+          var heures = parts ? parseInt(parts[1]) : 0;
+          if(heures >= 6){ badgeColor='#00D464'; badgeBg='rgba(0,212,100,.1)'; }
+          else if(heures >= 3){ badgeColor='#F5A623'; badgeBg='rgba(245,166,35,.1)'; }
+          else { badgeColor='#FF6B6B'; badgeBg='rgba(232,25,44,.1)'; }
+          badgeTxt = e.duree;
+        }
+
+        return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px">'
+          +'<div style="width:38px;text-align:center;flex-shrink:0">'
+            +'<div style="font-size:10px;color:var(--muted);text-transform:uppercase">'+moisLabel+'</div>'
+            +'<div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:var(--text)">'+jour+'</div>'
+          +'</div>'
+          +'<div style="flex:1;min-width:0;overflow:hidden">'
+            +'<div style="font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#x1F551; '+(e.heure||'-')+' &rarr; '+(e.heure_fermeture||'<span style="color:var(--muted)">non clos</span>')+'</div>'
+            +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+(e.nb_contacts||0)+' contact(s) terrain</div>'
+          +'</div>'
+          +'<span style="background:'+badgeBg+';color:'+badgeColor+';font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;white-space:nowrap;flex-shrink:0">'+badgeTxt+'</span>'
+        +'</div>';
+      }).join('');
+
+      table.innerHTML = html;
+    })
+    .catch(function(){
+      table.innerHTML = '<div style="color:#FF6B6B;text-align:center;padding:12px">Erreur réseau.</div>';
+    });
+}
+
+// ── LISTE DES PASSEPORTS ──────────────────────────────────────────────
+function ouvrirListePasseports(){
+  var modal = document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;display:flex;align-items:flex-end;justify-content:center';
+  var html='<div style="background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;border-top:3px solid #F5A623;max-height:85vh;overflow-y:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+      +'<div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:17px;font-weight:900;color:#F5A623">&#x1F3C6; Passeports de compétences</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">CV dynamique · Évaluations terrain · Radar soft skills</div>'
+      +'</div>'
+      +'<button id="closePassBtn" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer">&#x2715;</button>'
+    +'</div>';
+  APPRENANTS.forEach(function(a){
+    html+='<a href="profil.html?id='+a.id+'&admin=FC2026ADMIN" target="_blank" style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;border:1px solid var(--border);margin-bottom:6px;text-decoration:none;color:var(--text)">'
+      +'<div style="width:36px;height:36px;border-radius:50%;background:rgba(245,166,35,.15);border:2px solid #F5A623;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-weight:900;color:#F5A623">'+a.prenom.charAt(0)+'</div>'
+      +'<div><div style="font-weight:700;font-size:13px">'+a.prenom+' '+a.nom+'</div>'
+      +'<div style="font-size:10px;color:var(--muted)">'+a.id+'</div></div>'
+      +'<div style="margin-left:auto;font-size:11px;color:#F5A623">Ouvrir →</div>'
+    +'</a>';
+  });
+  html+='</div>';
+  modal.innerHTML=html;
+  document.body.appendChild(modal);
+  document.getElementById('closePassBtn').onclick=function(){ modal.remove(); };
+}
+
+// ── STATS LIVE ────────────────────────────────────────────────────────
+function showStatsLive(id){
+  var modal = document.getElementById('statsLiveModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id='statsLiveModal';
+    modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;display:flex;align-items:flex-end;justify-content:center';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML='<div style="background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;border-top:3px solid #F5A623;max-height:85vh;overflow-y:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:17px;font-weight:900;color:var(--text)">&#x1F441; Stats Live</div>'
+      +'<button id="closeStatsBtn" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer">&#x2715;</button>'
+    +'</div>'
+    +'<div id="statsLiveContent" style="color:var(--muted);text-align:center;padding:20px">Chargement...</div>'
+    +'</div>';
+  document.getElementById('closeStatsBtn').onclick=function(){ modal.remove(); };
+  modal.style.display='flex';
+
+  fetch(APPS_URL+'?action=getStatsLive&apprenant_id='+encodeURIComponent(id))
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById('statsLiveContent'); if(!el) return;
+      function row(lbl,val,col){
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)">'
+          +'<span style="font-size:12px;color:var(--muted)">'+lbl+'</span>'
+          +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;color:'+(col||'var(--text)')+'">'+val+'</span>'
+          +'</div>';
+      }
+      el.innerHTML='<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text);margin-bottom:12px">'+d.prenom+' '+d.nom+'<br><span style="font-size:11px;color:var(--muted)">'+d.id+'</span></div>'
+        +row('&#x26A1; XP Total',(d.pts_total||0).toLocaleString('fr-FR')+' XP','#FFD700')
+        +row('&#x1F4CB; Evaluations',d.nb_evals||0,'#2979FF')
+        +row('&#x1F4E6; Ventes totales',d.nb_ventes||0,'#00D464')
+        +row('&#x1F501; Mensuelles',d.nb_recurents||0,'#2979FF')
+        +row('&#x1F3AF; Demos',d.nb_demons||0,'#F5A623')
+        +row('&#x1F465; Contacts',d.nb_contacts||0,'var(--muted)')
+        +row('&#x1F91D; Solidaires',d.nb_solidaires||0,'#F5A623')
+        +'<div style="margin:12px 0;height:1px;background:var(--border)"></div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">&#x1F511; Code PIN</div>'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:32px;font-weight:900;color:#FFD700;letter-spacing:6px;text-align:center;padding:8px 0">'+(d.pin||'—')+'</div>'
+        +'<div style="margin-top:10px">'
+          +'<select id="statutSel_'+d.id+'" style="width:100%;padding:9px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:8px;font-family:Exo 2,sans-serif;margin-bottom:8px">'
+            +'<option value="INITIATION"'+(d.statut==='INITIATION'?' selected':'')+'>INITIATION</option>'
+            +'<option value="ACTIF"'+(d.statut==='ACTIF'?' selected':'')+'>ACTIF</option>'
+            +'<option value="AMBASSADEUR"'+(d.statut==='AMBASSADEUR'?' selected':'')+'>AMBASSADEUR</option>'
+            +'<option value="RESPONSABLE"'+(d.statut==='RESPONSABLE'?' selected':'')+'>RESPONSABLE</option>'
+          +'</select>'
+          +'<button onclick="changerStatutAdmin(\''+d.id+'\')" style="width:100%;padding:10px;background:rgba(41,121,255,.15);border:1px solid rgba(41,121,255,.3);color:#2979FF;border-radius:8px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">Changer le statut</button>'
+        +'</div>';
+    }).catch(function(){
+      var el=document.getElementById('statsLiveContent');
+      if(el) el.innerHTML='<div style="color:#FF6B6B">Erreur réseau</div>';
+    });
+}
+
+// ── GÉNÉRER ET VOIR TOUS LES PINS ────────────────────────────────────
+function voirTousLesPins(){
+  var modal = document.getElementById('pinsModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'pinsModal';
+    modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:flex;align-items:flex-end;justify-content:center';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML='<div style="background:var(--card);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:520px;border-top:3px solid #FFD700;max-height:90vh;overflow-y:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#FFD700">&#x1F511; Codes PIN apprenants</div>'
+      +'<button id="closePinsBtn" style="background:transparent;border:none;color:var(--muted);font-size:22px;cursor:pointer">&#x2715;</button>'
+    +'</div>'
+    +'<div id="pinsContent" style="text-align:center;color:var(--muted);padding:20px">G&#233;n&#233;ration en cours...</div>'
+    +'</div>';
+  modal.style.display='flex';
+  var closeBtn = document.getElementById('closePinsBtn');
+  if(closeBtn) closeBtn.onclick = function(){ modal.remove(); };
+  fetch(APPS_URL+'?action=genererTousLesPins')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var el=document.getElementById('pinsContent'); if(!el) return;
+      if(!d.apprenants||!d.apprenants.length){
+        el.innerHTML='<div style="color:#FF6B6B;font-size:13px">'
+          +(d.message ? '❌ '+d.message : '❌ Fonction non disponible — redéploie le Apps Script')
+          +'</div>';
+        return;
+      }
+      var html='<table style="width:100%;border-collapse:collapse;font-size:13px">'
+        +'<tr style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase">'
+        +'<th style="text-align:left;padding:6px 4px">Apprenant</th>'
+        +'<th style="text-align:center;padding:6px 4px">ID</th>'
+        +'<th style="text-align:center;padding:6px 4px">PIN</th>'
+        +'<th style="text-align:center;padding:6px 4px">Action</th></tr>';
+      d.apprenants.forEach(function(a){
+        html+='<tr style="border-top:1px solid var(--border)">'
+          +'<td style="padding:8px 4px;font-weight:600;color:var(--text)">'+a.prenom+' '+a.nom+'</td>'
+          +'<td style="text-align:center;padding:8px 4px;color:var(--muted);font-size:11px">'+a.id+'</td>'
+          +'<td style="text-align:center;padding:8px 4px">'
+            +'<span style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#FFD700;letter-spacing:3px">'+a.pin+'</span>'
+            +(a.nouveau?'<span style="font-size:9px;color:#00D464;font-weight:700;display:block">NOUVEAU</span>':'')
+          +'</td>'
+          +'<td style="text-align:center;padding:8px 4px">'
+            +'<button class="adm-btn" data-action="pin" data-id="'+a.id+'" data-prenom="'+a.prenom+'" style="background:rgba(41,121,255,.1);color:#2979FF;border:1.5px solid rgba(41,121,255,.3)">Changer</button>'
+          +'</td></tr>';
+      });
+      html+='</table>';
+      el.innerHTML=html;
+      el.addEventListener('click',function(e){
+        var btn=e.target.closest('.adm-btn');
+        if(btn&&btn.dataset.action==='pin') editPin(btn.dataset.id,btn.dataset.prenom);
+      });
+    }).catch(function(){var el=document.getElementById('pinsContent');if(el)el.innerHTML='<div style="color:#FF6B6B">Erreur r&#233;seau</div>';});
+}
+
+var _talentsData = [];
+var _talentsFiltreActif = 'tous';
+
+function switchAdminTab(tab){
+  var tabs = ['apprenants','talents','emargement'];
+  tabs.forEach(function(t){
+    var btn = document.getElementById('tabBtn'+t.charAt(0).toUpperCase()+t.slice(1));
+    var sec = document.getElementById('section'+t.charAt(0).toUpperCase()+t.slice(1));
+    var isActive = (t === tab);
+    if(btn){
+      btn.style.borderBottom = isActive ? '2px solid #2979FF' : '2px solid transparent';
+      btn.style.color = isActive ? '#2979FF' : 'var(--muted)';
+    }
+    if(sec) sec.style.display = isActive ? 'block' : 'none';
+  });
+  if(tab === 'talents') loadParrainages();
+}
+
+function loadParrainages(){
+  var wrap = document.getElementById('parrainagesList');
+  if(!wrap) return;
+  wrap.innerHTML = '<div class="admin-loading">Chargement...</div>';
+  fetch(APPS_URL+'?action=listParrainages&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      _talentsData = (d.parrainages || []).sort(function(a,b){
+        return (b.date||'').localeCompare(a.date||'');
+      });
+      renderTalents(_talentsFiltreActif);
+    })
+    .catch(function(){
+      wrap.innerHTML = '<div style="font-size:12px;color:#E8192C;text-align:center;padding:20px">Erreur de chargement</div>';
+    });
+}
+
+function renderTalents(filtre){
+  _talentsFiltreActif = filtre;
+  var wrap    = document.getElementById('parrainagesList');
+  var countEl = document.getElementById('talentsCount');
+  var filtEl  = document.getElementById('talentsFiltres');
+  var badge   = document.getElementById('talentsBadge');
+  if(!wrap) return;
+
+  var attente  = _talentsData.filter(function(t){ return !t.statut || t.statut === 'EN ATTENTE'; });
+  var contacte = _talentsData.filter(function(t){ return t.statut === 'CONTACTE' || t.statut === 'CONTACT\u00c9'; });
+  var total    = _talentsData.length;
+
+  if(badge){
+    badge.style.display = attente.length > 0 ? 'inline-flex' : 'none';
+    badge.textContent = attente.length;
+  }
+
+  if(filtEl){
+    var filtres = [
+      {k:'tous',    label:'Tous ('+total+')'},
+      {k:'attente', label:'En attente ('+attente.length+')'},
+      {k:'contacte',label:'Contact\u00e9s ('+contacte.length+')'}
+    ];
+    filtEl.innerHTML = filtres.map(function(f){
+      var active = (f.k === _talentsFiltreActif);
+      var border = active ? '1.5px solid #2979FF' : '1px solid var(--border)';
+      var bg     = active ? 'rgba(41,121,255,.15)' : 'var(--card)';
+      var color  = active ? '#2979FF' : 'var(--muted)';
+      return '<button onclick="renderTalents(\''+f.k+'\''+')" style="padding:5px 14px;border-radius:99px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;border:'+border+';background:'+bg+';color:'+color+';cursor:pointer">'+f.label+'</button>';
+    }).join('');
+  }
+
+  var liste = filtre === 'attente'  ? attente
+            : filtre === 'contacte' ? contacte
+            : _talentsData;
+
+  if(countEl) countEl.textContent = liste.length + ' talent' + (liste.length > 1 ? 's' : '');
+
+  if(liste.length === 0){
+    wrap.innerHTML = '<div style="text-align:center;padding:40px 20px;font-family:Exo 2,sans-serif;font-size:13px;color:var(--muted)">Aucun talent dans cette cat\u00e9gorie</div>';
+    return;
+  }
+
+  var colors = ['#2979FF','#00FF87','#F5A623','#E8192C','#A78BFA','#60A5FA'];
+
+  wrap.innerHTML = liste.map(function(t, idx){
+    var initiales = ((t.filleul_prenom||'?').charAt(0) + (t.filleul_nom||'?').charAt(0)).toUpperCase();
+    var couleur   = colors[idx % colors.length];
+    var statut    = t.statut || 'EN ATTENTE';
+    var statutColor = statut.indexOf('CONTACT') > -1 ? '#00FF87'
+                    : statut.indexOf('REFUS')   > -1 ? '#E8192C'
+                    : '#F5A623';
+    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px">'
+      +'<div style="display:flex;align-items:flex-start;gap:12px">'
+        +'<div style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;flex-shrink:0;border:2px solid '+couleur+';background:'+couleur+'22;color:'+couleur+'">'+initiales+'</div>'
+        +'<div style="flex:1;min-width:0">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">'
+            +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:var(--text)">'+t.filleul_prenom+' '+t.filleul_nom+'</div>'
+            +'<div style="display:flex;align-items:center;gap:6px">'
+              +'<span style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:800;color:'+statutColor+';background:'+statutColor+'22;border:1px solid '+statutColor+'55;border-radius:99px;padding:3px 10px;white-space:nowrap">'+statut+'</span>'
+              +(statut.indexOf('CONTACT')===-1 ? '<button onclick="marquerContacteBtn(this)" data-row="'+t.row+'" title="Marquer comme contacté" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(0,255,135,.3);background:rgba(0,255,135,.08);color:#00FF87;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#9989;</button>' : '')
+              +'<button onclick="supprimerTalentBtn(this)" data-row="'+t.row+'" data-nom="'+t.filleul_prenom+' '+t.filleul_nom+'" title="Supprimer" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#128465;</button>'
+            +'</div>'
+          +'</div>'
+          +'<div style="height:1px;background:var(--border);margin:8px 0"></div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:12px;color:var(--muted);margin-bottom:3px">&#128222; '+t.filleul_tel+(t.filleul_email ? ' &nbsp;&middot;&nbsp; &#9993; '+t.filleul_email : '')+'</div>'
+          +(t.note ? '<div style="font-size:11px;color:var(--muted);font-style:italic;background:rgba(255,255,255,.04);border-left:2px solid var(--border);padding:6px 10px;border-radius:0 6px 6px 0;margin-top:6px">&#128172; '+t.note+'</div>' : '')
+          +'<div style="font-family:Exo 2,sans-serif;font-size:10px;color:var(--muted);margin-top:8px">R\u00e9v\u00e9l\u00e9 par <strong style="color:var(--text)">'+t.parrain_prenom+' '+t.parrain_nom+'</strong> &middot; '+t.date+'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function marquerContacteBtn(btn){
+  var row = btn.getAttribute('data-row');
+  fetch(APPS_URL+'?action=marquerContacteParrainage&row='+encodeURIComponent(row), {method:'GET', keepalive:true})
+    .then(function(r){ return r.json(); })
+    .then(function(){ loadParrainages(); })
+    .catch(function(){ loadParrainages(); });
+}
+
+function supprimerTalentBtn(btn){
+  var row = btn.getAttribute('data-row');
+  var nom = btn.getAttribute('data-nom');
+  supprimerTalent(row, nom);
+}
+
+function supprimerTalent(row, nom){
+  if(!confirm('Supprimer "'+nom+'" ?\n\nCette action est irr\u00e9versible.')) return;
+  fetch(APPS_URL+'?action=supprimerParrainage&row='+encodeURIComponent(row)+'&admin=FC2026ADMIN', {method:'GET', keepalive:true})
+    .then(function(r){ return r.json(); })
+    .then(function(){ loadParrainages(); })
+    .catch(function(){ loadParrainages(); });
+}
+
+function initAdminExtras(){
+  var sel = document.getElementById('emarSelectAp');
+  if(sel && typeof APPRENANTS!=='undefined'){
+    APPRENANTS.forEach(function(a){
+      var opt=document.createElement('option');
+      opt.value=a.id; opt.textContent=a.prenom+' '+a.nom+' ('+a.id+')';
+      sel.appendChild(opt);
+    });
+  }
+  fetch(APPS_URL+'?action=listParrainages&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var attente = (d.parrainages||[]).filter(function(t){ return !t.statut||t.statut==='EN ATTENTE'; });
+      var badge = document.getElementById('talentsBadge');
+      if(badge && attente.length > 0){
+        badge.textContent = attente.length;
+        badge.style.display = 'inline-flex';
+      }
+    }).catch(function(){});
+}
+
+function toggleTheme(){
+  var isLight = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').innerHTML = isLight ? '&#9728;&#65039;' : '&#127769;';
+  try{ localStorage.setItem('fc_theme', isLight ? 'light' : 'dark'); }catch(e){}
+  // Recharge le contenu de l'iframe pour qu'il applique le meme theme
+  var frame = document.getElementById('shellFrame');
+  if(frame && frame.src){ frame.contentWindow.location.reload(); }
+}
+(function initTheme(){
+  try{
+    var t = localStorage.getItem('fc_theme');
+    if(t === 'light'){
+      document.body.classList.add('light');
+      document.getElementById('themeBtn').innerHTML = '&#9728;&#65039;';
+    }
+  }catch(e){}
+})();
+
+loadI18n();
+initShell();
+</script>
+
+<!-- MODAL ENVOI LIENS -->
+<div id="modalEnvoiLiens" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:flex-end;justify-content:center">
+  <div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;border-top:3px solid #2979FF;max-height:90vh;overflow-y:auto">
+    <div style="font-family:'Exo 2',sans-serif;font-size:18px;font-weight:900;color:var(--text);margin-bottom:4px">📤 Envoyer les liens</div>
+    <div id="modalEnvoiPrenom" style="font-size:12px;color:var(--muted);margin-bottom:20px"></div>
+
+    <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2979FF;margin-bottom:10px">Choisir ce que tu envoies</div>
+
+    <label style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);border-radius:10px;margin-bottom:8px;cursor:pointer;font-size:13px;color:var(--text)">
+      <input type="checkbox" id="chkCockpit" checked style="width:18px;height:18px;accent-color:#2979FF;flex-shrink:0">
+      🎮 Lien cockpit
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:10px;margin-bottom:8px;cursor:pointer;font-size:13px;color:var(--text)">
+      <input type="checkbox" id="chkFormulaire" checked style="width:18px;height:18px;accent-color:#F5A623;flex-shrink:0">
+      📋 Lien évaluateur
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;margin-bottom:8px;cursor:pointer;font-size:13px;color:var(--text)">
+      <input type="checkbox" id="chkPasseport" checked style="width:18px;height:18px;accent-color:#FFD700;flex-shrink:0">
+      🏆 Lien passeport
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(0,255,135,.06);border:1px solid rgba(0,255,135,.2);border-radius:10px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text)">
+      <input type="checkbox" id="chkBienvenue" checked style="width:18px;height:18px;accent-color:#00FF87;flex-shrink:0">
+      💬 Message de bienvenue
+    </label>
+
+    <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2979FF;margin-bottom:10px">Message de motivation</div>
+    <select id="selectMotivation" onchange="onMotivationChange()" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:10px;-webkit-appearance:none">
+      <option value="">— Aucun message de motivation —</option>
+      <option value="mindset1">⚡ Ta zone de confort est ton pire ennemi aujourd'hui. Brise-la contact par contact.</option>
+      <option value="mindset2">⚡ Les meilleurs apprenants Form'Com ont tous eu des journées difficiles. La différence c'est qu'ils ont continué.</option>
+      <option value="mindset3">⚡ Chaque évaluateur que tu rencontres écrit une ligne de ton histoire. Fais-la belle.</option>
+      <option value="objectif1">🏆 La zone verte n'attend que toi. 20 articles. Focus. Exécution. Résultat.</option>
+      <option value="objectif2">🏆 Aujourd'hui tu ne vends pas — tu crées des connexions humaines. La vente c'est juste la conséquence.</option>
+      <option value="objectif3">🏆 Le terrain appartient à ceux qui y sont. Tu y es. Les autres sont chez eux. Avantage à toi.</option>
+      <option value="custom">✏️ Écrire mon propre message...</option>
+    </select>
+    <textarea id="customMotivation" placeholder="Écris ton message personnalisé ici..." rows="3" style="display:none;width:100%;padding:12px 14px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;resize:none;margin-bottom:10px"></textarea>
+
+    <div style="margin-bottom:16px"></div>
+    <button onclick="envoyerLiens()" style="width:100%;padding:15px;background:linear-gradient(135deg,#1B2B8F,#2979FF);color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px">📤 Envoyer</button>
+    <button onclick="fermerModalEnvoi()" style="width:100%;padding:12px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:12px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Annuler</button>
+  </div>
+</div>
+</body>
+</html>
