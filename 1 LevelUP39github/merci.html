@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Form'Com — Merci !</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Rajdhani:wght@700&family=Lato:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Rajdhani:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet"></noscript>
+<style>
+:root{--bg:#060B18;--card:#0E1730;--border:#1E2D4F;--text:#F0F4FF;--muted:#8892A4;--blue:#2979FF;--navy:#1B2B8F;--gold:#F5A623;--red:#E8192C}
+body.light{--bg:#F5F7FF;--card:#fff;--border:#DDE3F0;--text:#111827;--muted:#6B7280}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 100px;transition:background .3s,color .3s}
+
+.header{padding:16px 20px;text-align:center;background:var(--card);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;justify-content:center}
+.logo-form{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:#2979FF}
+.logo-com{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:#E8192C}
+.logo-prog{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-top:2px;font-family:'Exo 2',sans-serif}
+
+.xp-hero{background:linear-gradient(135deg,#0D1B6E,#1B2B8F);margin:16px;border-radius:16px;padding:24px 20px;text-align:center;border:1px solid rgba(41,121,255,.2)}
+.xp-hero-label{font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px}
+.xp-hero-val{font-family:'Exo 2',sans-serif;font-size:56px;font-weight:900;color:#F5A623;line-height:1;text-shadow:0 0 20px rgba(245,166,35,.4)}
+.xp-hero-sub{font-size:13px;color:rgba(255,255,255,.5);margin-top:6px;font-family:'Lato',sans-serif}
+.prenom-span{color:#00FF87;font-weight:700}
+
+.detail-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:0 16px 12px;overflow:hidden}
+.detail-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue);padding:12px 16px;border-bottom:1px solid var(--border)}
+.detail-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;font-family:'Lato',sans-serif}
+.detail-row:last-child{border-bottom:none}
+.detail-lbl{color:var(--muted)}
+.detail-val{font-family:'Exo 2',sans-serif;font-weight:700;color:var(--gold)}
+
+.impact{background:linear-gradient(135deg,#0A1628,#0D1F4A);margin:0 16px 12px;border-radius:14px;border:1px solid rgba(41,121,255,.15);padding:20px}
+body.light .impact{background:#fff;border-color:rgba(41,121,255,.2)}
+.impact-title{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;color:#fff;margin-bottom:14px}
+body.light .impact-title{color:#111827}
+.impact-txt{font-family:'Lato',sans-serif;font-size:14px;line-height:1.85;color:rgba(255,255,255,.85);font-weight:400}
+body.light .impact-txt{color:#374151}
+.impact-txt strong{color:#A7F3D0;font-weight:700}
+body.light .impact-txt strong{color:#1B2B8F}
+
+/* BOUTON PARTAGE */
+.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 32px);margin:0 16px 12px;padding:14px;background:linear-gradient(135deg,#064E3B,#059652);color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(5,150,82,.25)}
+
+/* BOUTON ✕ FERMER */
+.close-btn{position:fixed;top:16px;left:16px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(14,23,48,.85);border:1px solid var(--border);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;outline:none;backdrop-filter:blur(8px)}
+body.light .close-btn{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.15);color:#6B7280}
+
+/* BOUTON THÈME */
+.theme-btn{position:fixed;top:16px;right:16px;z-index:9999;width:36px;height:36px;border-radius:50%;background:rgba(14,23,48,.85);border:1px solid var(--border);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;outline:none;backdrop-filter:blur(8px)}
+body.light .theme-btn{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.15)}
+</style>
+</head>
+<body>
+
+<!-- BOUTON FERMER -->
+<button class="close-btn" onclick="fermerPage()" title="Retour au cockpit">✕</button>
+
+<!-- BOUTON THÈME -->
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <span class="logo-form">Form'</span><span class="logo-com">Com</span>
+  </div>
+  <div class="logo-prog">Programme Level <span style="color:var(--red)">Up</span></div>
+</div>
+
+<!-- XP ACCORDÉS -->
+<div class="xp-hero">
+  <div class="xp-hero-label">XP accordés à</div>
+  <div class="xp-hero-val" id="totalXp">+0</div>
+  <div class="xp-hero-sub"><span class="prenom-span" id="prenomEl">l'apprenant</span> · Évaluation terrain</div>
+</div>
+
+<!-- DÉTAIL XP -->
+<div class="detail-card" id="detailCard"></div>
+
+<!-- REMERCIEMENT -->
+<div class="impact">
+  <div class="impact-title">⭐ Évaluation enregistrée</div>
+  <div class="impact-txt">
+    Merci pour le temps que vous avez consacré à cette rencontre.<br><br>
+    Votre évaluation a été ajoutée au <strong>Passeport de Compétences</strong> de <strong id="impactPrenom">l'apprenant</strong> et contribuera à mesurer sa progression tout au long de son parcours.<br><br>
+    Chez Form'Com Level Up, chaque retour compte. Il permet aux participants de mieux comprendre leurs points forts, leurs axes d'amélioration et de développer leur estime de soi à travers des expériences réelles.<br><br>
+    <strong>Merci pour votre contribution au Jury Citoyen Level Up.</strong><br><br>
+    <span style="color:rgba(255,255,255,.4);font-size:12px">— L'équipe Form'Com · <a href="mailto:formcom2016@gmail.com" style="color:#A7F3D0;text-decoration:none">formcom2016@gmail.com</a></span>
+  </div>
+</div>
+
+<!-- BOUTON PARTAGE -->
+<button class="share-btn" id="shareBtn" onclick="envoyerResume()">📤 Envoyer ce résumé au client</button>
+
+<script>
+var p      = new URLSearchParams(window.location.search);
+var prenom = p.get('prenom') || "l'apprenant";
+var nom    = p.get('nom')    || '';
+var total  = parseInt(p.get('total')) || 0;
+var apid   = p.get('id') || '';
+var bdRaw  = p.get('bd') || '[]';
+
+// Remplir les éléments
+document.getElementById('totalXp').textContent   = '+' + total.toLocaleString('fr-FR');
+document.getElementById('prenomEl').textContent  = prenom;
+document.getElementById('impactPrenom').textContent = prenom;
+
+// Détail XP
+var bd = [];
+try{ bd = JSON.parse(decodeURIComponent(bdRaw)); }catch(e){}
+var card = document.getElementById('detailCard');
+if(bd.length > 0){
+  card.innerHTML = '<div class="detail-title">Détail des XP accordés</div>'
+    + bd.map(function(r){
+        return '<div class="detail-row"><span class="detail-lbl">'+r.n+'</span><span class="detail-val">+'+r.p.toLocaleString('fr-FR')+'</span></div>';
+      }).join('');
+} else {
+  card.style.display = 'none';
+}
+
+// Bouton fermer → revenir au cockpit
+function fermerPage(){
+  // Tenter de fermer l'onglet
+  window.close();
+  // Fallback : revenir en arrière
+  setTimeout(function(){
+    if(apid){
+      window.location.href = 'journee.html?id=' + encodeURIComponent(apid)
+        + '&prenom=' + encodeURIComponent(prenom)
+        + '&nom='    + encodeURIComponent(nom);
+    } else {
+      history.back();
+    }
+  }, 300);
+}
+
+// Bouton partage résumé au client
+function envoyerResume(){
+  var msg = '⭐ Évaluation enregistrée\n\nMerci pour le temps que vous avez consacré à cette rencontre.\n\nVotre évaluation a été ajoutée au Passeport de Compétences de '
+    + prenom + ' et contribuera à mesurer sa progression tout au long de son parcours.\n\nChez Form\'Com Level Up, chaque retour compte.\n\nMerci pour votre contribution au Jury Citoyen Level Up.\n— L\'équipe Form\'Com';
+
+  if(navigator.share){
+    navigator.share({
+      title: 'Évaluation Form\'Com Level Up',
+      text: msg
+    }).catch(function(){});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+}
+
+// Thème
+function toggleTheme(){
+  var light = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = light ? '🌙' : '☀️';
+  try{ localStorage.setItem('fc_theme', light ? 'light' : 'dark'); }catch(e){}
+}
+try{
+  if(localStorage.getItem('fc_theme') === 'light'){
+    document.body.classList.add('light');
+    document.getElementById('themeBtn').textContent = '🌙';
+  }
+}catch(e){}
+</script>
+</body>
+</html>
