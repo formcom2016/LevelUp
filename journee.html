@@ -208,6 +208,13 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .quete-jalon-lbl{font-size:8px;color:rgba(255,255,255,.3);font-family:'Exo 2',sans-serif;font-weight:700}
 .quete-jalon-lbl.done,.quete-jalon-lbl.next{color:rgba(245,166,35,.7)}
 /* BOURSE */
+.msg-popup-ap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9998;align-items:center;justify-content:center;padding:20px}
+.msg-popup-ap.show{display:flex}
+.msg-box-ap{background:linear-gradient(135deg,#1B0A40,#2D1B69);border:2px solid #7C3AED;border-radius:16px;padding:24px;max-width:340px;width:100%;text-align:center;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.msg-from-ap{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:8px;font-family:'Exo 2',sans-serif}
+.msg-text-ap{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;color:#fff;line-height:1.4;margin-bottom:20px}
+.msg-lu-ap{width:100%;padding:13px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
 .bourse-locked{background:var(--card);border:1.5px dashed var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center;transition:background .3s}
 .bourse-active{background:linear-gradient(135deg,rgba(27,43,143,0.8),rgba(41,121,255,0.5));border:1.5px solid rgba(41,121,255,.5);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center;box-shadow:0 0 20px rgba(41,121,255,.2)}
 .bourse-emoji{font-size:28px;margin-bottom:6px}
@@ -480,6 +487,13 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
 
   <div class="stats-card">
+  <!-- BOUTON SOS DISCRET -->
+  <div id="sosBlock" style="display:none;margin-bottom:10px">
+    <button id="sosBtn" onclick="envoyerSOS()" style="width:100%;padding:10px;background:rgba(232,25,44,.08);border:1.5px solid rgba(232,25,44,.2);color:rgba(232,25,44,.6);border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+      🆘 Signal d'urgence — Appeler mon chef d'équipe
+    </button>
+  </div>
+
   <!-- CAGNOTTE SOLIDAIRE -->
   <div id="cagnotteBlock" style="margin-bottom:12px">
     <div class="sec-title">🔥 Cagnotte solidaire du jour</div>
@@ -569,6 +583,15 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
       <span class="taux-lbl">Resilience</span>
       <div class="taux-bar-w"><div class="taux-bar" id="tR" style="width:0%;background:#F5A623"></div></div>
       <span class="taux-val" id="tRV">0%</span>
+    </div>
+  </div>
+
+  <!-- MESSAGE BROADCAST POPUP -->
+  <div class="msg-popup-ap" id="msgPopupAp">
+    <div class="msg-box-ap">
+      <div class="msg-from-ap" id="msgFromAp">Message</div>
+      <div class="msg-text-ap" id="msgTextAp"></div>
+      <button class="msg-lu-ap" id="msgLuBtn" style="opacity:.4;pointer-events:none" onclick="marquerMessageLuAp()">✓ Message lu</button>
     </div>
   </div>
 
@@ -805,7 +828,7 @@ return {generate:function(text,size){
 }};
 })();
 
-var APPS_URL='https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
+var APPS_URL='https://script.google.com/macros/s/AKfycbwKu9PwOOniBsTp-5WNHBx2fgsy2O45R8bwQ2uvqJsyPUQlNokIHoK1Y_KwP929x5xplA/exec';
 var p=new URLSearchParams(window.location.search);
 var AP={
   id:p.get('id')||'AP001',
@@ -1238,6 +1261,11 @@ function ouvrirInterface(data){
 
   // La quête sera mise à jour par loadBourse qui a la valeur correcte de bourse_versee
 
+  // Démarrer la vérification des messages et afficher le SOS
+  demarrerVerificationMessages();
+  var sosB = document.getElementById('sosBlock');
+  if(sosB) sosB.style.display = 'block';
+
   // Recharger prevBadges maintenant que AP.id est connu (clé fiable par apprenant+jour)
   try{
     var bkey = 'fc_badges_'+(AP&&AP.id?AP.id:'x')+'_'+new Date().toISOString().slice(0,10);
@@ -1357,10 +1385,22 @@ function lancerQuestComplete(prenom){
     }, 400);
   }
 
+  // Délai de 2 secondes avant d'activer le bouton fermer
+  // pour éviter que le tap initial ferme l'overlay immédiatement
   setTimeout(function(){
     var btn = document.getElementById('questCloseBtn');
-    if(btn) btn.addEventListener('click', fermerQuest);
-  }, 100);
+    if(btn){
+      btn.style.opacity = '0.4';
+      btn.style.pointerEvents = 'none';
+      setTimeout(function(){
+        btn.style.opacity = '1';
+        btn.style.transition = 'opacity .3s';
+        btn.style.pointerEvents = 'all';
+        btn.addEventListener('click', fermerQuest);
+        btn.addEventListener('touchend', function(e){ e.preventDefault(); fermerQuest(); });
+      }, 2000);
+    }
+  }, 200);
 
   // Confetti or — continus pendant que l'overlay est ouvert
   if(typeof confetti === 'function'){
@@ -2503,6 +2543,58 @@ function envoyerLienEval(){
   } else {
     window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
   }
+}
+
+// ─── MESSAGES BROADCAST ──────────────────────────────────────────────
+var _msgActuelId = null;
+var _msgCheckInterval = null;
+
+function demarrerVerificationMessages(){
+  verifierMessageAp();
+  _msgCheckInterval = setInterval(verifierMessageAp, 30000);
+}
+
+function verifierMessageAp(){
+  if(!AP.id) return;
+  fetch(APPS_URL+'?action=getMessage&id='+encodeURIComponent(AP.id)+'&type=apprenant')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.messages && d.messages.length > 0){
+        var msg = d.messages[0];
+        _msgActuelId = msg.msg_id;
+        var fromEl = document.getElementById('msgFromAp');
+        var textEl = document.getElementById('msgTextAp');
+        var luBtn  = document.getElementById('msgLuBtn');
+        var popup  = document.getElementById('msgPopupAp');
+        if(fromEl) fromEl.textContent = msg.expediteur_type === 'ADMIN' ? 'Message Admin' : 'Message Chef équipe';
+        if(textEl) textEl.textContent = msg.message;
+        if(popup)  popup.classList.add('show');
+        // Activer le bouton après 2s
+        if(luBtn){ luBtn.style.opacity='.4'; luBtn.style.pointerEvents='none';
+          setTimeout(function(){ luBtn.style.opacity='1'; luBtn.style.pointerEvents='all'; luBtn.style.transition='opacity .3s'; }, 2000);
+        }
+        try{ if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]); }catch(e){}
+      }
+    }).catch(function(){});
+}
+
+function marquerMessageLuAp(){
+  if(!_msgActuelId) return;
+  fetch(APPS_URL+'?action=marquerMessageLu&msg_id='+encodeURIComponent(_msgActuelId)+'&id='+encodeURIComponent(AP.id))
+    .catch(function(){});
+  var popup = document.getElementById('msgPopupAp');
+  if(popup) popup.classList.remove('show');
+  _msgActuelId = null;
+}
+
+// ─── SOS ─────────────────────────────────────────────────────────────
+function envoyerSOS(){
+  if(!confirm('Envoyer un signal d\'urgence ?')) return;
+  var btn = document.getElementById('sosBtn');
+  if(btn){ btn.textContent = '🆘 Signal envoyé... votre chef arrive'; btn.disabled = true; }
+  fetch(APPS_URL+'?action=signalerSOS&apprenant_id='+encodeURIComponent(AP.id)+'&apprenant_prenom='+encodeURIComponent(AP.prenom)+'&rp_id=')
+    .catch(function(){});
+  try{ if(navigator.vibrate) navigator.vibrate([300,100,300]); }catch(e){}
 }
 
 function ouvrirPasseport(){

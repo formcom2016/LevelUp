@@ -103,15 +103,18 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
   <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
 
-  <!-- NAVIGATION COMPACTE -->
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <a href="admin_add_apprenant.html" target="_blank" style="padding:10px 16px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">➕ Nouvel apprenant</a>
-    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:10px 16px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</a>
+  <!-- NAVIGATION PRINCIPALE -->
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+    <a href="admin_add_apprenant.html" target="_blank" style="padding:9px 14px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">➕ Nouvel apprenant</a>
+    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:9px 14px;background:rgba(124,58,237,.08);border:1.5px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">⚔️ Resp. Péd.</a>
+    <button onclick="switchAdminTab('talents')" style="padding:9px 14px;background:rgba(6,214,160,.08);border:1.5px solid rgba(6,214,160,.2);color:#06D6A0;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">🌱 Talents <span id="talentsBadgeNav" style="display:none;background:#E8192C;color:#fff;font-size:9px;font-weight:900;border-radius:99px;padding:1px 6px">0</span></button>
+    <button onclick="switchAdminTab('emargement')" style="padding:9px 14px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">📋 Émargement</button>
     <div style="position:relative;margin-left:auto">
-      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:10px 14px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">⚙️ ▾</button>
+      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 12px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
-        <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs en masse</button>
-        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes Sheet</button>
+        <button onclick="switchAdminTab('responsables');closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">⚔️ Responsables Péd.</button>
+        <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs</button>
+        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes</button>
       </div>
     </div>
   </div>
@@ -138,11 +141,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     </div>
   </div>
   <!-- ONGLETS ADMIN -->
-  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin:16px 0 0">
-    <button onclick="switchAdminTab('apprenants')" id="tabBtnApprenants" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid #2979FF;color:#2979FF;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Apprenants</button>
-    <button onclick="switchAdminTab('talents')" id="tabBtnTalents" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Talents <span id="talentsBadge" style="display:none;background:#E8192C;color:#fff;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:4px">0</span></button>
-    <button onclick="switchAdminTab('emargement')" id="tabBtnEmargement" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Emargement</button>
-  </div>
+  
 
   <!-- SECTION APPRENANTS -->
   <div id="sectionApprenants" style="padding-top:16px">
@@ -160,6 +159,24 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
       <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">Fiche apprenant</div>
     </div>
     <div id="ficheApprenantContent" style="padding:16px;padding-bottom:60px"></div>
+  </div>
+
+  <!-- SECTION RESPONSABLES -->
+  <div id="sectionResponsables" style="display:none;padding-top:16px;margin-bottom:40px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:#7C3AED">Responsables pédagogiques</div>
+      <button onclick="creerRP()" style="margin-left:auto;padding:8px 14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">+ Nouveau RP</button>
+    </div>
+    <div id="rpList"><div class="admin-loading">Chargement...</div></div>
+    <div style="margin-top:14px">
+      <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📢 Message broadcast</div>
+      <textarea id="broadcastMsg" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;resize:none;outline:none;min-height:70px;margin-bottom:8px" placeholder="Message à envoyer..."></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <button onclick="envoyerBroadcast('TOUS')" style="padding:10px;background:linear-gradient(135deg,rgba(232,25,44,.15),rgba(124,58,237,.15));border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📢 Tous</button>
+        <button onclick="envoyerBroadcast('RP')" style="padding:10px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚔️ Chefs éq.</button>
+        <button onclick="envoyerBroadcast('APPRENANTS')" style="padding:10px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">🎮 Apprenants</button>
+      </div>
+    </div>
   </div>
 
   <!-- SECTION TALENTS -->
@@ -387,6 +404,7 @@ function initShell(){
     chargerListeApprenants(function(){
       loadAdminDashboard();
       initAdminExtras();
+      switchAdminTab('apprenants');
     });
     setInterval(loadAdminDashboard, 25000);
     return;
@@ -472,6 +490,7 @@ function admClick(e){
   else if(action==='brs')  debloquerBourse(id, prenom);
   else if(action==='brsreset') resetBourse(id, prenom);
   else if(action==='projetEnregistrer') enregistrerProjet(id);
+  else if(action==='voirNotesRP'){ var prenom2 = btn.dataset.prenom||''; voirNotesRP(id, prenom2); }
   else if(action==='projetActiver')     toggleProjet(id, true);
   else if(action==='projetDesactiver')  toggleProjet(id, false);
   else if(action==='dipl') diplomerApprenant(id, prenom);
@@ -610,7 +629,9 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   var bourseOk = stats.bourse_debloquee===true;
   var pin = stats.pin||'????';
   var dateInscription = stats.date_inscription||'—';
-  var telephone = stats.telephone||'';
+  var telRaw = stats.telephone||'';
+  // Corriger le zéro supprimé par Google Sheets (06... stocké comme nombre)
+  var telephone = telRaw ? (String(telRaw).match(/^[67]/) ? '0'+String(telRaw) : String(telRaw)) : '';
   var email = stats.email||'';
   var adresse = stats.adresse||'';
   var streak = stats.streak||0;
@@ -883,6 +904,76 @@ function toggleProjet(id, activer){
     .then(function(d){
       if(d.status==='ok') alert(activer ? '✅ Quête activée ! Le cockpit affichera la barre de progression.' : '🔒 Quête désactivée.');
       else alert('Erreur : '+(d.message||'inconnue'));
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+function loadResponsables(){
+  var el = document.getElementById('rpList');
+  if(!el) return;
+  el.innerHTML = '<div class="admin-loading">Chargement...</div>';
+  fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.responsables || d.responsables.length === 0){
+        el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucun responsable créé</div>';
+        return;
+      }
+      el.innerHTML = d.responsables.map(function(rp){
+        return '<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:12px 14px;margin-bottom:10px">'
+          +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+            +'<div style="width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
+            +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
+            +'<div style="font-size:10px;color:var(--muted)">'+rp.id+' · PIN : '+rp.pin+'</div></div>'
+            +'<span style="padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
+          +'</div>'
+          +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
+          +'<div style="display:flex;gap:6px">'
+            +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit RP</a>'
+            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
+          +'</div>'
+        +'</div>';
+      }).join('');
+    }).catch(function(){ el.innerHTML = '<div style="color:var(--red);text-align:center;padding:12px">Erreur de chargement</div>'; });
+}
+
+function creerRP(){
+  var prenom = prompt('Prénom du responsable :');
+  if(!prenom) return;
+  var nom = prompt('Nom du responsable :');
+  if(!nom) return;
+  fetch(APPS_URL+'?action=createRP&admin=FC2026ADMIN&prenom='+encodeURIComponent(prenom)+'&nom='+encodeURIComponent(nom))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok'){
+        alert('Responsable créé ! ID: '+d.id+' PIN: '+d.pin);
+        loadResponsables();
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+function voirNotesRP(rpId, rpPrenom){
+  fetch(APPS_URL+'?action=getNotesRP&rp_id='+encodeURIComponent(rpId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.notes || d.notes.length === 0){ alert('Aucune note pour l\'instant'); return; }
+      var lines = d.notes.slice(0,10).map(function(n){
+        return '['+n.date+' '+n.heure+'] '+n.apprenant_prenom+' : '+n.note;
+      });
+      alert('Notes :\n\n'+lines.join('\n\n'));
+    }).catch(function(){});
+}
+
+function envoyerBroadcast(dest){
+  var msg = document.getElementById('broadcastMsg').value.trim();
+  if(!msg){ alert('Entrez un message'); return; }
+  if(!confirm('Envoyer a '+dest+'?')) return;
+  fetch(APPS_URL+'?action=envoyerMessage&expediteur_id=ADMIN&admin=FC2026ADMIN&destinataires='+encodeURIComponent(dest)+'&message='+encodeURIComponent(msg))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok'){
+        document.getElementById('broadcastMsg').value = '';
+        alert('✅ Message envoyé à : '+dest);
+      }
     }).catch(function(){ alert('Erreur réseau'); });
 }
 
@@ -1472,7 +1563,7 @@ var _talentsData = [];
 var _talentsFiltreActif = 'tous';
 
 function switchAdminTab(tab){
-  var tabs = ['apprenants','talents','emargement'];
+  var tabs = ['responsables','apprenants','talents','emargement'];
   tabs.forEach(function(t){
     var btn = document.getElementById('tabBtn'+t.charAt(0).toUpperCase()+t.slice(1));
     var sec = document.getElementById('section'+t.charAt(0).toUpperCase()+t.slice(1));
@@ -1484,6 +1575,7 @@ function switchAdminTab(tab){
     if(sec) sec.style.display = isActive ? 'block' : 'none';
   });
   if(tab === 'talents') loadParrainages();
+  if(tab === 'responsables') loadResponsables();
   if(tab === 'emargement'){
     var emarDate = document.getElementById('emarDate');
     if(emarDate && !emarDate.value){
@@ -1525,6 +1617,12 @@ function renderTalents(filtre){
   if(badge){
     badge.style.display = attente.length > 0 ? 'inline-flex' : 'none';
     badge.textContent = attente.length;
+  }
+  // Mettre à jour aussi le badge dans la navigation principale
+  var badgeNav = document.getElementById('talentsBadgeNav');
+  if(badgeNav){
+    badgeNav.style.display = attente.length > 0 ? 'inline' : 'none';
+    badgeNav.textContent = attente.length;
   }
   // Alimenter les compteurs pipeline
   var cA = document.getElementById('countAttente');
@@ -1761,5 +1859,7 @@ initShell();
     <button onclick="fermerModalEnvoi()" style="width:100%;padding:12px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:12px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Annuler</button>
   </div>
 </div>
-</body>
+ <script>
+  document.getElementById("adminWrap").style.display = "block";
+</script></body>
 </html>

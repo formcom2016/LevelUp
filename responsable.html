@@ -2,398 +2,711 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Form'Com — Responsable Pédagogique</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Form'Com · Chef d'équipe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap');
-:root{--bg:#060B18;--card:#0E1730;--border:#1E2D4F;--text:#F0F4FF;--muted:#8892A4;--blue:#2979FF;--navy:#1B2B8F;--gold:#F5A623;--red:#E8192C;--green:#00FF87}
-body.light{--bg:#F5F7FF;--card:#fff;--border:#DDE3F0;--text:#111827;--muted:#6B7280}
+:root{
+  --bg:#060B18;--card:#0E1730;--border:rgba(255,255,255,.08);
+  --text:#F0F4FF;--muted:#8892A4;--blue:#2979FF;--gold:#F5A623;
+  --red:#E8192C;--green:#00C853;--purple:#7C3AED;--r:12px
+}
+body.light{--bg:#F0F4FF;--card:#fff;--border:#DDE3F0;--text:#111827;--muted:#6B7280}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 80px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
 
-.gate{max-width:400px;margin:80px auto 0;padding:32px 24px;text-align:center}
-.gate-title{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:var(--gold);margin-bottom:6px}
-.gate-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
-.gate-input{width:100%;padding:14px;background:var(--card);border:2px solid var(--border);border-radius:12px;font-size:16px;color:var(--text);font-family:'Exo 2',sans-serif;text-align:center;letter-spacing:2px;outline:none;margin-bottom:12px}
-.gate-input:focus{border-color:var(--gold)}
-.gate-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;cursor:pointer}
+/* TOPBAR */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo-f{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:#7C3AED}
+.logo-c{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:var(--red)}
+.rp-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);border-radius:99px}
+.rp-badge-icon{font-size:14px}
+.rp-badge-name{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;color:#A78BFA}
 
-.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-.header-title{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;background:linear-gradient(90deg,#F5A623,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.header-sub{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+/* ALERTE SOS */
+.sos-banner{display:none;background:rgba(232,25,44,.15);border-bottom:2px solid var(--red);padding:10px 16px;animation:sosFlash 1s infinite}
+@keyframes sosFlash{0%,100%{opacity:1}50%{opacity:.6}}
+.sos-banner-text{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:900;color:var(--red)}
 
-.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card)}
-.tab{flex:1;padding:13px;text-align:center;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
-.tab.active{color:var(--gold);border-color:var(--gold)}
+/* MESSAGE BROADCAST */
+.msg-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.msg-popup.show{display:flex}
+.msg-box{background:linear-gradient(135deg,#1B0A40,#2D1B69);border:2px solid #7C3AED;border-radius:16px;padding:24px;max-width:340px;width:100%;text-align:center;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.msg-from{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:8px}
+.msg-text{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;color:#fff;line-height:1.4;margin-bottom:20px}
+.msg-lu{width:100%;padding:13px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
 
-.section{display:none;padding:16px}
+/* TABS */
+.tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:11px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;border-bottom:2px solid transparent;cursor:pointer;font-family:'Exo 2',sans-serif}
+.tab.active{color:#7C3AED;border-bottom-color:#7C3AED}
+
+/* SECTIONS */
+.section{display:none;padding:14px}
 .section.active{display:block}
+.sec-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-family:'Exo 2',sans-serif}
 
-/* RETRAIT */
-.search-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
-.search-label{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
-.search-tabs{display:flex;gap:6px;margin-bottom:12px}
-.search-tab{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
-.search-tab.active{background:rgba(41,121,255,.15);border-color:#2979FF;color:#60A5FA}
-.search-input{width:100%;padding:16px;background:rgba(255,255,255,.05);border:2px solid var(--border);border-radius:10px;font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:var(--text);text-align:center;letter-spacing:4px;outline:none;transition:border-color .2s;margin-bottom:10px}
-.search-input:focus{border-color:var(--gold)}
-.search-hint{font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px}
-.search-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;cursor:pointer}
+/* PIN SCREEN */
+.pin-screen{position:fixed;inset:0;background:var(--bg);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.pin-logo{font-family:'Exo 2',sans-serif;font-size:24px;font-weight:900;margin-bottom:8px}
+.pin-sub{font-size:12px;color:var(--muted);margin-bottom:30px;text-align:center}
+.pin-id-input{width:100%;max-width:300px;padding:13px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;text-align:center;outline:none;margin-bottom:10px}
+.pin-display{width:100%;max-width:300px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;font-family:'Exo 2',sans-serif;font-size:32px;font-weight:900;color:var(--gold);letter-spacing:8px;min-height:70px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.pin-hint{font-size:11px;color:var(--muted);margin-bottom:20px;text-align:center}
+.pin-numpad{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;max-width:300px;margin-bottom:16px}
+.pin-key{padding:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:18px;font-weight:900;color:var(--text);cursor:pointer;text-align:center;user-select:none}
+.pin-key:active{background:rgba(124,58,237,.2);border-color:#7C3AED}
+.pin-enter{width:100%;max-width:300px;padding:14px;background:#7C3AED;color:#fff;border:none;border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer}
+.pin-msg{font-size:12px;color:var(--red);text-align:center;min-height:18px;margin-top:8px}
 
-/* RESULT CARD */
-.result-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
-.result-header{padding:16px;background:linear-gradient(135deg,rgba(41,121,255,.1),transparent)}
-.result-code{font-family:'Exo 2',sans-serif;font-size:52px;font-weight:900;color:var(--gold);letter-spacing:4px;line-height:1}
-.result-ap{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-top:6px}
-.info-row{display:flex;justify-content:space-between;padding:11px 16px;border-top:1px solid var(--border);font-size:13px}
-.info-lbl{color:var(--muted)}
-.info-val{font-family:'Exo 2',sans-serif;font-weight:700;color:var(--text)}
-.info-val.gold{color:var(--gold)}
-.info-val.green{color:#00D464}
+/* CARTE APPRENANT */
+.ap-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;cursor:pointer;position:relative}
+.ap-card.alert-rouge{border-color:rgba(232,25,44,.4);background:rgba(232,25,44,.05)}
+.ap-card.alert-orange{border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.04)}
+.ap-card-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ap-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0;font-family:'Exo 2',sans-serif}
+.ap-name{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--text)}
+.ap-id{font-size:10px;color:var(--muted)}
+.ap-status{margin-left:auto}
+.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.dot-green{background:#00C853}
+.dot-orange{background:#F5A623}
+.dot-red{background:#E8192C;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.ap-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.ap-stat{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center}
+.ap-stat-val{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:900;color:var(--gold)}
+.ap-stat-lbl{font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.ap-alert-txt{font-size:10px;color:var(--red);font-weight:700;padding:4px 8px;background:rgba(232,25,44,.1);border-radius:6px;display:inline-block;margin-bottom:8px}
+.ap-actions{display:flex;gap:6px}
+.ap-btn{flex:1;padding:8px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:none;text-align:center}
+.btn-note{background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.3);color:#60A5FA}
+.btn-presence{background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:#00C853}
 
-.btn-valider{width:100%;padding:16px;background:linear-gradient(135deg,#064E3B,#059652);color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;cursor:pointer;margin:16px 0 8px}
-.btn-valider:disabled{opacity:.5;cursor:not-allowed}
+/* SÉLECTION ÉQUIPE */
+.select-card{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer}
+.select-card.selected{border-color:#7C3AED;background:rgba(124,58,237,.08)}
+.select-card.autre-equipe{border-color:rgba(232,25,44,.3);opacity:.6}
+.select-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.select-card.selected .select-check{background:#7C3AED;border-color:#7C3AED;color:#fff}
+.select-name{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;color:var(--text);flex:1}
+.select-badge{font-size:9px;padding:2px 7px;border-radius:99px;font-weight:700;font-family:'Exo 2',sans-serif}
+.badge-autre{background:rgba(232,25,44,.15);color:#FF6B6B}
+.badge-moi{background:rgba(124,58,237,.15);color:#A78BFA}
 
-/* MISSION */
-.mission{background:linear-gradient(135deg,#064E3B,#065F46);border-radius:14px;padding:24px;text-align:center;margin-bottom:16px}
-.mission-icon{font-size:56px;margin-bottom:8px}
-.mission-title{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:var(--green);margin-bottom:4px}
-.mission-sub{font-size:13px;color:rgba(255,255,255,.6)}
-.btn-nouveau{width:100%;padding:14px;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer}
+/* RECHERCHE BON */
+.search-bon{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.search-bon-tabs{display:flex;border-bottom:1px solid var(--border)}
+.s-tab{flex:1;padding:10px;text-align:center;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.s-tab.active{color:#7C3AED;border-bottom-color:#7C3AED}
+.search-input{width:100%;padding:13px 16px;background:transparent;border:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:20px;font-weight:900;text-align:center;letter-spacing:4px;outline:none}
+.search-hint{font-size:11px;color:var(--muted);text-align:center;padding:0 16px 12px}
+.search-btn{width:calc(100% - 28px);margin:0 14px 14px;padding:13px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer}
 
-/* PENDING */
-.pending-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s}
-.pending-item:hover{border-color:var(--blue)}
-.pending-code{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;color:var(--gold);flex-shrink:0;width:70px}
-.pending-info{flex:1}
-.pending-name{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
-.pending-detail{font-size:11px;color:var(--muted);margin-top:2px}
+/* RÉSULTAT BON */
+.bon-result{display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.bon-ok{background:linear-gradient(135deg,#052E16,#065F46);border-color:rgba(0,200,83,.3)}
+.bon-err{background:rgba(232,25,44,.08);border-color:rgba(232,25,44,.3)}
+.bon-already{background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.3)}
+.bon-title{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px}
+.bon-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.bon-row:last-of-type{border-bottom:none}
+.bon-lbl{color:var(--muted)}
+.bon-val{font-family:'Exo 2',sans-serif;font-weight:700}
+.valider-btn{width:100%;padding:13px;background:#00C853;color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:12px}
 
-/* ÉQUIPE */
-.equipe-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px}
-.equipe-av{width:40px;height:40px;border-radius:50%;background:rgba(41,121,255,.15);border:2px solid #2979FF;display:flex;align-items:center;justify-content:center;font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:#2979FF;flex-shrink:0}
-.equipe-name{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:var(--text)}
-.equipe-statut{font-size:11px;color:var(--muted);margin-top:2px}
-.btn-retirer{padding:7px 12px;background:rgba(232,25,44,.12);border:1px solid rgba(232,25,44,.3);color:#FF6B6B;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-left:auto}
+/* NOTES */
+.note-card{background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+.note-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.note-ap{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;color:#A78BFA}
+.note-time{font-size:10px;color:var(--muted)}
+.note-text{font-size:12px;color:var(--text);line-height:1.5}
+.add-note-area{width:100%;padding:10px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;resize:none;outline:none;min-height:60px;margin-top:6px}
+.add-note-btn{width:100%;padding:10px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px}
 
-.loading{text-align:center;padding:30px;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:13px}
-.theme-btn{position:fixed;bottom:20px;right:20px;z-index:9999;width:56px;height:56px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;outline:none}
-.hidden{display:none}
+/* OBJECTIF */
+.objectif-card{background:linear-gradient(135deg,#0A0E1A,#1A0A40);border:1px solid rgba(124,58,237,.25);border-radius:var(--r);padding:14px;margin-bottom:14px}
+.objectif-input{width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(124,58,237,.3);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;outline:none;margin-bottom:8px}
+.objectif-btn{width:100%;padding:11px;background:#7C3AED;color:#fff;border:none;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
+
+/* MESSAGE RALLIEMENT */
+.rallye-input{width:100%;padding:10px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;resize:none;outline:none;min-height:70px;margin-bottom:8px}
+.rallye-btn{width:100%;padding:12px;background:linear-gradient(135deg,#5B21B6,#7C3AED);color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* BARRE FIXE BAS */
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 16px;z-index:200}
+.btn-sos{width:100%;padding:13px;background:linear-gradient(135deg,#7F1D1D,#E8192C);color:#fff;border:none;border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px}
+
+/* THEME */
+.theme-btn{position:fixed;top:14px;right:16px;z-index:9999;width:32px;height:32px;border-radius:50%;background:rgba(14,23,48,.85);border:1px solid rgba(255,255,255,.15);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;outline:none}
 </style>
 </head>
 <body>
 
-<div id="gateScreen">
-  <div class="gate">
-    <div class="gate-title">⚔️ Responsable Pédagogique</div>
-    <div class="gate-sub">Form'Com Level Up · Espace réservé</div>
-    <input class="gate-input" type="password" id="gateInput" placeholder="Clef secrète" onkeydown="if(event.key==='Enter')checkGate()">
-    <button class="gate-btn" onclick="checkGate()">Accéder</button>
+<!-- PIN SCREEN -->
+<div id="pinScreen" class="pin-screen">
+  <div class="pin-logo"><span class="logo-f">Form'</span><span class="logo-c">Com</span></div>
+  <div class="pin-sub">Interface Chef d'équipe<br>Connectez-vous avec votre ID et PIN</div>
+  <input id="rpIdInput" class="pin-id-input" type="text" placeholder="Votre ID (ex: RP-0001)" autocomplete="off">
+  <div class="pin-display" id="pinDisplay">——</div>
+  <div class="pin-hint">Entrez votre code PIN à 4 chiffres</div>
+  <div class="pin-numpad">
+    <div class="pin-key" onclick="pinKey('1')">1</div>
+    <div class="pin-key" onclick="pinKey('2')">2</div>
+    <div class="pin-key" onclick="pinKey('3')">3</div>
+    <div class="pin-key" onclick="pinKey('4')">4</div>
+    <div class="pin-key" onclick="pinKey('5')">5</div>
+    <div class="pin-key" onclick="pinKey('6')">6</div>
+    <div class="pin-key" onclick="pinKey('7')">7</div>
+    <div class="pin-key" onclick="pinKey('8')">8</div>
+    <div class="pin-key" onclick="pinKey('9')">9</div>
+    <div class="pin-key" onclick="pinKey('del')" style="color:var(--red)">⌫</div>
+    <div class="pin-key" onclick="pinKey('0')">0</div>
+    <div class="pin-key" onclick="submitPin()" style="background:rgba(124,58,237,.2);color:#A78BFA">OK</div>
+  </div>
+  <button class="pin-enter" onclick="submitPin()">🔓 Se connecter</button>
+  <div class="pin-msg" id="pinMsg"></div>
+</div>
+
+<!-- MESSAGE BROADCAST POPUP -->
+<div class="msg-popup" id="msgPopup">
+  <div class="msg-box">
+    <div class="msg-from" id="msgFrom">Message de l'administrateur</div>
+    <div class="msg-text" id="msgText"></div>
+    <button class="msg-lu" onclick="marquerLu()">✓ Message lu</button>
   </div>
 </div>
 
-<div id="mainApp" class="hidden">
-  <div class="header">
-    <div>
-      <div class="header-title">⚔️ Responsable Pédagogique</div>
-      <div class="header-sub">Form'Com Level Up</div>
+<!-- SOS BANNER -->
+<div class="sos-banner" id="sosBanner">
+  <div style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:18px">🆘</span>
+    <span class="sos-banner-text" id="sosBannerText">SOS — Apprenant en difficulté !</span>
+    <button onclick="resoudreSOS()" style="margin-left:auto;padding:5px 12px;background:var(--red);color:#fff;border:none;border-radius:6px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">Résolu ✓</button>
+  </div>
+</div>
+
+<!-- MAIN CONTAINER -->
+<div id="mainContainer" style="display:none">
+
+  <div class="topbar">
+    <div><span class="logo-f">Form'</span><span class="logo-c">Com</span></div>
+    <div class="rp-badge">
+      <span class="rp-badge-icon">⚔️</span>
+      <span class="rp-badge-name" id="rpNomDisplay">Chef d'équipe</span>
     </div>
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="showTab('retrait')">📦 Retrait</div>
-    <div class="tab" onclick="showTab('pending')">⏳ En attente</div>
-    <div class="tab" onclick="showTab('equipe')">👥 Mon équipe</div>
+    <div class="tab active" onclick="switchTab(0)">Mon équipe</div>
+    <div class="tab" onclick="switchTab(1)">🧴 Retrait</div>
+    <div class="tab" onclick="switchTab(2)">📝 Notes</div>
+    <div class="tab" onclick="switchTab(3)">📢 Actions</div>
+    <div class="tab" onclick="switchTab(4)">Sélection</div>
   </div>
 
-  <!-- RETRAIT -->
-  <div class="section active" id="tab-retrait">
-    <div id="searchView">
-      <div class="search-box">
-        <div class="search-label">🔍 Rechercher un bon</div>
-        <div class="search-tabs">
-          <button class="search-tab active" onclick="setSearchType('code',this)">📋 Code</button>
-          <button class="search-tab" onclick="setSearchType('nom',this)">👤 Nom</button>
-          <button class="search-tab" onclick="setSearchType('tel',this)">📱 Téléphone</button>
-        </div>
-        <input class="search-input" type="text" id="searchInput" placeholder="1234" onkeydown="if(event.key==='Enter')doSearch()">
-        <div class="search-hint" id="searchHint">Entrez le code 4 chiffres du bon</div>
-        <button class="search-btn" onclick="doSearch()">🔍 Rechercher</button>
+  <!-- TAB 0 : MON ÉQUIPE -->
+  <div class="section active" id="tab0">
+    <div class="sec-title" id="equipeTitle">Mon équipe — chargement...</div>
+    <div id="equipeList"><div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Chargement de votre équipe...</div></div>
+  </div>
+
+  <!-- TAB 1 : SÉLECTION ÉQUIPE -->
+  <div class="section" id="tab1">
+    <div class="objectif-card">
+      <div class="sec-title" style="color:rgba(167,139,250,.7)">🎯 Objectif de la session</div>
+      <input id="objectifInput" class="objectif-input" type="text" placeholder="Ex: 3 articles chacun, 10 contacts minimum...">
+      <button class="objectif-btn" onclick="validerEquipe()">✓ Valider l'équipe + objectif</button>
+    </div>
+    <div class="sec-title">Sélectionner vos apprenants</div>
+    <div id="selectionList"><div style="text-align:center;padding:20px;color:var(--muted)">Chargement...</div></div>
+  </div>
+
+  <!-- TAB 2 : PARFUM SOLIDAIRE -->
+  <div class="section" id="tab2">
+    <div class="sec-title">Valider un bon cadeau</div>
+    <div class="search-bon">
+      <div class="search-bon-tabs">
+        <div class="s-tab active" onclick="setSearchType('code',this)">Par code</div>
+        <div class="s-tab" onclick="setSearchType('nom',this)">Par nom</div>
+        <div class="s-tab" onclick="setSearchType('tel',this)">Par téléphone</div>
       </div>
-      <div id="searchResult"></div>
+      <input id="bonSearchInput" class="search-input" type="text" placeholder="CODE" autocomplete="off" oninput="this.value=this.value.toUpperCase()">
+      <div class="search-hint" id="searchHint">Entrez le code 4 chiffres du bon</div>
+      <button class="search-btn" onclick="rechercherBon()">🔍 Rechercher</button>
     </div>
+    <div id="bonResult" class="bon-result"></div>
+  </div>
 
-    <div id="missionView" class="hidden">
-      <div class="mission">
-        <div class="mission-icon">🏆</div>
-        <div class="mission-title">✅ Mission accomplie !</div>
-        <div class="mission-sub" id="missionSub">Articles remis avec succès</div>
-      </div>
-      <div id="ticketFinal" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:12px"></div>
-      <button class="btn-nouveau" onclick="resetSearch()">🔍 Nouveau bon</button>
+  <!-- TAB 3 : NOTES DU JOUR -->
+  <div class="section" id="tab3">
+    <div class="sec-title">Notes pédagogiques du jour</div>
+    <div id="notesList"></div>
+  </div>
+
+  <!-- TAB 4 : ACTIONS / MESSAGES -->
+  <div class="section" id="tab4">
+    <div class="sec-title">Message de ralliement</div>
+    <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:var(--r);padding:14px;margin-bottom:14px">
+      <div style="font-size:11px;color:rgba(167,139,250,.6);margin-bottom:8px;font-family:'Exo 2',sans-serif;font-weight:700">Envoyer un message à toute l'équipe — apparaît immédiatement dans leur cockpit</div>
+      <textarea id="rallyeMsg" class="rallye-input" placeholder="Ex: Regroupement dans 10 min au point A&#10;Ex: On pousse les abonnements maintenant !"></textarea>
+      <button class="rallye-btn" onclick="envoyerRallye()">📢 Envoyer à mon équipe</button>
+    </div>
+    <div class="sec-title">Préréglages rapides</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <button onclick="setRallyeMsg('🔔 Regroupement dans 10 min au point de départ')" style="padding:10px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:left">🔔 Regroupement</button>
+      <button onclick="setRallyeMsg('🎯 Objectif : 2 articles chacun avant 14h !')" style="padding:10px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:left">🎯 Objectif</button>
+      <button onclick="setRallyeMsg('💪 On pousse les abonnements maintenant !')" style="padding:10px;background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.2);color:#00C853;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:left">💪 Motivation</button>
+      <button onclick="setRallyeMsg('⏸️ Pause 15 min — retrouvez-moi au point A')" style="padding:10px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:left">⏸️ Pause</button>
+    </div>
+    <div class="sec-title">Statut de connexion</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px">
+      <div style="font-size:12px;color:var(--muted)">Connecté en tant que</div>
+      <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:#A78BFA;margin-top:4px" id="rpInfoDisplay">—</div>
+      <button onclick="deconnexion()" style="margin-top:10px;width:100%;padding:10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.2);color:var(--red);border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Déconnexion</button>
     </div>
   </div>
 
-  <!-- EN ATTENTE -->
-  <div class="section" id="tab-pending">
-    <div id="pendingList"><div class="loading">Chargement...</div></div>
-  </div>
+</div>
 
-  <!-- ÉQUIPE -->
-  <div class="section" id="tab-equipe">
-    <div id="equipeList"><div class="loading">Chargement...</div></div>
-    <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px">
-      <div style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px">➕ Ajouter un apprenant</div>
-      <input id="addApprId" type="text" placeholder="ID apprenant (ex: ID-0005)" style="width:100%;padding:10px;background:rgba(255,255,255,.05);border:1.5px solid var(--border);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:8px">
-      <button onclick="ajouterEquipe()" style="width:100%;padding:12px;background:rgba(0,255,135,.12);border:1px solid rgba(0,255,135,.25);color:#00FF87;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">➕ Ajouter à mon équipe</button>
-    </div>
-  </div>
+<!-- BARRE FIXE BAS -->
+<div id="bottomBar" style="display:none" class="bottom-bar">
+  <button class="btn-sos" onclick="confirmerSOS()">🆘 SIGNAL D'URGENCE — Appeler le responsable</button>
 </div>
 
 <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
 
-<!-- BOUTON RETOUR DASHBOARD -->
-<a href="index.html?admin=FC2026ADMIN" style="position:fixed;bottom:90px;right:20px;z-index:9999;width:56px;height:56px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:22px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center" title="Retour Dashboard">🏠</a>
-
 <script>
-var APPS_URL = 'https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
-var CLEF = 'FC2026GUILDE';
-var RESP_ID = 'RESP_GUILDE';
-var currentTx = null;
+var APPS_URL = 'https://script.google.com/macros/s/AKfycbwKu9PwOOniBsTp-5WNHBx2fgsy2O45R8bwQ2uvqJsyPUQlNokIHoK1Y_KwP929x5xplA/exec';
+var RP = {id:'', prenom:'', nom:'', objectif:''};
+var pinBuffer = '';
 var searchType = 'code';
+var monEquipe = [];
+var tousApprenants = [];
+var selectionActive = {};
+var messageActuelId = null;
+var sosActifId = null;
+var refreshInterval = null;
+var alerteInterval = null;
 
-// ── ACCÈS ─────────────────────────────────────────────────────────────
-function checkGate(){
-  var val = document.getElementById('gateInput').value.trim();
-  if(val === CLEF){ openApp(); }
-  else { alert('Clef incorrecte.'); }
-}
+// ─── INIT ─────────────────────────────────────────────────────────────
+var p = new URLSearchParams(window.location.search);
+var urlId  = p.get('id')  || '';
+var urlPin = p.get('pin') || '';
+
+// Thème
 (function(){
-  var p = new URLSearchParams(window.location.search);
-  if(p.get('clef') === CLEF) openApp();
+  try{
+    if(localStorage.getItem('fc_theme') === 'light') document.body.classList.add('light');
+  }catch(e){}
 })();
 
-function openApp(){
-  document.getElementById('gateScreen').style.display='none';
-  document.getElementById('mainApp').classList.remove('hidden');
-  loadPending();
-  loadEquipe();
+if(urlId && urlPin){
+  document.getElementById('rpIdInput').value = urlId;
+  pinBuffer = urlPin;
+  submitPin();
 }
 
-// ── ONGLETS ───────────────────────────────────────────────────────────
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach(function(t,i){
-    t.classList.toggle('active',['retrait','pending','equipe'][i]===tab);
-  });
-  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
-  document.getElementById('tab-'+tab).classList.add('active');
-  if(tab==='pending') loadPending();
-  if(tab==='equipe')  loadEquipe();
+// ─── PIN ──────────────────────────────────────────────────────────────
+function pinKey(k){
+  if(k === 'del'){ pinBuffer = pinBuffer.slice(0,-1); }
+  else if(pinBuffer.length < 4){ pinBuffer += k; }
+  var d = document.getElementById('pinDisplay');
+  if(d) d.textContent = pinBuffer.replace(/./g,'●') || '——';
 }
 
-// ── RECHERCHE ─────────────────────────────────────────────────────────
-function setSearchType(type, btn){
-  searchType = type;
-  document.querySelectorAll('.search-tab').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  var input = document.getElementById('searchInput');
-  var hint  = document.getElementById('searchHint');
-  if(type==='code'){
-    input.placeholder='1234'; input.style.letterSpacing='4px'; input.style.fontSize='22px';
-    hint.textContent='Entrez le code 4 chiffres du bon';
-  } else if(type==='nom'){
-    input.placeholder='Prénom Nom'; input.style.letterSpacing='1px'; input.style.fontSize='16px';
-    hint.textContent='Entrez le nom ou prénom du client ou de l\'apprenant';
-  } else {
-    input.placeholder='06 12 34 56 78'; input.style.letterSpacing='1px'; input.style.fontSize='16px';
-    hint.textContent='Entrez le numéro de téléphone du client';
-  }
-  input.value='';
-}
-
-function doSearch(){
-  var query = document.getElementById('searchInput').value.trim();
-  if(!query){ alert('Entrez une valeur à rechercher.'); return; }
-  var el = document.getElementById('searchResult');
-  el.innerHTML='<div class="loading">Recherche en cours...</div>';
-
-  if(searchType==='code'){
-    fetch(APPS_URL+'?action=getTransaction&code='+encodeURIComponent(query))
-      .then(function(r){return r.json();})
-      .then(function(d){
-        if(!d.found){ el.innerHTML='<div class="loading">❌ Bon '+query+' introuvable.</div>'; return; }
-        // Auto-corriger statut intermédiaire
-        if(d.statut==='EN ATTENTE CONFIRMATION') d.statut='EN ATTENTE RETRAIT';
-        currentTx=d; el.innerHTML=buildCard(d);
-      })
-      .catch(function(){ el.innerHTML='<div class="loading">Erreur réseau.</div>'; });
-  } else {
-    fetch(APPS_URL+'?action=searchTransactionV2&type='+searchType+'&query='+encodeURIComponent(query))
-      .then(function(r){return r.json();})
-      .then(function(d){
-        if(!d.results||!d.results.length){ el.innerHTML='<div class="loading">❌ Aucun résultat pour "'+query+'".</div>'; return; }
-        if(d.results.length===1){ currentTx=d.results[0]; el.innerHTML=buildCard(d.results[0]); }
-        else {
-          el.innerHTML=d.results.map(function(tx){
-            return '<div class="pending-item" onclick="selectTx(\''+tx.code+'\')">'
-              +'<div class="pending-code">'+tx.code+'</div>'
-              +'<div class="pending-info"><div class="pending-name">'+tx.apprenant_prenom+' '+tx.apprenant_nom+'</div>'
-              +'<div class="pending-detail">'+tx.nb_articles+' article(s) · '+tx.statut+'</div></div></div>';
-          }).join('');
-        }
-      })
-      .catch(function(){ el.innerHTML='<div class="loading">Erreur réseau.</div>'; });
-  }
-}
-
-function selectTx(code){
-  document.getElementById('searchInput').value=code;
-  searchType='code';
-  document.querySelectorAll('.search-tab').forEach(function(b,i){b.classList.toggle('active',i===0);});
-  doSearch();
-}
-
-function buildCard(d){
-  var canValider = d.statut==='EN ATTENTE RETRAIT' || d.statut==='EN ATTENTE CONFIRMATION';
-  var html='<div class="result-card">'
-    +'<div class="result-header">'
-    +'<div class="result-code">'+d.code+'</div>'
-    +'<div class="result-ap">'+d.apprenant_prenom+' '+d.apprenant_nom+'</div>'
-    +'</div>'
-    +'<div class="info-row"><span class="info-lbl">Articles</span><span class="info-val gold">'+d.nb_articles+'</span></div>'
-    +'<div class="info-row"><span class="info-lbl">Mode paiement</span><span class="info-val">'+d.mode_paiement+'</span></div>'
-    +(d.participation_mensuelle>0?'<div class="info-row"><span class="info-lbl">Mensuel</span><span class="info-val green">'+d.participation_mensuelle+'€/mois</span></div>':'')
-    +'<div class="info-row"><span class="info-lbl">Date</span><span class="info-val">'+d.date_formulaire+'</span></div>'
-    +(d.statut==='RETIRÉ'?'<div class="info-row"><span class="info-lbl">Statut</span><span class="info-val green">✅ Déjà retiré</span></div>':'');
-
-  if(canValider){
-    html+='<div style="padding:16px"><button class="btn-valider" onclick="validerRemise()">✅ Articles remis — Valider</button></div>';
-  } else if(d.statut==='RETIRÉ'){
-    html+='<div style="padding:14px;text-align:center;color:#00D464;font-family:\'Exo 2\',sans-serif;font-weight:800">✅ Articles déjà remis</div>';
-  }
-  html+='</div>';
-  return html;
-}
-
-function validerRemise(){
-  if(!currentTx){ alert('Aucun bon sélectionné.'); return; }
-  if(!confirm('Confirmer la remise de '+currentTx.nb_articles+' article(s) pour le bon '+currentTx.code+' ?')) return;
-  var btn = document.querySelector('.btn-valider');
-  if(btn){ btn.disabled=true; btn.textContent='Validation...'; }
-
-  fetch(APPS_URL+'?action=validerRetraitResponsable&code='+encodeURIComponent(currentTx.code)+'&responsable_id='+encodeURIComponent(RESP_ID))
-    .then(function(r){return r.json();})
+function submitPin(){
+  var rpId = document.getElementById('rpIdInput').value.trim().toUpperCase();
+  if(!rpId){ document.getElementById('pinMsg').textContent = 'Entrez votre ID'; return; }
+  if(pinBuffer.length !== 4){ document.getElementById('pinMsg').textContent = 'PIN incomplet'; return; }
+  document.getElementById('pinMsg').textContent = 'Connexion...';
+  fetch(APPS_URL+'?action=ouvrirCockpitRP&id='+encodeURIComponent(rpId)+'&pin='+encodeURIComponent(pinBuffer))
+    .then(function(r){ return r.json(); })
     .then(function(d){
-      if(d.status==='ok'){ showMission(d); }
-      else { alert('Erreur : '+(d.message||'inconnue')); if(btn){btn.disabled=false;btn.textContent='✅ Articles remis — Valider';} }
+      if(d.status === 'ok'){
+        RP.id     = d.id;
+        RP.prenom = d.prenom;
+        RP.nom    = d.nom;
+        RP.objectif = d.objectif_session || '';
+        ouvrirInterface();
+      } else {
+        document.getElementById('pinMsg').textContent = d.message || 'Accès refusé';
+        pinBuffer = '';
+        document.getElementById('pinDisplay').textContent = '——';
+      }
     })
-    .catch(function(){ alert('Erreur réseau.'); if(btn){btn.disabled=false;btn.textContent='✅ Articles remis — Valider';} });
+    .catch(function(){
+      document.getElementById('pinMsg').textContent = 'Erreur réseau';
+    });
 }
 
-function showMission(d){
-  var now=new Date();
-  var dStr=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()+' '+String(now.getHours()).padStart(2,'0')+'h'+String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('missionSub').textContent=d.nb_articles+' article(s) remis · '+dStr;
-  document.getElementById('ticketFinal').innerHTML=
-    '<strong>REÇU DE REMISE — Form\'Com Level Up</strong><br><br>'
-    +'Bon : <strong>'+d.code+'</strong><br>'
-    +'Apprenant : <strong>'+d.apprenant_prenom+' '+d.apprenant_nom+'</strong><br>'
-    +'Articles remis : <strong>'+d.nb_articles+'</strong><br>'
-    +'Paiement : <strong>'+d.mode_paiement+'</strong><br>'
-    +(d.participation_mensuelle>0?'Mensuel : <strong>'+d.participation_mensuelle+'€/mois</strong><br>':'')
-    +'Date : <strong>'+dStr+'</strong><br><br>'
-    +'FormCom · RNA W783006284 · SIRET 93269758400013<br>'
-    +'formcom2016@gmail.com · Trappes, Yvelines<br>'
-    +'© FormCom 2026';
-  document.getElementById('searchView').classList.add('hidden');
-  document.getElementById('missionView').classList.remove('hidden');
+function ouvrirInterface(){
+  document.getElementById('pinScreen').style.display = 'none';
+  document.getElementById('mainContainer').style.display = 'block';
+  document.getElementById('bottomBar').style.display = 'block';
+  document.getElementById('rpNomDisplay').textContent = RP.prenom + ' ' + RP.nom;
+  document.getElementById('rpInfoDisplay').textContent = RP.id + ' · ' + RP.prenom + ' ' + RP.nom;
+  if(RP.objectif) document.getElementById('objectifInput').value = RP.objectif;
+  chargerEquipe();
+  chargerSelection();
+  verifierMessages();
+  verifierSOS();
+  refreshInterval = setInterval(chargerEquipe, 60000);
+  alerteInterval  = setInterval(function(){ verifierMessages(); verifierSOS(); }, 30000);
 }
 
-function resetSearch(){
-  document.getElementById('searchInput').value='';
-  document.getElementById('searchResult').innerHTML='';
-  document.getElementById('searchView').classList.remove('hidden');
-  document.getElementById('missionView').classList.add('hidden');
-  currentTx=null;
+function deconnexion(){
+  if(!confirm('Se déconnecter ?')) return;
+  clearInterval(refreshInterval);
+  clearInterval(alerteInterval);
+  document.getElementById('mainContainer').style.display = 'none';
+  document.getElementById('bottomBar').style.display = 'none';
+  document.getElementById('pinScreen').style.display = 'flex';
+  pinBuffer = '';
+  document.getElementById('pinDisplay').textContent = '——';
+  document.getElementById('rpIdInput').value = '';
+  document.getElementById('pinMsg').textContent = '';
+  RP = {id:'', prenom:'', nom:'', objectif:''};
 }
 
-// ── EN ATTENTE ────────────────────────────────────────────────────────
-function loadPending(){
-  var el=document.getElementById('pendingList');
-  el.innerHTML='<div class="loading">Chargement...</div>';
-  fetch(APPS_URL+'?action=listTransactions')
-    .then(function(r){return r.json();})
+// ─── TABS ─────────────────────────────────────────────────────────────
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', i===n); });
+  document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
+  if(n===3) chargerNotes();
+}
+
+// ─── ÉQUIPE ──────────────────────────────────────────────────────────
+function chargerEquipe(){
+  fetch(APPS_URL+'?action=getEquipeJourStats&rp_id='+encodeURIComponent(RP.id))
+    .then(function(r){ return r.json(); })
     .then(function(d){
-      var list=(d.transactions||[]).filter(function(t){
-        return t.statut==='EN ATTENTE RETRAIT'||t.statut==='EN ATTENTE CONFIRMATION';
-      });
-      if(!list.length){el.innerHTML='<div class="loading">✅ Aucun bon en attente.</div>';return;}
-      el.innerHTML=list.map(function(t){
-        return '<div class="pending-item" onclick="selectTxFromPending(\''+t.code+'\')">'
-          +'<div class="pending-code">'+t.code+'</div>'
-          +'<div class="pending-info">'
-          +'<div class="pending-name">'+t.apprenant_prenom+' '+t.apprenant_nom+'</div>'
-          +'<div class="pending-detail">'+t.nb_articles+' article(s) · '+t.date_formulaire+'</div>'
-          +'</div>'
-          +'<span style="font-size:10px;font-weight:700;padding:4px 8px;border-radius:10px;background:rgba(245,166,35,.15);color:#F5A623">⏳</span>'
-          +'</div>';
-      }).join('');
-    }).catch(function(){el.innerHTML='<div class="loading">Erreur réseau.</div>';});
+      monEquipe = d.equipe || [];
+      renderEquipe();
+    }).catch(function(){});
 }
 
-function selectTxFromPending(code){
-  showTab('retrait');
-  document.getElementById('searchInput').value=code;
-  searchType='code';
-  document.querySelectorAll('.search-tab').forEach(function(b,i){b.classList.toggle('active',i===0);});
-  doSearch();
+function renderEquipe(){
+  var el = document.getElementById('equipeList');
+  var title = document.getElementById('equipeTitle');
+  if(!el) return;
+  if(monEquipe.length === 0){
+    title.textContent = 'Équipe non constituée';
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:12px">Allez dans "Sélection" pour constituer votre équipe du jour</div>';
+    return;
+  }
+  title.textContent = 'Mon équipe · ' + monEquipe.length + ' apprenant' + (monEquipe.length > 1 ? 's' : '');
+  var colors = ['#1B2B8F','#059652','#7C3AED','#D97706','#0891B2'];
+  el.innerHTML = monEquipe.map(function(a, idx){
+    // Déterminer le niveau d'alerte (simulé — en production vérifier la dernière activité)
+    var alertClass = '';
+    var alertMsg = '';
+    if(a.contacts === 0 && a.articles === 0 && a.pts_jour === 0){
+      alertClass = 'alert-rouge';
+      alertMsg = '⚠️ Aucune activité détectée';
+    } else if(a.articles === 0){
+      alertClass = 'alert-orange';
+      alertMsg = '🟡 Pas d\'article encore';
+    }
+    var letter = a.prenom.charAt(0).toUpperCase();
+    var color  = colors[idx % colors.length];
+    var dot    = alertClass === 'alert-rouge' ? 'dot-red' : (alertClass ? 'dot-orange' : 'dot-green');
+
+    return '<div class="ap-card '+alertClass+'">'
+      +'<div class="ap-card-header">'
+        +'<div class="ap-avatar" style="background:'+color+'">'+letter+'</div>'
+        +'<div><div class="ap-name">'+a.prenom+' '+a.nom+'</div><div class="ap-id">'+a.id+'</div></div>'
+        +'<div class="ap-status"><span class="status-dot '+dot+'"></span></div>'
+      +'</div>'
+      +(alertMsg ? '<div class="ap-alert-txt">'+alertMsg+'</div>' : '')
+      +'<div class="ap-stats">'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+a.pts_jour+'</div><div class="ap-stat-lbl">XP</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+a.articles+'</div><div class="ap-stat-lbl">Art.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+a.contacts+'</div><div class="ap-stat-lbl">Cont.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+a.refus+'</div><div class="ap-stat-lbl">Ref.</div></div>'
+      +'</div>'
+      +'<div class="ap-actions">'
+        +'<button class="ap-btn btn-note" onclick="ouvrirNote(\''+a.id+'\',\''+a.prenom+'\')">📝 Note</button>'
+        +'<button class="ap-btn btn-presence" onclick="validerPresence(\''+a.id+'\',\''+a.prenom+'\')">✅ Présence</button>'
+      +'</div>'
+    +'</div>';
+  }).join('');
 }
 
-// ── ÉQUIPE ────────────────────────────────────────────────────────────
-function loadEquipe(){
-  var el=document.getElementById('equipeList');
-  el.innerHTML='<div class="loading">Chargement...</div>';
-  fetch(APPS_URL+'?action=getEquipe&responsable_id='+encodeURIComponent(RESP_ID))
-    .then(function(r){return r.json();})
+// ─── SÉLECTION ────────────────────────────────────────────────────────
+function chargerSelection(){
+  fetch(APPS_URL+'?action=getEquipeJour&rp_id='+encodeURIComponent(RP.id))
+    .then(function(r){ return r.json(); })
     .then(function(d){
-      if(!d.equipe||!d.equipe.length){el.innerHTML='<div class="loading">Aucun apprenant dans ton équipe.</div>';return;}
-      el.innerHTML=d.equipe.map(function(a){
-        return '<div class="equipe-item">'
-          +'<div class="equipe-av">'+a.prenom.charAt(0)+'</div>'
-          +'<div><div class="equipe-name">'+a.prenom+' '+a.nom+'</div>'
-          +'<div class="equipe-statut">'+a.id+' · '+a.statut+' · '+a.pts.toLocaleString('fr-FR')+' XP</div></div>'
-          +'<button class="btn-retirer" onclick="retirerEquipe(\''+a.id+'\')">Retirer</button>'
+      tousApprenants = d.tous_apprenants || [];
+      selectionActive = {};
+      (d.mon_equipe || []).forEach(function(id){ selectionActive[id] = true; });
+      renderSelection();
+    }).catch(function(){});
+}
+
+function renderSelection(){
+  var el = document.getElementById('selectionList');
+  if(!el) return;
+  el.innerHTML = tousApprenants.map(function(a){
+    var sel    = selectionActive[a.id] || false;
+    var autre  = a.deja_en_equipe || false;
+    var cls    = sel ? 'selected' : (autre ? 'autre-equipe' : '');
+    var badge  = sel ? '<span class="select-badge badge-moi">Mon équipe</span>' : (autre ? '<span class="select-badge badge-autre">Autre équipe</span>' : '');
+    return '<div class="select-card '+cls+'" onclick="toggleSelection(\''+a.id+'\')">'
+      +'<div class="select-check">'+(sel ? '✓' : '')+'</div>'
+      +'<div class="select-name">'+a.prenom+' '+a.nom+'<div style="font-size:9px;color:var(--muted);font-weight:400;margin-top:1px">'+a.id+' · '+a.statut+'</div></div>'
+      +badge
+    +'</div>';
+  }).join('');
+}
+
+function toggleSelection(id){
+  if(selectionActive[id]) delete selectionActive[id];
+  else selectionActive[id] = true;
+  renderSelection();
+}
+
+function validerEquipe(){
+  var ids = Object.keys(selectionActive);
+  var obj = document.getElementById('objectifInput').value.trim();
+  if(ids.length === 0){ alert('Sélectionnez au moins un apprenant'); return; }
+  var url = APPS_URL+'?action=setEquipeJour&rp_id='+encodeURIComponent(RP.id)
+    +'&apprenant_ids='+encodeURIComponent(ids.join(','));
+  if(obj) url += '&objectif='+encodeURIComponent(obj);
+  fetch(url).then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok'){
+        alert('✅ Équipe constituée ! '+ids.length+' apprenant'+(ids.length>1?'s':''));
+        RP.objectif = obj;
+        chargerEquipe();
+        switchTab(0);
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+// ─── PARFUM ───────────────────────────────────────────────────────────
+function setSearchType(type, el){
+  searchType = type;
+  document.querySelectorAll('.s-tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  var input = document.getElementById('bonSearchInput');
+  var hint  = document.getElementById('searchHint');
+  if(type === 'code'){ input.placeholder = 'CODE'; hint.textContent = 'Entrez le code 4 chiffres du bon'; input.style.letterSpacing='4px'; }
+  if(type === 'nom'){  input.placeholder = 'NOM DU CLIENT'; hint.textContent = 'Entrez le nom du client'; input.style.letterSpacing='0'; }
+  if(type === 'tel'){  input.placeholder = '06XXXXXXXX'; hint.textContent = 'Entrez le numéro de téléphone'; input.style.letterSpacing='1px'; }
+  input.value = '';
+  document.getElementById('bonResult').style.display = 'none';
+}
+
+function rechercherBon(){
+  var q = document.getElementById('bonSearchInput').value.trim();
+  if(!q){ alert('Entrez une valeur de recherche'); return; }
+  var el = document.getElementById('bonResult');
+  el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted)">Recherche...</div>';
+  el.style.display = 'block';
+  el.className = 'bon-result';
+
+  fetch(APPS_URL+'?action=searchTransactionV2&query='+encodeURIComponent(q)+'&type='+searchType)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(!d.results || d.results.length === 0){
+        el.className = 'bon-result bon-err';
+        el.innerHTML = '<div class="bon-title" style="color:var(--red)">❌ Bon non trouvé</div><div style="font-size:12px;color:var(--muted)">Vérifiez le code ou le nom</div>';
+        return;
+      }
+      var tx = d.results[0];
+      if(tx.statut === 'RETIRÉ'){
+        el.className = 'bon-result bon-already';
+        el.innerHTML = '<div class="bon-title" style="color:#F5A623">⚠️ Bon déjà utilisé</div>'
+          +'<div class="bon-row"><span class="bon-lbl">Code</span><span class="bon-val">'+tx.code+'</span></div>'
+          +'<div class="bon-row"><span class="bon-lbl">Client</span><span class="bon-val">'+tx.client_prenom+' '+tx.client_nom+'</span></div>'
+          +'<div class="bon-row"><span class="bon-lbl">Retiré le</span><span class="bon-val" style="color:#F5A623">'+tx.date_retrait+'</span></div>';
+        return;
+      }
+      el.className = 'bon-result bon-ok';
+      el.innerHTML = '<div class="bon-title" style="color:#00C853">✅ Bon valide — Non utilisé</div>'
+        +'<div class="bon-row"><span class="bon-lbl">Code</span><span class="bon-val">'+tx.code+'</span></div>'
+        +'<div class="bon-row"><span class="bon-lbl">Apprenant</span><span class="bon-val" style="color:#60A5FA">'+tx.apprenant_prenom+' '+tx.apprenant_nom+'</span></div>'
+        +'<div class="bon-row"><span class="bon-lbl">Articles</span><span class="bon-val">'+tx.nb_articles+' article'+(tx.nb_articles>1?'s':'')+'</span></div>'
+        +'<div class="bon-row"><span class="bon-lbl">Montant</span><span class="bon-val" style="color:#F5A623">'+Number(tx.montant).toLocaleString('fr-FR',{minimumFractionDigits:2})+'€</span></div>'
+        +'<button class="valider-btn" onclick="validerBon(\''+tx.code+'\')">🎁 Remettre le parfum · Valider</button>';
+    }).catch(function(){
+      el.className = 'bon-result bon-err';
+      el.innerHTML = '<div class="bon-title" style="color:var(--red)">Erreur réseau</div>';
+    });
+}
+
+function validerBon(code){
+  if(!confirm('Confirmer la remise du parfum pour le bon '+code+' ?')) return;
+  fetch(APPS_URL+'?action=validerRetraitResponsable&code='+encodeURIComponent(code)+'&responsable_id='+encodeURIComponent(RP.id))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok'){
+        var el = document.getElementById('bonResult');
+        el.className = 'bon-result';
+        el.style.background = 'rgba(0,200,83,.06)';
+        el.innerHTML = '<div style="text-align:center;padding:10px"><div style="font-size:36px">🎁</div><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#00C853;margin-top:8px">Parfum remis !</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Bon invalidé — ne peut plus être utilisé</div></div>';
+        try{ if(typeof confetti === 'function') confetti({particleCount:60,spread:70,origin:{y:.4},colors:['#00C853','#06D6A0','#fff']}); }catch(e){}
+      } else {
+        alert('Erreur : '+(d.message||'inconnue'));
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+// ─── NOTES ────────────────────────────────────────────────────────────
+function chargerNotes(){
+  var el = document.getElementById('notesList');
+  el.innerHTML = '<div style="text-align:center;padding:14px;color:var(--muted)">Chargement...</div>';
+
+  var html = '';
+  // Ajouter zone de note pour chaque apprenant de l'équipe
+  monEquipe.forEach(function(a){
+    html += '<div class="note-card">'
+      +'<div class="note-header"><span class="note-ap">'+a.prenom+' '+a.nom+'</span></div>'
+      +'<textarea id="note_'+a.id+'" class="add-note-area" placeholder="Note pédagogique pour '+a.prenom+'..."></textarea>'
+      +'<button class="add-note-btn" onclick="envoyerNote(\''+a.id+'\',\''+a.prenom+'\')">📝 Enregistrer la note</button>'
+    +'</div>';
+  });
+
+  if(!html) html = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">Constituez votre équipe d\'abord</div>';
+  el.innerHTML = html;
+
+  // Charger les notes existantes
+  fetch(APPS_URL+'?action=getNotesRP&rp_id='+encodeURIComponent(RP.id)+'&date_only=1')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      // Notes existantes affichées en haut
+      if(d.notes && d.notes.length > 0){
+        var notesHtml = '<div class="sec-title" style="margin-bottom:8px">Notes enregistrées aujourd\'hui ('+d.notes.length+')</div>';
+        d.notes.forEach(function(n){
+          notesHtml += '<div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:10px;padding:10px 12px;margin-bottom:8px">'
+            +'<div style="display:flex;justify-content:space-between;margin-bottom:4px">'
+              +'<span style="font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;color:#A78BFA">'+n.apprenant_prenom+'</span>'
+              +'<span style="font-size:10px;color:var(--muted)">'+n.heure+'</span>'
+            +'</div>'
+            +'<div style="font-size:12px;color:var(--text);line-height:1.5">'+n.note+'</div>'
           +'</div>';
-      }).join('');
-    }).catch(function(){el.innerHTML='<div class="loading">Erreur réseau.</div>';});
+        });
+        el.innerHTML = notesHtml + '<div class="sec-title" style="margin-top:14px">Ajouter une note</div>' + html;
+      }
+    }).catch(function(){});
 }
 
-function ajouterEquipe(){
-  var id=document.getElementById('addApprId').value.trim();
-  if(!id){alert('Entrez un ID apprenant.');return;}
-  fetch(APPS_URL+'?action=gererEquipe&responsable_id='+encodeURIComponent(RESP_ID)+'&apprenant_id='+encodeURIComponent(id)+'&equipe_action=ajouter')
-    .then(function(r){return r.json();})
-    .then(function(){document.getElementById('addApprId').value='';loadEquipe();alert('✅ Apprenant ajouté à ton équipe.');})
-    .catch(function(){alert('Erreur réseau.');});
+function envoyerNote(apprId, apprPrenom){
+  var note = (document.getElementById('note_'+apprId)||{}).value || '';
+  if(!note.trim()){ alert('Entrez une note'); return; }
+  fetch(APPS_URL+'?action=addNoteRP&rp_id='+encodeURIComponent(RP.id)+'&rp_prenom='+encodeURIComponent(RP.prenom)
+    +'&apprenant_id='+encodeURIComponent(apprId)+'&apprenant_prenom='+encodeURIComponent(apprPrenom)
+    +'&note='+encodeURIComponent(note.trim()))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok'){
+        var ta = document.getElementById('note_'+apprId);
+        if(ta) ta.value = '';
+        chargerNotes();
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
 }
 
-function retirerEquipe(id){
-  if(!confirm('Retirer cet apprenant de ton équipe ?'))return;
-  fetch(APPS_URL+'?action=gererEquipe&responsable_id='+encodeURIComponent(RESP_ID)+'&apprenant_id='+encodeURIComponent(id)+'&equipe_action=retirer')
-    .then(function(r){return r.json();})
-    .then(function(){loadEquipe();})
-    .catch(function(){alert('Erreur réseau.');});
+function ouvrirNote(apprId, apprPrenom){
+  switchTab(3);
+  setTimeout(function(){
+    var ta = document.getElementById('note_'+apprId);
+    if(ta){ ta.focus(); ta.scrollIntoView({behavior:'smooth'}); }
+  }, 200);
 }
 
-// ── THÈME ─────────────────────────────────────────────────────────────
+// ─── PRÉSENCE ─────────────────────────────────────────────────────────
+function validerPresence(apprId, apprPrenom){
+  if(!confirm('Valider la présence terrain de '+apprPrenom+' ?')) return;
+  fetch(APPS_URL+'?action=validerPresenceRP&rp_id='+encodeURIComponent(RP.id)+'&apprenant_id='+encodeURIComponent(apprId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok') alert('✅ Présence de '+apprPrenom+' validée');
+    }).catch(function(){});
+}
+
+// ─── MESSAGES ─────────────────────────────────────────────────────────
+function verifierMessages(){
+  fetch(APPS_URL+'?action=getMessage&id='+encodeURIComponent(RP.id)+'&type=rp')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.messages && d.messages.length > 0){
+        var msg = d.messages[0];
+        messageActuelId = msg.msg_id;
+        document.getElementById('msgFrom').textContent = msg.expediteur_type === 'ADMIN' ? '👑 Message de l\'Administrateur' : '⚔️ Message du Responsable';
+        document.getElementById('msgText').textContent = msg.message;
+        document.getElementById('msgPopup').classList.add('show');
+        try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
+      }
+    }).catch(function(){});
+}
+
+function marquerLu(){
+  if(!messageActuelId) return;
+  fetch(APPS_URL+'?action=marquerMessageLu&msg_id='+encodeURIComponent(messageActuelId)+'&id='+encodeURIComponent(RP.id))
+    .catch(function(){});
+  document.getElementById('msgPopup').classList.remove('show');
+  messageActuelId = null;
+}
+
+// ─── RALLYE ───────────────────────────────────────────────────────────
+function setRallyeMsg(txt){ document.getElementById('rallyeMsg').value = txt; }
+
+function envoyerRallye(){
+  var msg = document.getElementById('rallyeMsg').value.trim();
+  if(!msg){ alert('Entrez un message'); return; }
+  if(!confirm('Envoyer ce message à toute votre équipe ?\n\n"'+msg+'"')) return;
+  fetch(APPS_URL+'?action=envoyerMessage&expediteur_id='+encodeURIComponent(RP.id)
+    +'&destinataires=MON_EQUIPE_'+encodeURIComponent(RP.id)
+    +'&message='+encodeURIComponent(msg))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status === 'ok'){
+        document.getElementById('rallyeMsg').value = '';
+        alert('✅ Message envoyé à votre équipe !');
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+// ─── SOS ──────────────────────────────────────────────────────────────
+function verifierSOS(){
+  fetch(APPS_URL+'?action=getSOSActifs&rp_id='+encodeURIComponent(RP.id))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var banner = document.getElementById('sosBanner');
+      if(d.sos && d.sos.length > 0){
+        var s = d.sos[0];
+        sosActifId = s.sos_id;
+        document.getElementById('sosBannerText').textContent = '🆘 '+s.apprenant_prenom+' a besoin d\'aide ! — '+s.heure;
+        banner.style.display = 'block';
+        try{ if(navigator.vibrate) navigator.vibrate([300,100,300,100,500]); }catch(e){}
+      } else {
+        banner.style.display = 'none';
+        sosActifId = null;
+      }
+    }).catch(function(){});
+}
+
+function resoudreSOS(){
+  if(!sosActifId) return;
+  fetch(APPS_URL+'?action=resoudreSOS&sos_id='+encodeURIComponent(sosActifId))
+    .then(function(r){ return r.json(); })
+    .then(function(){ document.getElementById('sosBanner').style.display = 'none'; sosActifId = null; })
+    .catch(function(){});
+}
+
+// ─── THÈME ────────────────────────────────────────────────────────────
 function toggleTheme(){
-  var light=document.body.classList.toggle('light');
-  document.getElementById('themeBtn').textContent=light?'🌙':'☀️';
-  try{localStorage.setItem('fc_theme',light?'light':'dark');}catch(e){}
+  var light = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = light ? '☀️' : '🌙';
+  try{ localStorage.setItem('fc_theme', light ? 'light' : 'dark'); }catch(e){}
 }
-(function(){
-  try{if(localStorage.getItem('fc_theme')==='light'){document.body.classList.add('light');document.getElementById('themeBtn').textContent='🌙';}}catch(e){}
-})();
 </script>
 </body>
 </html>
