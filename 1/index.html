@@ -103,15 +103,18 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
   <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
 
-  <!-- NAVIGATION COMPACTE -->
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <a href="admin_add_apprenant.html" target="_blank" style="padding:10px 16px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">➕ Nouvel apprenant</a>
-    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:10px 16px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</a>
+  <!-- NAVIGATION PRINCIPALE -->
+  <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+    <a href="admin_add_apprenant.html" target="_blank" style="padding:9px 14px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">➕ Nouvel apprenant</a>
+    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:9px 14px;background:rgba(124,58,237,.08);border:1.5px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">⚔️ Resp. Péd.</a>
+    <button onclick="switchAdminTab('talents')" style="padding:9px 14px;background:rgba(6,214,160,.08);border:1.5px solid rgba(6,214,160,.2);color:#06D6A0;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">🌱 Talents <span id="talentsBadgeNav" style="display:none;background:#E8192C;color:#fff;font-size:9px;font-weight:900;border-radius:99px;padding:1px 6px">0</span></button>
+    <button onclick="switchAdminTab('emargement')" style="padding:9px 14px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">📋 Émargement</button>
     <div style="position:relative;margin-left:auto">
-      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:10px 14px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">⚙️ ▾</button>
+      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 12px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
-        <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs en masse</button>
-        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes Sheet</button>
+        <button onclick="switchAdminTab('responsables');closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">⚔️ Responsables Péd.</button>
+        <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs</button>
+        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes</button>
       </div>
     </div>
   </div>
@@ -138,12 +141,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     </div>
   </div>
   <!-- ONGLETS ADMIN -->
-  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin:16px 0 0">
-    <button onclick="switchAdminTab('responsables')" id="tabBtnResponsables" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">⚔️ Resp. Péd.</button>
-    <button onclick="switchAdminTab('apprenants')" id="tabBtnApprenants" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid #2979FF;color:#2979FF;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Apprenants</button>
-    <button onclick="switchAdminTab('talents')" id="tabBtnTalents" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Talents <span id="talentsBadge" style="display:none;background:#E8192C;color:#fff;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:4px">0</span></button>
-    <button onclick="switchAdminTab('emargement')" id="tabBtnEmargement" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Emargement</button>
-  </div>
+  
 
   <!-- SECTION APPRENANTS -->
   <div id="sectionApprenants" style="padding-top:16px">
@@ -406,6 +404,7 @@ function initShell(){
     chargerListeApprenants(function(){
       loadAdminDashboard();
       initAdminExtras();
+      switchAdminTab('apprenants');
     });
     setInterval(loadAdminDashboard, 25000);
     return;
@@ -630,7 +629,9 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   var bourseOk = stats.bourse_debloquee===true;
   var pin = stats.pin||'????';
   var dateInscription = stats.date_inscription||'—';
-  var telephone = stats.telephone||'';
+  var telRaw = stats.telephone||'';
+  // Corriger le zéro supprimé par Google Sheets (06... stocké comme nombre)
+  var telephone = telRaw ? (String(telRaw).match(/^[67]/) ? '0'+String(telRaw) : String(telRaw)) : '';
   var email = stats.email||'';
   var adresse = stats.adresse||'';
   var streak = stats.streak||0;
@@ -1617,6 +1618,12 @@ function renderTalents(filtre){
     badge.style.display = attente.length > 0 ? 'inline-flex' : 'none';
     badge.textContent = attente.length;
   }
+  // Mettre à jour aussi le badge dans la navigation principale
+  var badgeNav = document.getElementById('talentsBadgeNav');
+  if(badgeNav){
+    badgeNav.style.display = attente.length > 0 ? 'inline' : 'none';
+    badgeNav.textContent = attente.length;
+  }
   // Alimenter les compteurs pipeline
   var cA = document.getElementById('countAttente');
   var cC = document.getElementById('countContacte');
@@ -1852,5 +1859,7 @@ initShell();
     <button onclick="fermerModalEnvoi()" style="width:100%;padding:12px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:12px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Annuler</button>
   </div>
 </div>
-</body>
+ <script>
+  document.getElementById("adminWrap").style.display = "block";
+</script></body>
 </html>
