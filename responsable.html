@@ -82,7 +82,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .ap-alert{font-size:10px;color:var(--red);font-weight:700;margin-bottom:6px}
 
 /* SLIDE-OVER FICHE */
-.fiche-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500}
+.fiche-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;cursor:pointer}
+.fiche-panel *{pointer-events:all}
 .fiche-overlay.show{display:block}
 .fiche-panel{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 16px;z-index:501;max-height:85vh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
 .fiche-panel.show{transform:translateY(0)}
@@ -207,9 +208,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </div>
 
 <!-- FICHE APPRENANT SLIDE-OVER -->
-<div class="fiche-overlay" id="ficheOverlay" onclick="fermerFiche()"></div>
+<div class="fiche-overlay" id="ficheOverlay"></div>
 <div class="fiche-panel" id="fichePanel">
-  <div class="fiche-handle"></div>
+  <div class="fiche-handle" onclick="fermerFiche()" style="cursor:pointer;padding:8px 0"></div>
   <div id="ficheContent"></div>
 </div>
 
@@ -320,9 +321,24 @@ var COLORS = ['#1B2B8F','#059652','#7C3AED','#D97706','#0891B2','#BE185D','#065F
 (function(){
   try{ if(localStorage.getItem('fc_theme')==='light') document.body.classList.add('light'); }catch(e){}
   var p = new URLSearchParams(window.location.search);
-  var uid = p.get('id')||'', upin = p.get('pin')||'';
+  var uid   = p.get('id')||'';
+  var upin  = p.get('pin')||'';
+  var admin = p.get('admin')||'';
   if(uid){ document.getElementById('rpIdInput').value = uid.toUpperCase(); }
-  if(uid && upin){ pinBuffer = upin; submitPin(); }
+  // Bypass PIN si accès admin
+  if(uid && admin === 'FC2026ADMIN'){
+    pinBuffer = 'ADMIN_BYPASS';
+    fetch(APPS_URL+'?action=ouvrirCockpitRP&id='+encodeURIComponent(uid)+'&pin=ADMIN_BYPASS')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if(d.status==='ok'){
+          RP.id=d.id; RP.prenom=d.prenom; RP.nom=d.nom; RP.objectif=d.objectif_session||'';
+          ouvrirInterface();
+        }
+      }).catch(function(){});
+  } else if(uid && upin){
+    pinBuffer = upin; submitPin();
+  }
 })();
 
 // ── PIN ──────────────────────────────────────────────────────────────
@@ -462,7 +478,9 @@ function ouvrirFiche(idx){
     .then(function(d){ renderFiche(a, color, letter, d.notes||[]); })
     .catch(function(){ renderFiche(a, color, letter, []); });
 
-  document.getElementById('ficheOverlay').classList.add('show');
+  var overlay = document.getElementById('ficheOverlay');
+  overlay.classList.add('show');
+  overlay.onclick = fermerFiche;
   document.getElementById('fichePanel').classList.add('show');
 }
 
@@ -499,9 +517,10 @@ function fermerFiche(){
 }
 
 function envoyerNote(){
-  if(!ficheApprenant) return;
-  var note=(document.getElementById('noteInput')||{}).value||'';
-  if(!note.trim()){ alert('Entrez une note'); return; }
+  if(!ficheApprenant){ alert('Erreur: apprenant non sélectionné'); return; }
+  var noteEl = document.getElementById('noteInput');
+  var note = noteEl ? noteEl.value.trim() : '';
+  if(!note){ alert('Entrez une note avant d\'enregistrer'); return; }
   fetch(APPS_URL+'?action=addNoteRP&rp_id='+encodeURIComponent(RP.id)+'&rp_prenom='+encodeURIComponent(RP.prenom)
     +'&apprenant_id='+encodeURIComponent(ficheApprenant.id)+'&apprenant_prenom='+encodeURIComponent(ficheApprenant.prenom)
     +'&note='+encodeURIComponent(note.trim()))
