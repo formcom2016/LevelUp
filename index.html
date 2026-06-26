@@ -106,7 +106,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <!-- NAVIGATION COMPACTE -->
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
     <a href="admin_add_apprenant.html" target="_blank" style="padding:10px 16px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">➕ Nouvel apprenant</a>
-    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:10px 16px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</a>
+    <button onclick="switchAdminTab('responsables')" style="padding:10px 16px;background:rgba(124,58,237,.08);border:1.5px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</button>
     <div style="position:relative;margin-left:auto">
       <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:10px 14px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">⚙️ ▾</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
@@ -147,12 +147,6 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 
   <!-- SECTION APPRENANTS -->
   <div id="sectionApprenants" style="padding-top:16px">
-  <!-- BANDEAU RP ACTIFS -->
-  <div id="rpBandeau" style="display:none;margin-bottom:12px">
-    <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(124,58,237,.7);margin-bottom:8px;font-family:Exo 2,sans-serif">⚔️ Chefs d'équipe actifs</div>
-    <div id="rpBandeauList" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-  </div>
-
   <div style="position:relative;margin-bottom:14px">
     <input id="searchApprenant" oninput="filtrerListeApprenants(this.value)" placeholder="Rechercher un apprenant..." style="width:100%;padding:12px 14px 12px 38px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
     <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px">&#x1F50D;</span>
@@ -412,11 +406,6 @@ function initShell(){
     chargerListeApprenants(function(){
       loadAdminDashboard();
       initAdminExtras();
-      switchAdminTab('apprenants');
-      fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN')
-        .then(function(r){ return r.json(); })
-        .then(function(d){ if(typeof updateRPBandeau==='function') updateRPBandeau(d.responsables||[]); })
-        .catch(function(){});
     });
     setInterval(loadAdminDashboard, 25000);
     return;
@@ -503,7 +492,6 @@ function admClick(e){
   else if(action==='brsreset') resetBourse(id, prenom);
   else if(action==='projetEnregistrer') enregistrerProjet(id);
   else if(action==='voirNotesRP'){ var prenom2 = btn.dataset.prenom||''; voirNotesRP(id, prenom2); }
-  else if(action==='bloquerRP'){ bloquerRP(id, btn.dataset.prenom||''); }
   else if(action==='projetActiver')     toggleProjet(id, true);
   else if(action==='projetDesactiver')  toggleProjet(id, false);
   else if(action==='dipl') diplomerApprenant(id, prenom);
@@ -925,67 +913,26 @@ function loadResponsables(){
   fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN')
     .then(function(r){ return r.json(); })
     .then(function(d){
-      // Mettre à jour le bandeau compact sur la page d'accueil
-      updateRPBandeau(d.responsables||[]);
       if(!d.responsables || d.responsables.length === 0){
-        el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Aucun responsable créé<br><span style="font-size:11px;opacity:.6">Cliquez sur + Nouveau RP pour commencer</span></div>';
+        el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucun responsable créé</div>';
         return;
       }
       el.innerHTML = d.responsables.map(function(rp){
-        var letter = rp.prenom.charAt(0).toUpperCase();
-        var lienCockpit = 'responsable.html?id='+rp.id+'&admin=FC2026ADMIN';
-        var msgWA = encodeURIComponent('Bonjour '+rp.prenom+' ! Voici vos acces Level Up : https://levelupbyformcom.netlify.app/responsable.html | ID : '+rp.id+' | PIN : '+rp.pin);
-        return '<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:14px;margin-bottom:12px">'
-          // Header
-          +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
-            +'<div style="width:42px;height:42px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#fff;flex-shrink:0">'+letter+'</div>'
-            +'<div style="flex:1">'
-              +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
-              +'<div style="font-size:10px;color:var(--muted);margin-top:1px">'+rp.id+' &nbsp;·&nbsp; PIN : <strong style="color:#A78BFA">'+rp.pin+'</strong></div>'
-            +'</div>'
-            +'<span style="padding:3px 10px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
+        return '<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:12px 14px;margin-bottom:10px">'
+          +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+            +'<div style="width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
+            +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
+            +'<div style="font-size:10px;color:var(--muted)">'+rp.id+' · PIN : '+rp.pin+'</div></div>'
+            +'<span style="padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
           +'</div>'
-          // Objectif session
-          +(rp.objectif_session?'<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:7px 10px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:8px;margin-bottom:10px">🎯 '+rp.objectif_session+'</div>':'')
-          // Stats équipe (indicateurs)
-          +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">'
-            +'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#00C853">—</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Articles équipe</div></div>'
-            +'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#06D6A0">—</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Parfums validés</div></div>'
-            +'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#A78BFA">—</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Abonnements</div></div>'
-          +'</div>'
-          // Indicateurs "bientôt"
-          +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">'
-            +'<div style="background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center;opacity:.5"><div style="font-size:14px">🔒</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Talents contactés</div></div>'
-            +'<div style="background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center;opacity:.5"><div style="font-size:14px">🔒</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Bourse RP</div></div>'
-            +'<div style="background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center;opacity:.5"><div style="font-size:14px">🔒</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Score péda.</div></div>'
-          +'</div>'
-          // Boutons actions
-          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
-            +'<a href="'+lienCockpit+'" target="_blank" style="padding:10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">⚔️ Ouvrir cockpit</a>'
-            +'<a href="https://wa.me/?text='+msgWA+'" target="_blank" style="padding:10px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);color:#25D366;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">📤 Envoyer accès</a>'
-          +'</div>'
-          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">'
-            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:10px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📝 Notes du jour</button>'
-            +'<button class="adm-btn" data-action="bloquerRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:10px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:#FF6B6B;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">'+(rp.statut==='ACTIF'?'🔒 Bloquer':'🔓 Débloquer')+'</button>'
+          +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
+          +'<div style="display:flex;gap:6px">'
+            +'<a href="responsable.html?id='+rp.id+'&admin=FC2026ADMIN" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Ouvrir cockpit</a>'
+            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
           +'</div>'
         +'</div>';
       }).join('');
     }).catch(function(){ el.innerHTML = '<div style="color:var(--red);text-align:center;padding:12px">Erreur de chargement</div>'; });
-}
-
-function updateRPBandeau(responsables){
-  var bandeau = document.getElementById('rpBandeau');
-  var list    = document.getElementById('rpBandeauList');
-  if(!bandeau||!list) return;
-  var actifs = responsables.filter(function(r){ return r.statut==='ACTIF'; });
-  if(actifs.length===0){ bandeau.style.display='none'; return; }
-  bandeau.style.display='block';
-  list.innerHTML = actifs.map(function(rp){
-    return '<a href="responsable.html?id='+rp.id+'&admin=FC2026ADMIN" target="_blank" style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:99px;text-decoration:none;cursor:pointer">'
-      +'<div style="width:24px;height:24px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:11px;font-weight:900;color:#fff;flex-shrink:0">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
-      +'<span style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#A78BFA">'+rp.prenom+'</span>'
-    +'</a>';
-  }).join('');
 }
 
 function creerRP(){
@@ -1013,15 +960,6 @@ function voirNotesRP(rpId, rpPrenom){
       });
       alert('Notes :\n\n'+lines.join('\n\n'));
     }).catch(function(){});
-}
-
-function bloquerRP(id, prenom){
-  var actuel = confirm('Bloquer/débloquer '+prenom+' ?');
-  if(!actuel) return;
-  fetch(APPS_URL+'?action=bloquerRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(id))
-    .then(function(r){ return r.json(); })
-    .then(function(d){ if(d.status==='ok'){ loadResponsables(); } })
-    .catch(function(){ alert('Erreur réseau'); });
 }
 
 function envoyerBroadcast(dest){
