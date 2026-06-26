@@ -99,22 +99,19 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 </div>
 
 <!-- ============ ADMIN DASHBOARD ============ -->
-<div id="adminWrap" class="admin-wrap" style="display:none">
+<div id="adminWrap" class="admin-wrap" style="display:none;padding-bottom:70px">
   <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
   <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
 
-  <!-- NAVIGATION PRINCIPALE -->
-  <div style="display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap">
-    <a href="admin_add_apprenant.html" target="_blank" style="padding:9px 14px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">➕ Nouvel apprenant</a>
-    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:9px 14px;background:rgba(124,58,237,.08);border:1.5px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">⚔️ Resp. Péd.</a>
-    <button onclick="switchAdminTab('talents')" style="padding:9px 14px;background:rgba(6,214,160,.08);border:1.5px solid rgba(6,214,160,.2);color:#06D6A0;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">🌱 Talents <span id="talentsBadgeNav" style="display:none;background:#E8192C;color:#fff;font-size:9px;font-weight:900;border-radius:99px;padding:1px 6px">0</span></button>
-    <button onclick="switchAdminTab('emargement')" style="padding:9px 14px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">📋 Émargement</button>
+  <!-- NAVIGATION COMPACTE -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <a href="admin_add_apprenant.html" target="_blank" style="padding:10px 16px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">➕ Nouvel apprenant</a>
+    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:10px 16px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</a>
     <div style="position:relative;margin-left:auto">
-      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 12px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
+      <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:10px 14px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">⚙️ ▾</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
-        <button onclick="switchAdminTab('responsables');closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">⚔️ Responsables Péd.</button>
-        <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs</button>
-        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes</button>
+        <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs en masse</button>
+        <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes Sheet</button>
       </div>
     </div>
   </div>
@@ -141,10 +138,21 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     </div>
   </div>
   <!-- ONGLETS ADMIN -->
-  
+  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin:16px 0 0">
+    <button onclick="switchAdminTab('responsables')" id="tabBtnResponsables" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">⚔️ Resp. Péd.</button>
+    <button onclick="switchAdminTab('apprenants')" id="tabBtnApprenants" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid #2979FF;color:#2979FF;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Apprenants</button>
+    <button onclick="switchAdminTab('talents')" id="tabBtnTalents" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Talents <span id="talentsBadge" style="display:none;background:#E8192C;color:#fff;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:4px">0</span></button>
+    <button onclick="switchAdminTab('emargement')" id="tabBtnEmargement" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Emargement</button>
+  </div>
 
   <!-- SECTION APPRENANTS -->
   <div id="sectionApprenants" style="padding-top:16px">
+  <!-- BANDEAU RP ACTIFS -->
+  <div id="rpBandeau" style="display:none;margin-bottom:12px">
+    <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(124,58,237,.7);margin-bottom:8px;font-family:Exo 2,sans-serif">⚔️ Chefs d'équipe actifs</div>
+    <div id="rpBandeauList" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+  </div>
+
   <div style="position:relative;margin-bottom:14px">
     <input id="searchApprenant" oninput="filtrerListeApprenants(this.value)" placeholder="Rechercher un apprenant..." style="width:100%;padding:12px 14px 12px 38px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
     <span style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px">&#x1F50D;</span>
@@ -232,7 +240,10 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="bottom:70px;right:16px;z-index:9999">&#127769;</button>
 
 <!-- BARRE FIXE BAS -->
-
+<div style="position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;z-index:9990">
+  <a href="admin_add_apprenant.html" target="_blank" style="padding:12px;background:#2979FF;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">&#10133; Nouvel apprenant</a>
+  <button onclick="toggleAdminMenu()" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">&#9881;&#65039; Admin</button>
+</div>
 <select id="langSelect" onchange="setLang(this.value)" style="position:fixed;bottom:30px;right:90px;z-index:9999;background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:6px 8px;font-size:14px;font-weight:700;cursor:pointer;outline:none">
   <option value="fr">🇫🇷 FR</option>
   <option value="en">🇬🇧 EN</option>
@@ -402,6 +413,10 @@ function initShell(){
       loadAdminDashboard();
       initAdminExtras();
       switchAdminTab('apprenants');
+      fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN')
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if(typeof updateRPBandeau==='function') updateRPBandeau(d.responsables||[]); })
+        .catch(function(){});
     });
     setInterval(loadAdminDashboard, 25000);
     return;
@@ -488,6 +503,7 @@ function admClick(e){
   else if(action==='brsreset') resetBourse(id, prenom);
   else if(action==='projetEnregistrer') enregistrerProjet(id);
   else if(action==='voirNotesRP'){ var prenom2 = btn.dataset.prenom||''; voirNotesRP(id, prenom2); }
+  else if(action==='bloquerRP'){ bloquerRP(id, btn.dataset.prenom||''); }
   else if(action==='projetActiver')     toggleProjet(id, true);
   else if(action==='projetDesactiver')  toggleProjet(id, false);
   else if(action==='dipl') diplomerApprenant(id, prenom);
@@ -626,9 +642,7 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   var bourseOk = stats.bourse_debloquee===true;
   var pin = stats.pin||'????';
   var dateInscription = stats.date_inscription||'—';
-  var telRaw = stats.telephone||'';
-  // Corriger le zéro supprimé par Google Sheets (06... stocké comme nombre)
-  var telephone = telRaw ? (String(telRaw).match(/^[67]/) ? '0'+String(telRaw) : String(telRaw)) : '';
+  var telephone = stats.telephone||'';
   var email = stats.email||'';
   var adresse = stats.adresse||'';
   var streak = stats.streak||0;
@@ -911,26 +925,67 @@ function loadResponsables(){
   fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN')
     .then(function(r){ return r.json(); })
     .then(function(d){
+      // Mettre à jour le bandeau compact sur la page d'accueil
+      updateRPBandeau(d.responsables||[]);
       if(!d.responsables || d.responsables.length === 0){
-        el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucun responsable créé</div>';
+        el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Aucun responsable créé<br><span style="font-size:11px;opacity:.6">Cliquez sur + Nouveau RP pour commencer</span></div>';
         return;
       }
       el.innerHTML = d.responsables.map(function(rp){
-        return '<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:12px 14px;margin-bottom:10px">'
-          +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
-            +'<div style="width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
-            +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
-            +'<div style="font-size:10px;color:var(--muted)">'+rp.id+' · PIN : '+rp.pin+'</div></div>'
-            +'<span style="padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
+        var letter = rp.prenom.charAt(0).toUpperCase();
+        var lienCockpit = 'responsable.html?id='+rp.id+'&admin=FC2026ADMIN';
+        var msgWA = encodeURIComponent('Bonjour '+rp.prenom+' ! Voici vos acces Level Up : https://levelupbyformcom.netlify.app/responsable.html | ID : '+rp.id+' | PIN : '+rp.pin);
+        return '<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:14px;margin-bottom:12px">'
+          // Header
+          +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+            +'<div style="width:42px;height:42px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#fff;flex-shrink:0">'+letter+'</div>'
+            +'<div style="flex:1">'
+              +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
+              +'<div style="font-size:10px;color:var(--muted);margin-top:1px">'+rp.id+' &nbsp;·&nbsp; PIN : <strong style="color:#A78BFA">'+rp.pin+'</strong></div>'
+            +'</div>'
+            +'<span style="padding:3px 10px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
           +'</div>'
-          +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
-          +'<div style="display:flex;gap:6px">'
-            +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit RP</a>'
-            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
+          // Objectif session
+          +(rp.objectif_session?'<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:7px 10px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:8px;margin-bottom:10px">🎯 '+rp.objectif_session+'</div>':'')
+          // Stats équipe (indicateurs)
+          +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px">'
+            +'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#00C853">—</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Articles équipe</div></div>'
+            +'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#06D6A0">—</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Parfums validés</div></div>'
+            +'<div style="background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center"><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#A78BFA">—</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Abonnements</div></div>'
+          +'</div>'
+          // Indicateurs "bientôt"
+          +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">'
+            +'<div style="background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center;opacity:.5"><div style="font-size:14px">🔒</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Talents contactés</div></div>'
+            +'<div style="background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center;opacity:.5"><div style="font-size:14px">🔒</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Bourse RP</div></div>'
+            +'<div style="background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08);border-radius:8px;padding:8px;text-align:center;opacity:.5"><div style="font-size:14px">🔒</div><div style="font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px">Score péda.</div></div>'
+          +'</div>'
+          // Boutons actions
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'
+            +'<a href="'+lienCockpit+'" target="_blank" style="padding:10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">⚔️ Ouvrir cockpit</a>'
+            +'<a href="https://wa.me/?text='+msgWA+'" target="_blank" style="padding:10px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);color:#25D366;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">📤 Envoyer accès</a>'
+          +'</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">'
+            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:10px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📝 Notes du jour</button>'
+            +'<button class="adm-btn" data-action="bloquerRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:10px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:#FF6B6B;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">'+(rp.statut==='ACTIF'?'🔒 Bloquer':'🔓 Débloquer')+'</button>'
           +'</div>'
         +'</div>';
       }).join('');
     }).catch(function(){ el.innerHTML = '<div style="color:var(--red);text-align:center;padding:12px">Erreur de chargement</div>'; });
+}
+
+function updateRPBandeau(responsables){
+  var bandeau = document.getElementById('rpBandeau');
+  var list    = document.getElementById('rpBandeauList');
+  if(!bandeau||!list) return;
+  var actifs = responsables.filter(function(r){ return r.statut==='ACTIF'; });
+  if(actifs.length===0){ bandeau.style.display='none'; return; }
+  bandeau.style.display='block';
+  list.innerHTML = actifs.map(function(rp){
+    return '<a href="responsable.html?id='+rp.id+'&admin=FC2026ADMIN" target="_blank" style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:99px;text-decoration:none;cursor:pointer">'
+      +'<div style="width:24px;height:24px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:11px;font-weight:900;color:#fff;flex-shrink:0">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
+      +'<span style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#A78BFA">'+rp.prenom+'</span>'
+    +'</a>';
+  }).join('');
 }
 
 function creerRP(){
@@ -958,6 +1013,15 @@ function voirNotesRP(rpId, rpPrenom){
       });
       alert('Notes :\n\n'+lines.join('\n\n'));
     }).catch(function(){});
+}
+
+function bloquerRP(id, prenom){
+  var actuel = confirm('Bloquer/débloquer '+prenom+' ?');
+  if(!actuel) return;
+  fetch(APPS_URL+'?action=bloquerRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(id))
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok'){ loadResponsables(); } })
+    .catch(function(){ alert('Erreur réseau'); });
 }
 
 function envoyerBroadcast(dest){
@@ -1614,12 +1678,6 @@ function renderTalents(filtre){
   if(badge){
     badge.style.display = attente.length > 0 ? 'inline-flex' : 'none';
     badge.textContent = attente.length;
-  }
-  // Mettre à jour aussi le badge dans la navigation principale
-  var badgeNav = document.getElementById('talentsBadgeNav');
-  if(badgeNav){
-    badgeNav.style.display = attente.length > 0 ? 'inline' : 'none';
-    badgeNav.textContent = attente.length;
   }
   // Alimenter les compteurs pipeline
   var cA = document.getElementById('countAttente');
