@@ -295,8 +295,9 @@ var alerteInterval = null;
 
 // ─── INIT ─────────────────────────────────────────────────────────────
 var p = new URLSearchParams(window.location.search);
-var urlId  = p.get('id')  || '';
-var urlPin = p.get('pin') || '';
+var urlId    = p.get('id')    || '';
+var urlPin   = p.get('pin')   || '';
+var urlAdmin = p.get('admin') || '';
 
 // Thème
 (function(){
@@ -305,7 +306,20 @@ var urlPin = p.get('pin') || '';
   }catch(e){}
 })();
 
-if(urlId && urlPin){
+if(urlId && urlAdmin === 'FC2026ADMIN'){
+  // Bypass PIN pour l'admin
+  document.getElementById('rpIdInput').value = urlId;
+  fetch(APPS_URL+'?action=ouvrirCockpitRP&id='+encodeURIComponent(urlId)+'&pin=ADMIN_BYPASS')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        RP.id=d.id; RP.prenom=d.prenom; RP.nom=d.nom; RP.objectif=d.objectif_session||'';
+        ouvrirInterface();
+      } else {
+        showPinMsg('Accès admin refusé : '+(d.message||''));
+      }
+    }).catch(function(){ showPinMsg('Erreur réseau'); });
+} else if(urlId && urlPin){
   document.getElementById('rpIdInput').value = urlId;
   pinBuffer = urlPin;
   submitPin();

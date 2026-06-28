@@ -465,6 +465,7 @@ function renderTableImmediat(){
       +'<div style="flex:1;min-width:0">'
         +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+(isFond?' &#x1F451;':'')+'</div>'
         +'<div id="xp_'+a.id+'" style="font-size:12px;color:#8892A4;margin-top:2px">—</div>'
+        +'<div id="pin_'+a.id+'" style="font-size:10px;color:rgba(245,166,35,.6);margin-top:2px;font-family:Exo 2,sans-serif;font-weight:700;display:none">PIN : —</div>'
       +'</div>'
       +'<div id="statut_'+a.id+'" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(136,146,164,.1);color:#8892A4;white-space:nowrap;flex-shrink:0">—</div>'
       +'<span style="color:var(--muted);font-size:16px;flex-shrink:0">&#x203A;</span>'
@@ -492,7 +493,6 @@ function admClick(e){
   else if(action==='brsreset') resetBourse(id, prenom);
   else if(action==='projetEnregistrer') enregistrerProjet(id);
   else if(action==='voirNotesRP'){ var prenom2 = btn.dataset.prenom||''; voirNotesRP(id, prenom2); }
-  else if(action==='modifierPinRP'){ modifierPinRP(id, btn.dataset.prenom||''); }
   else if(action==='projetActiver')     toggleProjet(id, true);
   else if(action==='projetDesactiver')  toggleProjet(id, false);
   else if(action==='dipl') diplomerApprenant(id, prenom);
@@ -521,15 +521,11 @@ function loadAdminDashboard(){
       .catch(function(){return {a:a,data:{found:false}};});
   });
 
-  // Collecter tous les apprenants pour les alertes
-  var tousStats = [];
   // Mise à jour carte par carte dès qu'une réponse arrive
   apPromises.forEach(function(p){
     p.then(function(res){
       var a=res.a, data=res.data;
       if(!data||!data.found) return;
-      tousStats.push({id:a.id, prenom:a.prenom, bourse_debloquee:data.bourse_debloquee, statut:data.statut, statut_acces:data.statut_acces});
-      updateAlertBanner(tousStats);
       var pts = Number(data.pts)||0;
       var niv = getNiveau(pts);
       var lc  = getNivColor(niv.num);
@@ -542,8 +538,12 @@ function loadAdminDashboard(){
       // Role
       // XP
       var xpEl = document.getElementById('xp_'+a.id);
-      var pinStr = data.pin ? ' · PIN : '+data.pin : '';
-      if(xpEl){ xpEl.style.color=lc; xpEl.textContent=pts.toLocaleString('fr-FR')+' XP · '+emoji+' Niv.'+niv.num+pinStr; }
+      if(xpEl){ xpEl.style.color=lc; xpEl.textContent=pts.toLocaleString('fr-FR')+' XP · '+emoji+' Niv.'+niv.num; }
+      var pinEl = document.getElementById('pin_'+a.id);
+      if(pinEl && data.pin){
+        pinEl.textContent = '🔑 PIN : '+data.pin;
+        pinEl.style.display = 'block';
+      }
       // Statut
       var statEl = document.getElementById('statut_'+a.id);
       if(statEl){
@@ -858,21 +858,21 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   el.addEventListener('click', admClick);
 }
 
-function updateAlertBanner(apprenants){
+function updateAlertBanner(apprenants, bourseOk){
   var alertes = [];
-  (apprenants||[]).forEach(function(a){
-    if(a.statut_acces === 'BLOQUÉ'){
-      alertes.push('🔒 '+a.prenom+' bloqué');
-    } else if(a.bourse_debloquee === false && (a.statut === 'ACTIF' || a.statut === 'MENTOR')){
-      alertes.push('💎 Bourse '+a.prenom+' à débloquer');
-    }
-  });
+  if(typeof apprenants !== 'undefined'){
+    apprenants.forEach(function(a){
+      if(a.bourse_debloquee === false && a.statut === 'ACTIF'){
+        alertes.push('Bourse '+a.prenom+' à débloquer');
+      }
+    });
+  }
   var banner = document.getElementById('alertBanner');
   var txt    = document.getElementById('alertText');
   if(!banner || !txt) return;
   if(alertes.length > 0){
     banner.style.display = 'flex';
-    txt.textContent = alertes.length+' alerte'+(alertes.length>1?'s':'')+' · '+alertes.slice(0,3).join(' · ');
+    txt.textContent = alertes.length+' alerte'+(alertes.length>1?'s':'')+' · '+alertes.slice(0,2).join(' · ');
   } else {
     banner.style.display = 'none';
   }
@@ -932,14 +932,9 @@ function loadResponsables(){
             +'<span style="padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
           +'</div>'
           +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
-          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
-            +'<a href="responsable.html?id='+rp.id+'&admin=FC2026ADMIN" target="_blank" style="padding:10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">⚔️ Ouvrir cockpit</a>'
-            +'<a href="https://wa.me/?text='+encodeURIComponent('Bonjour '+rp.prenom+' ! Vos acces Level Up : https://levelupbyformcom.netlify.app/responsable.html | ID : '+rp.id+' | PIN : '+rp.pin)+'" target="_blank" style="padding:10px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);color:#25D366;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">📤 Envoyer accès</a>'
-          +'</div>'
-          +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
-            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:8px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
-            +'<button class="adm-btn" data-action="modifierPinRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:8px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#128273; PIN</button>'
-            +'<button class="adm-btn" data-action="bloquerRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:8px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:#FF6B6B;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">'+(rp.statut==='ACTIF'?'&#128274; Bloquer':'&#128275; Activer')+'</button>'
+          +'<div style="display:flex;gap:6px">'
+            +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit RP</a>'
+            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
           +'</div>'
         +'</div>';
       }).join('');
@@ -959,25 +954,6 @@ function creerRP(){
         loadResponsables();
       }
     }).catch(function(){ alert('Erreur réseau'); });
-}
-
-function modifierPinRP(id, prenom){
-  var newPin = prompt('Nouveau PIN pour '+prenom+' (4 chiffres) :');
-  if(!newPin || newPin.length !== 4 || isNaN(Number(newPin))){ alert('PIN invalide - 4 chiffres requis'); return; }
-  fetch(APPS_URL+'?action=updatePinRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(id)+'&pin='+encodeURIComponent(newPin))
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(d.status==='ok'){ alert('PIN mis a jour : '+newPin); loadResponsables(); }
-      else { alert('Erreur : '+(d.message||'inconnue')); }
-    }).catch(function(){ alert('Erreur reseau'); });
-}
-
-function bloquerDebloquerRP(id, prenom){
-  if(!confirm('Bloquer / debloquer '+prenom+' ?')) return;
-  fetch(APPS_URL+'?action=bloquerRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(id))
-    .then(function(r){ return r.json(); })
-    .then(function(d){ if(d.status==='ok'){ loadResponsables(); } })
-    .catch(function(){ alert('Erreur reseau'); });
 }
 
 function voirNotesRP(rpId, rpPrenom){
