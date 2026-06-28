@@ -312,44 +312,23 @@ function getNiveau(pts){
 var APPRENANTS = []; // Chargé dynamiquement depuis le Sheet
 
 function chargerListeApprenants(callback){
-  var FALLBACK = [
-    {id:'ID-0001',prenom:'Khaled',nom:'Nassiri'},
-    {id:'ID-0002',prenom:'Mohamed',nom:'Nassiri'},
-    {id:'ID-0003',prenom:'Mohammed',nom:'Nassiri'},
-    {id:'ID-0004',prenom:'Camille',nom:'Nassiri'},
-    {id:'ID-0005',prenom:'Hamza',nom:'Ourarhi'},
-    {id:'ID-0006',prenom:'Safiya',nom:'Nassiri'},
-    {id:'ID-0007',prenom:'Samira',nom:'Nassiri'},
-    {id:'ID-0008',prenom:'Rachid',nom:'Nassiri'},
-    {id:'ID-0009',prenom:'Laila',nom:'Nassiri'},
-    {id:'ID-0010',prenom:'Anas',nom:'Baybah'},
-    {id:'ID-0011',prenom:'Hicham',nom:'Nassiri'},
-    {id:'ID-0012',prenom:'Naim',nom:'Nassiri'},
-    {id:'ID-0013',prenom:'Hilel',nom:'Nassiri'},
-    {id:'ID-0014',prenom:'Bouyousfi',nom:'Baqtatouche'},
-    {id:'ID-0015',prenom:'Hafed',nom:'El Messaoudi'},
-    {id:'ID-0016',prenom:'Iyad',nom:'Nassiri'},
-    {id:'ID-0017',prenom:'Soumaya',nom:'Nassiri'},
-    {id:'ID-0018',prenom:'Amana',nom:'Nassiri'},
-    {id:'ID-0019',prenom:'Aliyah',nom:'Nassiri'},
-    {id:'ID-0020',prenom:'Nabila',nom:'Boudchiche'}
-  ];
-
   fetch(APPS_URL+'?action=listApprenants&_t='+Date.now())
-    .then(function(r){return r.json();})
+    .then(function(r){ return r.json(); })
     .then(function(d){
-      var liste = d.apprenants || d.rows || [];
-      if(liste.length > 0){
-        // Filtrer les entrées valides (ID non vide)
-        var valides = liste.filter(function(a){ return a.id && String(a.id).trim(); });
-        APPRENANTS = valides.length > 0 ? valides : FALLBACK;
-      } else {
-        APPRENANTS = FALLBACK;
+      // Le GAS retourne {rows:[...]}
+      var liste = d.rows || d.apprenants || [];
+      // Filtrer les entrées valides (ID non vide, format ID-XXXX)
+      var valides = liste.filter(function(a){
+        return a.id && String(a.id).trim() && String(a.id).trim() !== '';
+      });
+      if(valides.length > 0){
+        APPRENANTS = valides;
       }
+      // Si aucune donnée valide, garder APPRENANTS tel quel (ne pas écraser)
       if(typeof callback === 'function') callback();
     })
     .catch(function(){
-      APPRENANTS = FALLBACK;
+      // En cas d'erreur réseau, garder la liste existante
       if(typeof callback === 'function') callback();
     });
 }
