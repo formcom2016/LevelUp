@@ -99,7 +99,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 </div>
 
 <!-- ============ ADMIN DASHBOARD ============ -->
-<div id="adminWrap" class="admin-wrap" style="display:none;padding-bottom:70px">
+<div id="adminWrap" class="admin-wrap" style="display:none">
   <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
   <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
 
@@ -138,12 +138,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     </div>
   </div>
   <!-- ONGLETS ADMIN -->
-  <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin:16px 0 0">
-    <button onclick="switchAdminTab('responsables')" id="tabBtnResponsables" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">⚔️ Resp. Péd.</button>
-    <button onclick="switchAdminTab('apprenants')" id="tabBtnApprenants" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid #2979FF;color:#2979FF;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Apprenants</button>
-    <button onclick="switchAdminTab('talents')" id="tabBtnTalents" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Talents <span id="talentsBadge" style="display:none;background:#E8192C;color:#fff;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:4px">0</span></button>
-    <button onclick="switchAdminTab('emargement')" id="tabBtnEmargement" style="padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px">Emargement</button>
-  </div>
+
 
   <!-- SECTION APPRENANTS -->
   <div id="sectionApprenants" style="padding-top:16px">
@@ -234,10 +229,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="bottom:70px;right:16px;z-index:9999">&#127769;</button>
 
 <!-- BARRE FIXE BAS -->
-<div style="position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;z-index:9990">
-  <a href="admin_add_apprenant.html" target="_blank" style="padding:12px;background:#2979FF;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">&#10133; Nouvel apprenant</a>
-  <button onclick="toggleAdminMenu()" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">&#9881;&#65039; Admin</button>
-</div>
+
 <select id="langSelect" onchange="setLang(this.value)" style="position:fixed;bottom:30px;right:90px;z-index:9999;background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:6px 8px;font-size:14px;font-weight:700;cursor:pointer;outline:none">
   <option value="fr">🇫🇷 FR</option>
   <option value="en">🇬🇧 EN</option>
