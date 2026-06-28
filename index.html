@@ -323,9 +323,7 @@ function chargerListeApprenants(callback){
       var valides = liste.filter(function(a){
         return a.id && String(a.id).trim();
       });
-      if(valides.length > 0){
-        APPRENANTS = valides;
-      }
+      if(valides.length > 0) APPRENANTS = valides;
       if(typeof callback === 'function') callback();
     })
     .catch(function(){
