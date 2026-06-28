@@ -77,7 +77,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .dot-orange{background:#F5A623}
 .dot-red{background:#E8192C;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.ap-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.ap-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
 .ap-stat{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center}
 .ap-stat-val{font-family:'Exo 2',sans-serif;font-size:14px;font-weight:900;color:var(--gold)}
 .ap-stat-lbl{font-size:8px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
@@ -295,9 +295,8 @@ var alerteInterval = null;
 
 // ─── INIT ─────────────────────────────────────────────────────────────
 var p = new URLSearchParams(window.location.search);
-var urlId    = p.get('id')    || '';
-var urlPin   = p.get('pin')   || '';
-var urlAdmin = p.get('admin') || '';
+var urlId  = p.get('id')  || '';
+var urlPin = p.get('pin') || '';
 
 // Thème
 (function(){
@@ -306,20 +305,7 @@ var urlAdmin = p.get('admin') || '';
   }catch(e){}
 })();
 
-if(urlId && urlAdmin === 'FC2026ADMIN'){
-  // Bypass PIN pour l'admin
-  document.getElementById('rpIdInput').value = urlId;
-  fetch(APPS_URL+'?action=ouvrirCockpitRP&id='+encodeURIComponent(urlId)+'&pin=ADMIN_BYPASS')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(d.status==='ok'){
-        RP.id=d.id; RP.prenom=d.prenom; RP.nom=d.nom; RP.objectif=d.objectif_session||'';
-        ouvrirInterface();
-      } else {
-        showPinMsg('Accès admin refusé : '+(d.message||''));
-      }
-    }).catch(function(){ showPinMsg('Erreur réseau'); });
-} else if(urlId && urlPin){
+if(urlId && urlPin){
   document.getElementById('rpIdInput').value = urlId;
   pinBuffer = urlPin;
   submitPin();
@@ -437,15 +423,19 @@ function renderEquipe(){
         +'<div class="ap-status"><span class="status-dot '+dot+'"></span></div>'
       +'</div>'
       +(alertMsg ? '<div class="ap-alert-txt">'+alertMsg+'</div>' : '')
-      +'<div class="ap-stats">'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+a.pts_jour+'</div><div class="ap-stat-lbl">XP</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+a.articles+'</div><div class="ap-stat-lbl">Art.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+a.contacts+'</div><div class="ap-stat-lbl">Cont.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+a.refus+'</div><div class="ap-stat-lbl">Ref.</div></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px">'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+a.articles+'</div><div class="ap-stat-lbl">Ponct.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#A78BFA">'+(a.fidel||0)+'</div><div class="ap-stat-lbl">Récurr.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F59E0B">'+(a.solidaires||0)+'</div><div class="ap-stat-lbl">Solid.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+a.contacts+'</div><div class="ap-stat-lbl">Contacts</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+a.refus+'</div><div class="ap-stat-lbl">Refus</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+(a.ca_jour||0)+'&#8364;</div><div class="ap-stat-lbl">CA</div></div>'
       +'</div>'
-      +'<div class="ap-actions">'
-        +'<button class="ap-btn btn-note" onclick="ouvrirNote(\''+a.id+'\',\''+a.prenom+'\')">📝 Note</button>'
-        +'<button class="ap-btn btn-presence" onclick="validerPresence(\''+a.id+'\',\''+a.prenom+'\')">✅ Présence</button>'
+      +'<div class="ap-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+        +'<button class="ap-btn btn-note" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="ouvrirNoteBtn(this)">&#128221; Note</button>'
+        +'<button class="ap-btn" style="background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.3);color:#60A5FA" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="msgIndividuelBtn(this)">&#128172; Message</button>'
+        +'<button class="ap-btn btn-presence" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="presenceBtn(this)">&#9989; Pr&#233;sence</button>'
+        +'<button class="ap-btn" style="background:rgba(232,25,44,.08);border:1px solid rgba(232,25,44,.2);color:#FF6B6B" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="retirerBtn(this)">&#10005; Retirer</button>'
       +'</div>'
     +'</div>';
   }).join('');
@@ -636,6 +626,50 @@ function ouvrirNote(apprId, apprPrenom){
 }
 
 // ─── PRÉSENCE ─────────────────────────────────────────────────────────
+function ouvrirNoteBtn(btn){ ouvrirNote(btn.dataset.id, btn.dataset.prenom); }
+function msgIndividuelBtn(btn){ envoyerMsgIndividuel(btn.dataset.id, btn.dataset.prenom); }
+function presenceBtn(btn){ validerPresenceDirect(btn.dataset.id, btn.dataset.prenom, btn); }
+function retirerBtn(btn){ retirerDeLEquipe(btn.dataset.id, btn.dataset.prenom); }
+
+function envoyerMsgIndividuel(apprId, apprPrenom){
+  var msg = prompt('Message pour '+apprPrenom+' :');
+  if(!msg || !msg.trim()) return;
+  fetch(APPS_URL+'?action=envoyerMessage&expediteur_id='+encodeURIComponent(RP.id)
+    +'&expediteur_type=RP'
+    +'&destinataires='+encodeURIComponent(apprId)
+    +'&message='+encodeURIComponent(msg.trim()))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok') alert('Message envoyé à '+apprPrenom+' !');
+    }).catch(function(){});
+}
+
+function validerPresenceDirect(apprId, apprPrenom, btn){
+  fetch(APPS_URL+'?action=validerPresenceRP&rp_id='+encodeURIComponent(RP.id)+'&apprenant_id='+encodeURIComponent(apprId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok' && btn){
+        btn.textContent = '✅ Validée';
+        btn.disabled = true;
+        btn.style.opacity = '.5';
+      }
+    }).catch(function(){});
+}
+
+function retirerDeLEquipe(apprId, apprPrenom){
+  if(!confirm('Retirer '+apprPrenom+' de l\'équipe du jour ?')) return;
+  fetch(APPS_URL+'?action=retirerApprenant&rp_id='+encodeURIComponent(RP.id)+'&apprenant_id='+encodeURIComponent(apprId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        monEquipe = monEquipe.filter(function(a){ return a.id !== apprId; });
+        renderEquipe();
+        // Mettre à jour aussi la sélection
+        delete selectionActive[apprId];
+      }
+    }).catch(function(){});
+}
+
 function validerPresence(apprId, apprPrenom){
   if(!confirm('Valider la présence terrain de '+apprPrenom+' ?')) return;
   fetch(APPS_URL+'?action=validerPresenceRP&rp_id='+encodeURIComponent(RP.id)+'&apprenant_id='+encodeURIComponent(apprId))
@@ -653,7 +687,7 @@ function verifierMessages(){
       if(d.messages && d.messages.length > 0){
         var msg = d.messages[0];
         messageActuelId = msg.msg_id;
-        document.getElementById('msgFrom').textContent = msg.expediteur_type === 'ADMIN' ? '👑 Message de l\'Administrateur' : '⚔️ Message du Responsable';
+        document.getElementById('msgFrom').textContent = msg.expediteur_type === 'ADMIN' ? '👑 Message de l\'Administrateur' : '⚔️ Message du Responsable Pédagogique';
         document.getElementById('msgText').textContent = msg.message;
         document.getElementById('msgPopup').classList.add('show');
         try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(e){}
