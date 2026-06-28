@@ -99,16 +99,14 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 </div>
 
 <!-- ============ ADMIN DASHBOARD ============ -->
-<div id="adminWrap" class="admin-wrap" style="display:none">
+<div id="adminWrap" class="admin-wrap" style="display:none;padding-bottom:70px">
   <div class="admin-title">🏆 <span data-i18n="admin_title">Form'Com Level Up · Dashboard Admin</span></div>
   <div class="admin-sub"><span class="live-dot"></span><span data-i18n="admin_sub">En direct · Mise à jour toutes les 25s</span></div>
 
   <!-- NAVIGATION COMPACTE -->
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
     <a href="admin_add_apprenant.html" target="_blank" style="padding:10px 16px;background:rgba(0,255,135,.08);border:1.5px solid rgba(0,255,135,.2);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">➕ Nouvel apprenant</a>
-    <button onclick="switchAdminTab('responsables')" style="padding:10px 16px;background:rgba(124,58,237,.08);border:1.5px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</button>
-    <button onclick="switchAdminTab('talents')" style="padding:9px 13px;background:rgba(6,214,160,.08);border:1.5px solid rgba(6,214,160,.2);color:#06D6A0;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">🌱 Talents</button>
-    <button onclick="switchAdminTab('emargement')" style="padding:9px 13px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">📋 Émargement</button>
+    <a href="responsable.html?clef=FC2026GUILDE" target="_blank" style="padding:10px 16px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;white-space:nowrap">⚔️ Resp. Péd.</a>
     <div style="position:relative;margin-left:auto">
       <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:10px 14px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px">⚙️ ▾</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
@@ -236,7 +234,10 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="bottom:70px;right:16px;z-index:9999">&#127769;</button>
 
 <!-- BARRE FIXE BAS -->
-
+<div style="position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;z-index:9990">
+  <a href="admin_add_apprenant.html" target="_blank" style="padding:12px;background:#2979FF;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">&#10133; Nouvel apprenant</a>
+  <button onclick="toggleAdminMenu()" style="padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">&#9881;&#65039; Admin</button>
+</div>
 <select id="langSelect" onchange="setLang(this.value)" style="position:fixed;bottom:30px;right:90px;z-index:9999;background:var(--card);color:var(--text);border:2px solid var(--border);border-radius:10px;padding:6px 8px;font-size:14px;font-weight:700;cursor:pointer;outline:none">
   <option value="fr">🇫🇷 FR</option>
   <option value="en">🇬🇧 EN</option>
@@ -405,7 +406,6 @@ function initShell(){
     chargerListeApprenants(function(){
       loadAdminDashboard();
       initAdminExtras();
-      switchAdminTab('apprenants');
     });
     setInterval(loadAdminDashboard, 25000);
     return;
@@ -492,6 +492,7 @@ function admClick(e){
   else if(action==='brsreset') resetBourse(id, prenom);
   else if(action==='projetEnregistrer') enregistrerProjet(id);
   else if(action==='voirNotesRP'){ var prenom2 = btn.dataset.prenom||''; voirNotesRP(id, prenom2); }
+  else if(action==='modifierPinRP'){ modifierPinRP(id, btn.dataset.prenom||''); }
   else if(action==='projetActiver')     toggleProjet(id, true);
   else if(action==='projetDesactiver')  toggleProjet(id, false);
   else if(action==='dipl') diplomerApprenant(id, prenom);
@@ -520,11 +521,15 @@ function loadAdminDashboard(){
       .catch(function(){return {a:a,data:{found:false}};});
   });
 
+  // Collecter tous les apprenants pour les alertes
+  var tousStats = [];
   // Mise à jour carte par carte dès qu'une réponse arrive
   apPromises.forEach(function(p){
     p.then(function(res){
       var a=res.a, data=res.data;
       if(!data||!data.found) return;
+      tousStats.push({id:a.id, prenom:a.prenom, bourse_debloquee:data.bourse_debloquee, statut:data.statut, statut_acces:data.statut_acces});
+      updateAlertBanner(tousStats);
       var pts = Number(data.pts)||0;
       var niv = getNiveau(pts);
       var lc  = getNivColor(niv.num);
@@ -537,7 +542,8 @@ function loadAdminDashboard(){
       // Role
       // XP
       var xpEl = document.getElementById('xp_'+a.id);
-      if(xpEl){ xpEl.style.color=lc; xpEl.textContent=pts.toLocaleString('fr-FR')+' XP · '+emoji+' Niv.'+niv.num; }
+      var pinStr = data.pin ? ' · PIN : '+data.pin : '';
+      if(xpEl){ xpEl.style.color=lc; xpEl.textContent=pts.toLocaleString('fr-FR')+' XP · '+emoji+' Niv.'+niv.num+pinStr; }
       // Statut
       var statEl = document.getElementById('statut_'+a.id);
       if(statEl){
@@ -852,21 +858,21 @@ function renderFicheApprenant(a, stats, abos, solidaire){
   el.addEventListener('click', admClick);
 }
 
-function updateAlertBanner(apprenants, bourseOk){
+function updateAlertBanner(apprenants){
   var alertes = [];
-  if(typeof apprenants !== 'undefined'){
-    apprenants.forEach(function(a){
-      if(a.bourse_debloquee === false && a.statut === 'ACTIF'){
-        alertes.push('Bourse '+a.prenom+' à débloquer');
-      }
-    });
-  }
+  (apprenants||[]).forEach(function(a){
+    if(a.statut_acces === 'BLOQUÉ'){
+      alertes.push('🔒 '+a.prenom+' bloqué');
+    } else if(a.bourse_debloquee === false && (a.statut === 'ACTIF' || a.statut === 'MENTOR')){
+      alertes.push('💎 Bourse '+a.prenom+' à débloquer');
+    }
+  });
   var banner = document.getElementById('alertBanner');
   var txt    = document.getElementById('alertText');
   if(!banner || !txt) return;
   if(alertes.length > 0){
     banner.style.display = 'flex';
-    txt.textContent = alertes.length+' alerte'+(alertes.length>1?'s':'')+' · '+alertes.slice(0,2).join(' · ');
+    txt.textContent = alertes.length+' alerte'+(alertes.length>1?'s':'')+' · '+alertes.slice(0,3).join(' · ');
   } else {
     banner.style.display = 'none';
   }
@@ -926,9 +932,14 @@ function loadResponsables(){
             +'<span style="padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
           +'</div>'
           +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
-          +'<div style="display:flex;gap:6px">'
-            +'<a href="responsable.html?id='+rp.id+'&admin=FC2026ADMIN" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Ouvrir cockpit</a>'
-            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+            +'<a href="responsable.html?id='+rp.id+'&admin=FC2026ADMIN" target="_blank" style="padding:10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">⚔️ Ouvrir cockpit</a>'
+            +'<a href="https://wa.me/?text='+encodeURIComponent('Bonjour '+rp.prenom+' ! Vos acces Level Up : https://levelupbyformcom.netlify.app/responsable.html | ID : '+rp.id+' | PIN : '+rp.pin)+'" target="_blank" style="padding:10px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);color:#25D366;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;gap:5px">📤 Envoyer accès</a>'
+          +'</div>'
+          +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
+            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:8px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
+            +'<button class="adm-btn" data-action="modifierPinRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:8px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">&#128273; PIN</button>'
+            +'<button class="adm-btn" data-action="bloquerRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="padding:8px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:#FF6B6B;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">'+(rp.statut==='ACTIF'?'&#128274; Bloquer':'&#128275; Activer')+'</button>'
           +'</div>'
         +'</div>';
       }).join('');
@@ -948,6 +959,25 @@ function creerRP(){
         loadResponsables();
       }
     }).catch(function(){ alert('Erreur réseau'); });
+}
+
+function modifierPinRP(id, prenom){
+  var newPin = prompt('Nouveau PIN pour '+prenom+' (4 chiffres) :');
+  if(!newPin || newPin.length !== 4 || isNaN(Number(newPin))){ alert('PIN invalide - 4 chiffres requis'); return; }
+  fetch(APPS_URL+'?action=updatePinRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(id)+'&pin='+encodeURIComponent(newPin))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){ alert('PIN mis a jour : '+newPin); loadResponsables(); }
+      else { alert('Erreur : '+(d.message||'inconnue')); }
+    }).catch(function(){ alert('Erreur reseau'); });
+}
+
+function bloquerDebloquerRP(id, prenom){
+  if(!confirm('Bloquer / debloquer '+prenom+' ?')) return;
+  fetch(APPS_URL+'?action=bloquerRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(id))
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok'){ loadResponsables(); } })
+    .catch(function(){ alert('Erreur reseau'); });
 }
 
 function voirNotesRP(rpId, rpPrenom){
