@@ -320,9 +320,7 @@ function chargerListeApprenants(callback){
     .then(function(r){ return r.json(); })
     .then(function(d){
       var liste = d.rows || d.apprenants || [];
-      var valides = liste.filter(function(a){
-        return a.id && String(a.id).trim();
-      });
+      var valides = liste.filter(function(a){ return a.id && String(a.id).trim(); });
       if(valides.length > 0) APPRENANTS = valides;
       if(typeof callback === 'function') callback();
     })
