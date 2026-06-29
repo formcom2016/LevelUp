@@ -173,12 +173,11 @@ function partager(type){
   var lien = getLien(type);
   // Mobile : partage natif
   if(navigator.share){
-    navigator.share({title:'Form\'Com Level Up',text:msg,url:lien}).catch(function(){
-      // Si partage échoue, ouvrir WhatsApp
+    // On n'envoie que le texte — le lien est déjà dans le message
+    navigator.share({title:'Form\'Com Level Up',text:msg}).catch(function(){
       window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
     });
   } else {
-    // Desktop : ouvrir WhatsApp dans un nouvel onglet
     window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   }
 }
