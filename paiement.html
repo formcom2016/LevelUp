@@ -42,14 +42,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .perk-green{background:rgba(0,200,83,.12);color:#00C853}
 
 /* BOUTONS PAIEMENT */
-.pay-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-.pay-btn{padding:10px 6px;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.15s}
-.pay-btn:active{transform:scale(.96)}
-.btn-wa{background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25D366}
-.btn-sms{background:rgba(41,121,255,.12);border:1px solid rgba(41,121,255,.3);color:#60A5FA}
-.btn-copy{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted)}
-.btn-icon{font-size:18px}
-.btn-label{font-size:9px;letter-spacing:.3px;text-transform:uppercase}
+.share-btn{width:100%;padding:12px;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s}
+.share-btn:active{transform:scale(.97)}
+.share-btn-ponct{background:rgba(245,166,35,.12);border:1.5px solid rgba(245,166,35,.3);color:#F5A623}
+.share-btn-abo5{background:rgba(124,58,237,.12);border:1.5px solid rgba(124,58,237,.3);color:#A78BFA}
+.share-btn-abo10{background:rgba(0,200,83,.12);border:1.5px solid rgba(0,200,83,.3);color:#00C853}
 
 /* SÉCURITÉ */
 .security{text-align:center;margin-top:20px;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
@@ -83,20 +80,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="perk perk-gold">✓ Paiement unique</span>
       <span class="perk perk-gold">✓ Livraison immédiate</span>
     </div>
-    <div class="pay-btns">
-      <a class="pay-btn btn-wa" href="#" onclick="ouvrirWA('ponctuel');return false;">
-        <span class="btn-icon">💬</span>
-        <span class="btn-label">WhatsApp</span>
-      </a>
-      <a class="pay-btn btn-sms" href="#" onclick="ouvrirSMS('ponctuel');return false;">
-        <span class="btn-icon">✉️</span>
-        <span class="btn-label">SMS</span>
-      </a>
-      <button class="pay-btn btn-copy" onclick="copier('ponctuel')">
-        <span class="btn-icon">📋</span>
-        <span class="btn-label">Copier</span>
-      </button>
-    </div>
+    <button class="share-btn share-btn-ponct" onclick="partager('ponctuel')">
+      &#128257; Envoyer ce lien
+    </button>
   </div>
 
   <!-- ABONNEMENT 5€ -->
@@ -114,20 +100,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="perk perk-purple">🎁 6 parfums/an</span>
       <span class="perk perk-purple">✓ Résiliable</span>
     </div>
-    <div class="pay-btns">
-      <a class="pay-btn btn-wa" href="#" onclick="ouvrirWA('abo5');return false;">
-        <span class="btn-icon">💬</span>
-        <span class="btn-label">WhatsApp</span>
-      </a>
-      <a class="pay-btn btn-sms" href="#" onclick="ouvrirSMS('abo5');return false;">
-        <span class="btn-icon">✉️</span>
-        <span class="btn-label">SMS</span>
-      </a>
-      <button class="pay-btn btn-copy" onclick="copier('abo5')">
-        <span class="btn-icon">📋</span>
-        <span class="btn-label">Copier</span>
-      </button>
-    </div>
+    <button class="share-btn share-btn-abo5" onclick="partager('abo5')">
+      &#128257; Envoyer ce lien
+    </button>
   </div>
 
   <div class="product-card abo" style="margin-top:10px">
@@ -144,20 +119,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="perk perk-green">✓ ×2 = 20€/mois</span>
       <span class="perk perk-green">✓ ×3 = 30€/mois</span>
     </div>
-    <div class="pay-btns">
-      <a class="pay-btn btn-wa" href="#" onclick="ouvrirWA('abo10');return false;">
-        <span class="btn-icon">💬</span>
-        <span class="btn-label">WhatsApp</span>
-      </a>
-      <a class="pay-btn btn-sms" href="#" onclick="ouvrirSMS('abo10');return false;">
-        <span class="btn-icon">✉️</span>
-        <span class="btn-label">SMS</span>
-      </a>
-      <button class="pay-btn btn-copy" onclick="copier('abo10')">
-        <span class="btn-icon">📋</span>
-        <span class="btn-label">Copier</span>
-      </button>
-    </div>
+    <button class="share-btn share-btn-abo10" onclick="partager('abo10')">
+      &#128257; Envoyer ce lien
+    </button>
   </div>
 
   <div class="security">🔒 Paiement sécurisé par Stripe</div>
@@ -200,36 +164,25 @@ function getMessage(type){
   var lien = getLien(type);
   var label = LABELS[type];
   var conseiller = prenom ? '\n\nVotre conseiller : '+prenom+(nom?' '+nom:'') : '';
-  return 'Bonjour !\n\nVoici votre lien de paiement sécurisé Form\'Com :\n\n'
-    +label+'\n\n'+lien
-    +conseiller
-    +'\n\nMerci pour votre confiance \uD83D\uDE4F';
+  return 'Bonjour !\n\nVoici votre lien de paiement s\u00e9curis\u00e9 Form\'Com :\n\n'
+    +label+'\n\n'+lien+conseiller
+    +'\n\nPaiement 100% s\u00e9curis\u00e9 via Stripe \uD83D\uDD12';
 }
 
-function ouvrirWA(type){
+function partager(type){
   var msg = getMessage(type);
-  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
-}
-
-function ouvrirSMS(type){
-  var msg = getMessage(type);
-  window.open('sms:?body='+encodeURIComponent(msg), '_blank');
-}
-
-function copier(type){
-  var msg = getMessage(type);
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(msg).then(function(){
-      showToast('Lien copié !');
-    });
+  var lien = getLien(type);
+  if(navigator.share){
+    navigator.share({title:'Form\'Com Level Up',text:msg,url:lien}).catch(function(){});
   } else {
-    var ta = document.createElement('textarea');
-    ta.value = msg;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('Lien copié !');
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(msg).then(function(){ showToast('Lien copi\u00e9 !'); });
+    } else {
+      var ta=document.createElement('textarea');
+      ta.value=msg; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Lien copi\u00e9 !');
+    }
   }
 }
 
