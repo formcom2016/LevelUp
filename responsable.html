@@ -426,14 +426,14 @@ function renderEquipe(){
       +'<div class="ap-stats">'
         +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+a.pts_jour+'</div><div class="ap-stat-lbl">XP</div></div>'
         +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+a.articles+'</div><div class="ap-stat-lbl">Ponct.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#A78BFA">'+(a.fidel||0)+'</div><div class="ap-stat-lbl">Récurr.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#A78BFA">'+(a.fidel||0)+'</div><div class="ap-stat-lbl">Recurr.</div></div>'
         +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+a.contacts+'</div><div class="ap-stat-lbl">Cont.</div></div>'
         +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+a.refus+'</div><div class="ap-stat-lbl">Ref.</div></div>'
       +'</div>'
-      +'<div class="ap-actions" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">'
+      +'<div class="ap-actions">'
         +'<button class="ap-btn btn-note" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="ouvrirNoteBtn(this)">&#128221; Note</button>'
-        +'<button class="ap-btn" style="background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.25);color:#60A5FA" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="msgIndividuelBtn(this)">&#128172; Msg</button>'
-        +'<button class="ap-btn btn-presence" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="presenceBtn(this)">&#9989; Pr&#233;s.</button>'
+        +'<button class="ap-btn" style="background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.25);color:#60A5FA" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="msgIndBtn(this)">&#128172; Msg</button>'
+        +'<button class="ap-btn btn-presence" data-id="'+a.id+'" data-prenom="'+a.prenom+'" onclick="presenceBtn(this)">&#9989; Pres.</button>'
       +'</div>'
     +'</div>';
   }).join('');
@@ -626,19 +626,16 @@ function ouvrirNote(apprId, apprPrenom){
 // ─── PRÉSENCE ─────────────────────────────────────────────────────────
 function ouvrirNoteBtn(btn){ ouvrirNote(btn.dataset.id, btn.dataset.prenom); }
 function presenceBtn(btn){ validerPresence(btn.dataset.id, btn.dataset.prenom); }
-function msgIndividuelBtn(btn){
-  var apprId   = btn.dataset.id;
-  var apprPrenom = btn.dataset.prenom;
-  var msg = prompt('Message pour '+apprPrenom+' :');
+function msgIndBtn(btn){
+  var id = btn.dataset.id, prenom = btn.dataset.prenom;
+  var msg = prompt('Message pour '+prenom+' :');
   if(!msg||!msg.trim()) return;
   fetch(APPS_URL+'?action=envoyerMessage&expediteur_id='+encodeURIComponent(RP.id)
-    +'&destinataires='+encodeURIComponent(apprId)
+    +'&destinataires='+encodeURIComponent(id)
     +'&message='+encodeURIComponent(msg.trim()))
     .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(d.status==='ok') alert('Message envoyé à '+apprPrenom+' !');
-      else alert('Erreur : '+(d.message||'inconnue'));
-    }).catch(function(){ alert('Erreur réseau'); });
+    .then(function(d){ if(d.status==='ok') alert('Message envoye a '+prenom+' !'); })
+    .catch(function(){ alert('Erreur reseau'); });
 }
 
 function validerPresence(apprId, apprPrenom){
