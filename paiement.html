@@ -136,12 +136,10 @@ var LIENS_BASE = {
   abo10:    'https://buy.stripe.com/9B64gy3XycCHdMX8HM4ko00'
 };
 
-// Récupérer l'ID de l'apprenant depuis l'URL pour tracker la vente
-var apprId = p.get('id') || '';
-
 function getLien(type){
   var base = LIENS_BASE[type];
-  if(apprId) base += '?client_reference_id='+encodeURIComponent(apprId);
+  var id = (typeof apprId !== 'undefined') ? apprId : '';
+  if(id) base += '?client_reference_id='+encodeURIComponent(id);
   return base;
 }
 
@@ -155,6 +153,7 @@ var LABELS = {
 var p = new URLSearchParams(window.location.search);
 var prenom = p.get('prenom') || '';
 var nom    = p.get('nom')    || '';
+var apprId = p.get('id')     || '';
 if(prenom){
   var nameEl = document.getElementById('apprenantName');
   if(nameEl) nameEl.textContent = '⚔️ Votre conseiller : '+prenom+' '+nom;
