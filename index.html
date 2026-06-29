@@ -105,7 +105,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 
   <!-- NAVIGATION COMPACTE -->
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
-    <button onclick="switchAdminTab('apprenants')" style="padding:9px 13px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">&#128101; Apprenants</button>
+    <button onclick="switchAdminTab('apprenants')" style="padding:9px 13px;background:rgba(41,121,255,.08);border:1.5px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">&#128101; Tous apprenants</button>
     <button onclick="switchAdminTab('responsables')" style="padding:9px 13px;background:rgba(124,58,237,.08);border:1.5px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">&#9876;&#65039; Resp. Péd.</button>
     <button onclick="switchAdminTab('talents')" style="padding:9px 13px;background:rgba(6,214,160,.08);border:1.5px solid rgba(6,214,160,.2);color:#06D6A0;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">&#127807; Talents</button>
     <button onclick="switchAdminTab('emargement')" style="padding:9px 13px;background:rgba(96,165,250,.08);border:1.5px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">&#128203; Emargement</button>
@@ -169,45 +169,13 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     </div>
     <div id="rpList"><div class="admin-loading">Chargement...</div></div>
     <div style="margin-top:14px">
-      <div style="font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:14px">&#128226; Messagerie</div>
-
-      <div style="font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">1. Destinataires</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px">
-        <button onclick="setDest('TOUS')" id="destTOUS" style="padding:9px;background:rgba(232,25,44,.12);border:1.5px solid rgba(232,25,44,.3);color:#FF6B6B;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128226; Tout le monde</button>
-        <button onclick="setDest('APPRENANTS')" id="destAPPRENANTS" style="padding:9px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128101; Apprenants</button>
-        <button onclick="setDest('RP')" id="destRP" style="padding:9px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#9876;&#65039; Tous les RP</button>
-        <button onclick="ouvrirSelDest('equipe')" id="destEQUIPE" style="padding:9px;background:rgba(6,214,160,.06);border:1px solid rgba(6,214,160,.2);color:#06D6A0;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128101; Équipe d'un RP</button>
-        <button onclick="ouvrirSelDest('apprenant')" id="destAPP1" style="padding:9px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128100; Un apprenant</button>
-        <button onclick="ouvrirSelDest('rp1')" id="destRP1" style="padding:9px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#9876;&#65039; Un RP précis</button>
+      <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📢 Message broadcast</div>
+      <textarea id="broadcastMsg" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;resize:none;outline:none;min-height:70px;margin-bottom:8px" placeholder="Message à envoyer..."></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <button onclick="envoyerBroadcast('TOUS')" style="padding:10px;background:linear-gradient(135deg,rgba(232,25,44,.15),rgba(124,58,237,.15));border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📢 Tous</button>
+        <button onclick="envoyerBroadcast('RP')" style="padding:10px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚔️ Chefs éq.</button>
+        <button onclick="envoyerBroadcast('APPRENANTS')" style="padding:10px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">🎮 Apprenants</button>
       </div>
-
-      <div id="selDestBlock" style="display:none;margin-bottom:12px">
-        <select id="selDestId" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700">
-          <option value="">Choisir...</option>
-        </select>
-      </div>
-
-      <div style="font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">2. Message rapide</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-        <button onclick="setMsgRapide('Vous etes incroyables ! Continuez sur cette lancee, chaque vente compte !')" style="padding:8px;background:rgba(0,200,83,.06);border:1px solid rgba(0,200,83,.15);color:#00C853;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-align:left">&#128170; Motivation</button>
-        <button onclick="setMsgRapide('Rappel objectif du jour : faites au moins 3 ventes avant 17h !')" style="padding:8px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.15);color:#60A5FA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-align:left">&#127919; Objectif</button>
-        <button onclick="setMsgRapide('Pause de 15 minutes - retrouvez-vous au point de depart.')" style="padding:8px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.15);color:#F5A623;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-align:left">&#9208;&#65039; Pause</button>
-        <button onclick="setMsgRapide('Regroupement immediat au point de depart. Tout le monde se retrouve maintenant.')" style="padding:8px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:#FF6B6B;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer;text-align:left">&#128205; Regroupement</button>
-      </div>
-
-      <div style="font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">3. Message personnalise</div>
-      <textarea id="broadcastMsg" style="width:100%;padding:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Inter,sans-serif;font-size:13px;resize:none;outline:none;min-height:70px;margin-bottom:10px" placeholder="Ecrivez votre message..."></textarea>
-
-      <button onclick="envoyerBroadcastV2()" style="width:100%;padding:12px;background:linear-gradient(135deg,rgba(232,25,44,.2),rgba(124,58,237,.2));border:1.5px solid rgba(124,58,237,.3);color:#F0F4FF;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-bottom:16px">&#128226; Envoyer le message</button>
-
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">&#128203; Historique</span>
-        <button onclick="chargerHistorique()" style="background:none;border:none;color:#60A5FA;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;cursor:pointer">Actualiser</button>
-      </div>
-      <div id="historiqueMsg" style="max-height:200px;overflow-y:auto;background:rgba(255,255,255,.02);border-radius:8px;border:1px solid var(--border)">
-        <div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">Cliquez Actualiser pour charger</div>
-      </div>
-
     </div>
   </div>
 
@@ -963,91 +931,89 @@ function voirNotesRP(rpId, rpPrenom){
 var _destActuel = 'TOUS';
 var _destIndivId = '';
 
+function majSurbrillance(dest){
+  var ids = ['destTOUS','destAPPRENANTS','destRP','destEQUIPE','destAPP1','destRP1'];
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.style.opacity='0.45'; el.style.boxShadow='none'; }
+  });
+  var map = {'TOUS':'destTOUS','APPRENANTS':'destAPPRENANTS','RP':'destRP','EQUIPE':'destEQUIPE','APPRENANT':'destAPP1','RP1':'destRP1'};
+  var el = document.getElementById(map[dest]);
+  if(el){ el.style.opacity='1'; el.style.boxShadow='0 0 0 2px currentColor'; }
+}
+
 function setDest(dest){
-  _destActuel = dest;
-  _destIndivId = '';
+  _destActuel = dest; _destIndivId = '';
   document.getElementById('selDestBlock').style.display = 'none';
+  majSurbrillance(dest);
 }
 
 function ouvrirSelDest(type){
   var sel = document.getElementById('selDestId');
   document.getElementById('selDestBlock').style.display = 'block';
   sel.innerHTML = '<option value="">Choisir...</option>';
-  if(type === 'apprenant'){
-    _destActuel = 'APPRENANT';
+  if(type==='apprenant'){
+    _destActuel='APPRENANT'; majSurbrillance('APPRENANT');
     APPRENANTS.forEach(function(a){
-      var o = document.createElement('option');
-      o.value = a.id;
-      o.textContent = a.prenom+' '+a.nom+' ('+a.id+')';
-      sel.appendChild(o);
+      var o=document.createElement('option'); o.value=a.id;
+      o.textContent=a.prenom+' '+a.nom+' ('+a.id+')'; sel.appendChild(o);
     });
-  } else if(type === 'rp1'){
-    _destActuel = 'RP1';
+  } else if(type==='rp1'){
+    _destActuel='RP1'; majSurbrillance('RP1');
     fetch(APPS_URL+'?action=listResponsables&admin=FC2026ADMIN')
-      .then(function(r){ return r.json(); })
+      .then(function(r){return r.json();})
       .then(function(d){
         (d.rows||[]).forEach(function(rp){
-          var o = document.createElement('option');
-          o.value = rp.id;
-          o.textContent = rp.prenom+' '+rp.nom+' ('+rp.id+')';
-          sel.appendChild(o);
+          var o=document.createElement('option'); o.value=rp.id;
+          o.textContent=rp.prenom+' '+rp.nom+' ('+rp.id+')'; sel.appendChild(o);
         });
       });
-  } else if(type === 'equipe'){
-    _destActuel = 'EQUIPE';
+  } else if(type==='equipe'){
+    _destActuel='EQUIPE'; majSurbrillance('EQUIPE');
     fetch(APPS_URL+'?action=listResponsables&admin=FC2026ADMIN')
-      .then(function(r){ return r.json(); })
+      .then(function(r){return r.json();})
       .then(function(d){
         (d.rows||[]).forEach(function(rp){
-          var o = document.createElement('option');
-          o.value = rp.id;
-          o.textContent = 'Equipe de '+rp.prenom+' '+rp.nom;
-          sel.appendChild(o);
+          var o=document.createElement('option'); o.value=rp.id;
+          o.textContent='Equipe de '+rp.prenom+' '+rp.nom; sel.appendChild(o);
         });
       });
   }
-  sel.onchange = function(){ _destIndivId = this.value; };
+  sel.onchange=function(){ _destIndivId=this.value; };
 }
 
-function setMsgRapide(txt){
-  document.getElementById('broadcastMsg').value = txt;
-}
+function setMsgRapide(txt){ document.getElementById('broadcastMsg').value=txt; }
 
 function envoyerBroadcastV2(){
-  var msg = document.getElementById('broadcastMsg').value.trim();
+  var msg=document.getElementById('broadcastMsg').value.trim();
   if(!msg){ alert('Entrez un message'); return; }
-  var dest = _destActuel;
-  if(dest === 'APPRENANT' || dest === 'RP1'){
+  var dest=_destActuel;
+  if(dest==='APPRENANT'||dest==='RP1'){
     if(!_destIndivId){ alert('Choisissez un destinataire'); return; }
-    dest = _destIndivId;
-  } else if(dest === 'EQUIPE'){
+    dest=_destIndivId;
+  } else if(dest==='EQUIPE'){
     if(!_destIndivId){ alert('Choisissez un RP'); return; }
-    dest = 'MON_EQUIPE_'+_destIndivId;
+    dest='MON_EQUIPE_'+_destIndivId;
   }
-  if(!confirm('Envoyer a '+dest+' ?')) return;
+  if(!confirm('Envoyer a : '+dest+' ?')) return;
   fetch(APPS_URL+'?action=envoyerMessage&expediteur_id=ADMIN&admin=FC2026ADMIN&destinataires='+encodeURIComponent(dest)+'&message='+encodeURIComponent(msg))
-    .then(function(r){ return r.json(); })
+    .then(function(r){return r.json();})
     .then(function(d){
-      if(d.status === 'ok'){
-        document.getElementById('broadcastMsg').value = '';
-        alert('Message envoye !');
-        chargerHistorique();
-      }
+      if(d.status==='ok'){ document.getElementById('broadcastMsg').value=''; alert('Message envoye !'); chargerHistorique(); }
     }).catch(function(){ alert('Erreur reseau'); });
 }
 
 function chargerHistorique(){
-  var el = document.getElementById('historiqueMsg');
+  var el=document.getElementById('historiqueMsg');
   if(!el) return;
-  el.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px">Chargement...</div>';
+  el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px">Chargement...</div>';
   fetch(APPS_URL+'?action=getHistoriqueMessages&admin=FC2026ADMIN&_t='+Date.now())
-    .then(function(r){ return r.json(); })
+    .then(function(r){return r.json();})
     .then(function(d){
-      var msgs = d.messages||[];
+      var msgs=d.messages||[];
       if(!msgs.length){ el.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px">Aucun message</div>'; return; }
-      el.innerHTML = msgs.map(function(m){
-        var dest = m.destinataires;
-        var dl = dest==='TOUS'?'Tous':dest==='APPRENANTS'?'Apprenants':dest==='RP'?'Tous RP':dest.startsWith('MON_EQUIPE_')?'Equipe '+dest.replace('MON_EQUIPE_',''):''+dest;
+      el.innerHTML=msgs.map(function(m){
+        var dl=m.destinataires==='TOUS'?'Tous':m.destinataires==='APPRENANTS'?'Apprenants':m.destinataires==='RP'?'Tous RP':m.destinataires.startsWith('MON_EQUIPE_')?'Equipe '+m.destinataires.replace('MON_EQUIPE_',''):''+m.destinataires;
         return '<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,.05);font-size:11px">'
           +'<div style="display:flex;justify-content:space-between;margin-bottom:2px">'
             +'<span style="color:#60A5FA;font-weight:700">'+(m.expediteur_type==='ADMIN'?'Admin':m.expediteur_id)+'</span>'
@@ -1057,8 +1023,11 @@ function chargerHistorique(){
           +'<div style="color:var(--text)">'+m.message+'</div>'
           +'</div>';
       }).join('');
-    }).catch(function(){ el.innerHTML='<div style="color:#FF6B6B;font-size:12px;text-align:center;padding:8px">Erreur</div>'; });
+    }).catch(function(){ el.innerHTML='<div style="color:#FF6B6B;text-align:center;padding:8px">Erreur</div>'; });
 }
+
+// Init surbrillance au chargement
+setTimeout(function(){ majSurbrillance('TOUS'); }, 500);
 
 function envoyerBroadcast(dest){
   var msg = document.getElementById('broadcastMsg').value.trim();
