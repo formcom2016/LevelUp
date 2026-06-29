@@ -42,11 +42,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .perk-green{background:rgba(0,200,83,.12);color:#00C853}
 
 /* BOUTONS PAIEMENT */
-.share-btn{width:100%;padding:12px;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s}
-.share-btn:active{transform:scale(.97)}
-.share-btn-ponct{background:rgba(245,166,35,.12);border:1.5px solid rgba(245,166,35,.3);color:#F5A623}
-.share-btn-abo5{background:rgba(124,58,237,.12);border:1.5px solid rgba(124,58,237,.3);color:#A78BFA}
-.share-btn-abo10{background:rgba(0,200,83,.12);border:1.5px solid rgba(0,200,83,.3);color:#00C853}
+.pay-now-btn,.share-btn{width:100%;padding:12px;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;text-decoration:none}
+.pay-now-btn:active,.share-btn:active{transform:scale(.97)}
+.pay-now-btn{margin-bottom:8px}
+.pay-now-ponct{background:rgba(245,166,35,.2);border:1.5px solid rgba(245,166,35,.4);color:#F5A623}
+.pay-now-abo5{background:rgba(124,58,237,.2);border:1.5px solid rgba(124,58,237,.4);color:#A78BFA}
+.pay-now-abo10{background:rgba(0,200,83,.2);border:1.5px solid rgba(0,200,83,.4);color:#00C853}
+.share-btn-ponct{background:rgba(245,166,35,.06);border:1.5px solid rgba(245,166,35,.2);color:rgba(245,166,35,.7)}
+.share-btn-abo5{background:rgba(124,58,237,.06);border:1.5px solid rgba(124,58,237,.2);color:rgba(167,139,250,.7)}
+.share-btn-abo10{background:rgba(0,200,83,.06);border:1.5px solid rgba(0,200,83,.2);color:rgba(0,200,83,.7)}
 
 /* SÉCURITÉ */
 .security{text-align:center;margin-top:20px;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
@@ -80,8 +84,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="perk perk-gold">✓ Paiement unique</span>
       <span class="perk perk-gold">✓ Livraison immédiate</span>
     </div>
+    <a class="pay-now-btn pay-now-ponct" href="#" onclick="payerMaintenant('ponctuel');return false;">
+      &#128179; Payer maintenant
+    </a>
     <button class="share-btn share-btn-ponct" onclick="partager('ponctuel')">
-      &#128257; Envoyer ce lien
+      &#128257; Envoyer le lien
     </button>
   </div>
 
@@ -100,8 +107,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="perk perk-purple">🎁 6 parfums/an</span>
       <span class="perk perk-purple">✓ Résiliable</span>
     </div>
+    <a class="pay-now-btn pay-now-abo5" href="#" onclick="payerMaintenant('abo5');return false;">
+      &#128179; S'abonner maintenant
+    </a>
     <button class="share-btn share-btn-abo5" onclick="partager('abo5')">
-      &#128257; Envoyer ce lien
+      &#128257; Envoyer le lien
     </button>
   </div>
 
@@ -119,8 +129,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <span class="perk perk-green">✓ ×2 = 20€/mois</span>
       <span class="perk perk-green">✓ ×3 = 30€/mois</span>
     </div>
+    <a class="pay-now-btn pay-now-abo10" href="#" onclick="payerMaintenant('abo10');return false;">
+      &#128179; S'abonner maintenant
+    </a>
     <button class="share-btn share-btn-abo10" onclick="partager('abo10')">
-      &#128257; Envoyer ce lien
+      &#128257; Envoyer le lien
     </button>
   </div>
 
@@ -135,6 +148,8 @@ var LIENS_BASE = {
   abo5:     'https://buy.stripe.com/eVqaEW0LmeKPfV5f6a4ko02',
   abo10:    'https://buy.stripe.com/9B64gy3XycCHdMX8HM4ko00'
 };
+// URL merci-paiement avec paramètres
+var BASE_URL = 'https://frabjous-axolotl-1316cd.netlify.app';
 
 function getLien(type){
   var base = LIENS_BASE[type];
@@ -166,6 +181,11 @@ function getMessage(type){
   return 'Bonjour !\n\nVoici votre lien de paiement s\u00e9curis\u00e9 Form\'Com :\n\n'
     +label+'\n\n'+lien+conseiller
     +'\n\nPaiement 100% s\u00e9curis\u00e9 via Stripe \uD83D\uDD12';
+}
+
+function payerMaintenant(type){
+  // Ouvrir directement le lien Stripe sur ce téléphone
+  window.open(getLien(type), '_blank');
 }
 
 function partager(type){
