@@ -172,17 +172,15 @@ function getMessage(type){
 function partager(type){
   var msg = getMessage(type);
   var lien = getLien(type);
+  // Mobile : partage natif
   if(navigator.share){
-    navigator.share({title:'Form\'Com Level Up',text:msg,url:lien}).catch(function(){});
+    navigator.share({title:'Form\'Com Level Up',text:msg,url:lien}).catch(function(){
+      // Si partage échoue, ouvrir WhatsApp
+      window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+    });
   } else {
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(msg).then(function(){ showToast('Lien copi\u00e9 !'); });
-    } else {
-      var ta=document.createElement('textarea');
-      ta.value=msg; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      showToast('Lien copi\u00e9 !');
-    }
+    // Desktop : ouvrir WhatsApp dans un nouvel onglet
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   }
 }
 
