@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Form'Com · Paiement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060B18;--card:#0E1730;--border:rgba(255,255,255,.08);--text:#F0F4FF;--muted:#8892A4;--gold:#F5A623;--red:#E8192C;--r:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+
+.wrap{width:100%;max-width:380px}
+
+.header{text-align:center;margin-bottom:28px}
+.logo{font-family:'Exo 2',sans-serif;font-size:26px;font-weight:900;margin-bottom:4px}
+.logo-com{color:var(--red)}
+.subtitle{font-size:13px;color:var(--muted)}
+.apprenant-name{font-family:'Exo 2',sans-serif;font-size:15px;font-weight:800;color:var(--gold);margin-top:8px}
+
+.section-title{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-family:'Exo 2',sans-serif}
+
+/* CARTE PRODUIT */
+.product-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;transition:.2s;cursor:pointer}
+.product-card:hover{border-color:var(--gold);background:rgba(245,166,35,.05)}
+.product-card.abo{border-color:rgba(124,58,237,.3)}
+.product-card.abo:hover{border-color:#7C3AED;background:rgba(124,58,237,.05)}
+
+.product-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.product-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.icon-ponct{background:rgba(245,166,35,.12)}
+.icon-abo5{background:rgba(124,58,237,.12)}
+.icon-abo10{background:rgba(0,200,83,.12)}
+.product-title{font-family:'Exo 2',sans-serif;font-size:15px;font-weight:900;color:var(--text)}
+.product-price{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;color:var(--gold)}
+.product-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+.product-perks{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.perk{font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;font-family:'Exo 2',sans-serif}
+.perk-gold{background:rgba(245,166,35,.12);color:var(--gold)}
+.perk-purple{background:rgba(124,58,237,.12);color:#A78BFA}
+.perk-green{background:rgba(0,200,83,.12);color:#00C853}
+
+/* BOUTONS PAIEMENT */
+.pay-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.pay-btn{padding:10px 6px;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.15s}
+.pay-btn:active{transform:scale(.96)}
+.btn-wa{background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25D366}
+.btn-sms{background:rgba(41,121,255,.12);border:1px solid rgba(41,121,255,.3);color:#60A5FA}
+.btn-copy{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted)}
+.btn-icon{font-size:18px}
+.btn-label{font-size:9px;letter-spacing:.3px;text-transform:uppercase}
+
+/* SÉCURITÉ */
+.security{text-align:center;margin-top:20px;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#00C853;color:#fff;padding:10px 20px;border-radius:99px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;transition:.3s;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div class="logo">Form'<span class="logo-com">Com</span></div>
+    <div class="subtitle">Paiement sécurisé · Level Up</div>
+    <div class="apprenant-name" id="apprenantName"></div>
+  </div>
+
+  <!-- PONCTUEL -->
+  <div class="section-title">Participation ponctuelle</div>
+  <div class="product-card">
+    <div class="product-header">
+      <div class="product-icon icon-ponct">💳</div>
+      <div>
+        <div class="product-title">Parfum ponctuel</div>
+        <div class="product-price">10€ par article · quantité au choix</div>
+      </div>
+    </div>
+    <div class="product-desc">Achetez un ou plusieurs parfums. Choisissez la quantité directement sur la page de paiement.</div>
+    <div class="product-perks">
+      <span class="perk perk-gold">✓ Paiement unique</span>
+      <span class="perk perk-gold">✓ Livraison immédiate</span>
+    </div>
+    <div class="pay-btns">
+      <a class="pay-btn btn-wa" href="#" onclick="ouvrirWA('ponctuel');return false;">
+        <span class="btn-icon">💬</span>
+        <span class="btn-label">WhatsApp</span>
+      </a>
+      <a class="pay-btn btn-sms" href="#" onclick="ouvrirSMS('ponctuel');return false;">
+        <span class="btn-icon">✉️</span>
+        <span class="btn-label">SMS</span>
+      </a>
+      <button class="pay-btn btn-copy" onclick="copier('ponctuel')">
+        <span class="btn-icon">📋</span>
+        <span class="btn-label">Copier</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ABONNEMENT 5€ -->
+  <div class="section-title" style="margin-top:16px">Abonnements solidaires</div>
+  <div class="product-card abo">
+    <div class="product-header">
+      <div class="product-icon icon-abo5">🌸</div>
+      <div>
+        <div class="product-title">Solidaire Essentiel</div>
+        <div class="product-price">5€/mois · quantité au choix</div>
+      </div>
+    </div>
+    <div class="product-desc">Soutenez un apprenant chaque mois et recevez des parfums en cadeau tout au long de l'année.</div>
+    <div class="product-perks">
+      <span class="perk perk-purple">🎁 6 parfums/an</span>
+      <span class="perk perk-purple">✓ Résiliable</span>
+    </div>
+    <div class="pay-btns">
+      <a class="pay-btn btn-wa" href="#" onclick="ouvrirWA('abo5');return false;">
+        <span class="btn-icon">💬</span>
+        <span class="btn-label">WhatsApp</span>
+      </a>
+      <a class="pay-btn btn-sms" href="#" onclick="ouvrirSMS('abo5');return false;">
+        <span class="btn-icon">✉️</span>
+        <span class="btn-label">SMS</span>
+      </a>
+      <button class="pay-btn btn-copy" onclick="copier('abo5')">
+        <span class="btn-icon">📋</span>
+        <span class="btn-label">Copier</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="product-card abo" style="margin-top:10px">
+    <div class="product-header">
+      <div class="product-icon icon-abo10">💎</div>
+      <div>
+        <div class="product-title">Solidaire Premium</div>
+        <div class="product-price">10€/mois · quantité au choix</div>
+      </div>
+    </div>
+    <div class="product-desc">Pour 20€/mois choisissez ×2, pour 30€/mois choisissez ×3, etc. Un parfum offert chaque mois.</div>
+    <div class="product-perks">
+      <span class="perk perk-green">🎁 12 parfums/an</span>
+      <span class="perk perk-green">✓ ×2 = 20€/mois</span>
+      <span class="perk perk-green">✓ ×3 = 30€/mois</span>
+    </div>
+    <div class="pay-btns">
+      <a class="pay-btn btn-wa" href="#" onclick="ouvrirWA('abo10');return false;">
+        <span class="btn-icon">💬</span>
+        <span class="btn-label">WhatsApp</span>
+      </a>
+      <a class="pay-btn btn-sms" href="#" onclick="ouvrirSMS('abo10');return false;">
+        <span class="btn-icon">✉️</span>
+        <span class="btn-label">SMS</span>
+      </a>
+      <button class="pay-btn btn-copy" onclick="copier('abo10')">
+        <span class="btn-icon">📋</span>
+        <span class="btn-label">Copier</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="security">🔒 Paiement sécurisé par Stripe</div>
+</div>
+
+<div class="toast" id="toast">Lien copié !</div>
+
+<script>
+var LIENS_BASE = {
+  ponctuel: 'https://buy.stripe.com/4gMaEW0Lm8mr38jf6a4ko01',
+  abo5:     'https://buy.stripe.com/eVqaEW0LmeKPfV5f6a4ko02',
+  abo10:    'https://buy.stripe.com/9B64gy3XycCHdMX8HM4ko00'
+};
+
+// Récupérer l'ID de l'apprenant depuis l'URL pour tracker la vente
+var apprId = p.get('id') || '';
+
+function getLien(type){
+  var base = LIENS_BASE[type];
+  if(apprId) base += '?client_reference_id='+encodeURIComponent(apprId);
+  return base;
+}
+
+var LABELS = {
+  ponctuel: 'Parfum ponctuel · 10€/article',
+  abo5:     'Abonnement Solidaire Essentiel · 5€/mois · 6 parfums/an',
+  abo10:    'Abonnement Solidaire Premium · 10€/mois · 12 parfums/an'
+};
+
+// Récupérer le nom de l'apprenant depuis l'URL
+var p = new URLSearchParams(window.location.search);
+var prenom = p.get('prenom') || '';
+var nom    = p.get('nom')    || '';
+if(prenom){
+  var nameEl = document.getElementById('apprenantName');
+  if(nameEl) nameEl.textContent = '⚔️ Votre conseiller : '+prenom+' '+nom;
+}
+
+function getMessage(type){
+  var lien = getLien(type);
+  var label = LABELS[type];
+  var conseiller = prenom ? '\n\nVotre conseiller : '+prenom+(nom?' '+nom:'') : '';
+  return 'Bonjour !\n\nVoici votre lien de paiement sécurisé Form\'Com :\n\n'
+    +label+'\n\n'+lien
+    +conseiller
+    +'\n\nMerci pour votre confiance \uD83D\uDE4F';
+}
+
+function ouvrirWA(type){
+  var msg = getMessage(type);
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
+}
+
+function ouvrirSMS(type){
+  var msg = getMessage(type);
+  window.open('sms:?body='+encodeURIComponent(msg), '_blank');
+}
+
+function copier(type){
+  var msg = getMessage(type);
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(msg).then(function(){
+      showToast('Lien copié !');
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = msg;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Lien copié !');
+  }
+}
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+</script>
+</body>
+</html>

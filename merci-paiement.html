@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Form'Com · Merci !</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<style>
+:root{--bg:#060B18;--card:#0E1730;--border:rgba(255,255,255,.08);--text:#F0F4FF;--muted:#8892A4;--gold:#F5A623;--red:#E8192C;--green:#00C853}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+
+.wrap{width:100%;max-width:400px}
+
+/* BADGE SUCCÈS */
+.success-badge{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#065F46,#059652);border:3px solid rgba(0,200,83,.3);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 24px;animation:popIn .6s cubic-bezier(.175,.885,.32,1.275) forwards}
+@keyframes popIn{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* LOGO */
+.logo{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.logo span{color:var(--red)}
+
+/* TITRE */
+.title{font-family:'Exo 2',sans-serif;font-size:28px;font-weight:900;color:var(--text);line-height:1.2;margin-bottom:12px}
+.title em{color:var(--gold);font-style:normal}
+
+/* SOUS-TITRE */
+.subtitle{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:28px}
+
+/* CARTE PROGRAMME */
+.program-card{background:linear-gradient(135deg,#0A1628,#0D1F40);border:1px solid rgba(41,121,255,.2);border-radius:16px;padding:20px;margin-bottom:20px;text-align:left}
+.program-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(96,165,250,.7);margin-bottom:14px}
+.program-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.program-item:last-child{margin-bottom:0}
+.program-icon{width:36px;height:36px;border-radius:10px;background:rgba(41,121,255,.12);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.program-text{font-size:13px;color:var(--text);line-height:1.5}
+.program-text strong{color:#60A5FA;font-weight:700}
+
+/* PARFUM INFO */
+.parfum-card{background:linear-gradient(135deg,#1A0A3A,#2D1B69);border:1px solid rgba(124,58,237,.25);border-radius:16px;padding:20px;margin-bottom:20px;text-align:left}
+.parfum-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:14px}
+.parfum-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.parfum-row:last-child{margin-bottom:0}
+.parfum-dot{width:8px;height:8px;border-radius:50%;background:#7C3AED;flex-shrink:0}
+.parfum-text{font-size:13px;color:var(--text);line-height:1.5}
+
+/* CONSEILLER */
+.conseiller{font-size:13px;color:var(--muted);margin-bottom:24px;padding:12px 16px;background:rgba(255,255,255,.04);border-radius:10px;border:1px solid var(--border)}
+.conseiller strong{color:var(--gold)}
+
+/* BOUTONS */
+.btn-share{width:100%;padding:14px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;border-radius:12px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;text-decoration:none}
+.btn-close{width:100%;padding:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:12px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+
+/* FOOTER */
+.footer{margin-top:24px;font-size:11px;color:rgba(255,255,255,.25);line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="logo">Form'<span>Com</span> Level Up</div>
+
+  <div class="success-badge">✓</div>
+
+  <h1 class="title">Merci pour votre<br><em>soutien précieux</em> !</h1>
+
+  <p class="subtitle" id="subtitleText">
+    Votre paiement a bien été enregistré.<br>
+    Vous venez de soutenir un jeune talent en devenir.
+  </p>
+
+  <!-- PROGRAMME -->
+  <div class="program-card">
+    <div class="program-title">🌟 Le programme Form'Com Level Up</div>
+    <div class="program-item">
+      <div class="program-icon">🎯</div>
+      <div class="program-text">Des jeunes apprenants apprennent le <strong>commerce de terrain</strong> en rencontrant de vraies personnes, dans de vraies situations.</div>
+    </div>
+    <div class="program-item">
+      <div class="program-icon">⚡</div>
+      <div class="program-text">Chaque vente, chaque contact, chaque évaluation <strong>forge leur confiance</strong> et développe leurs compétences.</div>
+    </div>
+    <div class="program-item">
+      <div class="program-icon">🏆</div>
+      <div class="program-text">Votre participation <strong>finance directement leur parcours</strong> et les aide à construire leur avenir.</div>
+    </div>
+  </div>
+
+  <!-- PARFUM INFO (dynamique selon le type) -->
+  <div class="parfum-card" id="parfumCard" style="display:none">
+    <div class="parfum-title" id="parfumTitle">🎁 Vos parfums</div>
+    <div id="parfumDetails"></div>
+  </div>
+
+  <!-- CONSEILLER -->
+  <div class="conseiller" id="conseillerBlock" style="display:none">
+    Conseillé par <strong id="conseillerName"></strong> — votre contact pour toute question
+  </div>
+
+  <!-- PARTAGER -->
+  <a class="btn-share" id="btnWA" href="#" target="_blank">
+    💬 Partager cette belle initiative
+  </a>
+
+  <button class="btn-close" onclick="window.close()">Fermer</button>
+
+  <div class="footer">
+    Paiement sécurisé par Stripe · Form'Com © 2026<br>
+    Un reçu vous a été envoyé par email
+  </div>
+
+</div>
+
+<script>
+var p = new URLSearchParams(window.location.search);
+var type    = p.get('type')    || '';
+var prenom  = p.get('prenom')  || '';
+var nom     = p.get('nom')     || '';
+var montant = p.get('montant') || '';
+
+// Afficher le conseiller
+if(prenom){
+  var cb = document.getElementById('conseillerBlock');
+  var cn = document.getElementById('conseillerName');
+  if(cb) cb.style.display = 'block';
+  if(cn) cn.textContent = prenom + (nom ? ' '+nom : '');
+}
+
+// Adapter le message selon le type
+var parfumCard = document.getElementById('parfumCard');
+var parfumDetails = document.getElementById('parfumDetails');
+var subtitle = document.getElementById('subtitleText');
+
+if(type === 'abo5'){
+  subtitle.innerHTML = 'Bienvenue dans l\'aventure solidaire !<br>Vous venez de rejoindre le programme Form\'Com pour <strong style="color:#A78BFA">5€/mois</strong>.';
+  parfumCard.style.display = 'block';
+  document.getElementById('parfumTitle').textContent = '\uD83C\uDF38 Vos 6 parfums sur 12 mois';
+  parfumDetails.innerHTML =
+    '<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Votre premier parfum vous attend dès aujourd\'hui</strong> — pour marquer le début de votre aventure solidaire, votre conseiller vous le remet en mains propres.</div></div>'
+    +'<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Chaque mois</strong> — 5€ sont prélevés automatiquement. Votre engagement fait la différence.</div></div>'
+    +'<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Dans 12 mois</strong> — vous recevrez votre coffret avec vos 5 parfums de l\'année, soigneusement sélectionnés pour vous.</div></div>';
+
+} else if(type === 'abo10'){
+  var nb = montant ? Math.round(parseFloat(montant)/10) : 1;
+  var totalParfums = nb * 12;
+  var coffretParfums = totalParfums - nb;
+  subtitle.innerHTML = 'Bienvenue dans l\'aventure solidaire Premium !<br>Vous venez de rejoindre le programme pour <strong style="color:#00C853">'+montant+'€/mois</strong>.';
+  parfumCard.style.display = 'block';
+  document.getElementById('parfumTitle').textContent = '\uD83D\uDC8E Vos '+totalParfums+' parfums sur 12 mois';
+  parfumDetails.innerHTML =
+    '<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Vos '+nb+' premier'+(nb>1?'s':'')+' parfum'+(nb>1?'s':'')+' vous attendent dès aujourd\'hui</strong> — pour marquer le début de votre aventure solidaire, votre conseiller vous les remet en mains propres.</div></div>'
+    +'<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Chaque mois</strong> — '+montant+'€ sont prélevés automatiquement. Un engagement qui compte vraiment.</div></div>'
+    +'<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Dans 12 mois</strong> — vous recevrez votre coffret avec vos '+coffretParfums+' parfums de l\'année, soigneusement sélectionnés pour vous.</div></div>';
+
+} else {
+  subtitle.innerHTML = 'Merci pour votre participation !<br>Vous venez de soutenir un jeune talent en devenir.';
+  parfumCard.style.display = 'block';
+  document.getElementById('parfumTitle').textContent = '\uD83C\uDF38 Votre parfum';
+  parfumDetails.innerHTML =
+    '<div class="parfum-row"><div class="parfum-dot"></div><div class="parfum-text"><strong>Votre parfum vous attend dès aujourd\'hui</strong> — votre conseiller vous le remet en mains propres.</div></div>';
+}
+
+// Bouton WhatsApp partage
+var shareMsg = 'Je viens de soutenir un jeune talent du programme Form\'Com Level Up !\n\nUn programme qui forme de jeunes apprenants au commerce de terrain et développe leur confiance.\n\nMerci à '+(prenom||'mon conseiller')+' pour cette belle rencontre 🙏\n\nhttps://frabjous-axolotl-1316cd.netlify.app';
+document.getElementById('btnWA').href = 'https://wa.me/?text='+encodeURIComponent(shareMsg);
+
+// Confetti
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    if(typeof confetti === 'function'){
+      confetti({particleCount:100,spread:80,origin:{y:.3},colors:['#F5A623','#00C853','#7C3AED','#fff','#60A5FA']});
+      setTimeout(function(){
+        confetti({particleCount:50,angle:60,spread:55,origin:{x:0,y:.5}});
+        confetti({particleCount:50,angle:120,spread:55,origin:{x:1,y:.5}});
+      },400);
+    }
+  },300);
+});
+</script>
+</body>
+</html>

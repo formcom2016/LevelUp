@@ -494,6 +494,13 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
     </button>
   </div>
 
+  <!-- BOUTON PAIEMENT STRIPE -->
+  <div style="margin-bottom:12px">
+    <button onclick="ouvrirPaiement()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0A2540,#1A3A5C);border:1.5px solid rgba(99,179,237,.3);color:#63B3ED;border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+      &#128179; Envoyer un lien de paiement
+    </button>
+  </div>
+
   <!-- CAGNOTTE SOLIDAIRE -->
   <div id="cagnotteBlock" style="margin-bottom:12px">
     <div class="sec-title">🔥 Cagnotte solidaire du jour</div>
@@ -2595,6 +2602,13 @@ function envoyerSOS(){
   fetch(APPS_URL+'?action=signalerSOS&apprenant_id='+encodeURIComponent(AP.id)+'&apprenant_prenom='+encodeURIComponent(AP.prenom)+'&rp_id=')
     .catch(function(){});
   try{ if(navigator.vibrate) navigator.vibrate([300,100,300]); }catch(e){}
+}
+
+function ouvrirPaiement(){
+  var url = 'paiement.html?id='+encodeURIComponent(AP.id||'');
+  if(AP.prenom) url += '&prenom='+encodeURIComponent(AP.prenom);
+  if(AP.nom)    url += '&nom='+encodeURIComponent(AP.nom);
+  window.open(url, '_blank');
 }
 
 function ouvrirPasseport(){
