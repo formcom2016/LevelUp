@@ -162,7 +162,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     <button onclick="switchAdminTab('talents')" id="hudTalents" class="hud-btn c-teal">🌿 Talents</button>
     <button onclick="switchAdminTab('emargement')" id="hudEmargement" class="hud-btn c-cyan">📋 Émargement</button>
     <button onclick="switchAdminTab('messages')" id="hudMessages" class="hud-btn c-gold">📢 Messages</button>
-    <a href="admin_add_apprenant.html" target="_blank" class="hud-btn c-green">＋ Nouvel apprenant</a>
+    <a onclick="ouvrirNouvelApprenant();return false;" href="#" class="hud-btn c-green">＋ Nouvel apprenant</a>
     <div style="position:relative;margin-left:auto">
       <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 13px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
@@ -226,6 +226,24 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
       <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">Fiche apprenant</div>
     </div>
     <div id="ficheApprenantContent" style="padding:16px;padding-bottom:60px"></div>
+  </div>
+
+  <!-- PANEL FICHE RP -->
+  <div id="ficheRPPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
+    <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
+      <button onclick="document.getElementById('ficheRPPanel').style.display='none'" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+      <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#A78BFA">⚔️ Fiche Responsable</div>
+    </div>
+    <div id="ficheRPContent" style="padding:16px;padding-bottom:60px"></div>
+  </div>
+
+  <!-- PANEL NOUVEL APPRENANT -->
+  <div id="nouveauApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
+    <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
+      <button onclick="document.getElementById('nouveauApprenantPanel').style.display='none'" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+      <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#00FF87">＋ Nouvel apprenant</div>
+    </div>
+    <iframe id="nouveauApprenantFrame" src="" style="width:100%;border:none;min-height:calc(100vh - 60px)"></iframe>
   </div>
 
   <!-- SECTION RESPONSABLES -->
@@ -1015,87 +1033,112 @@ function loadResponsables(){
 }
 
 /* ===== FICHE RP ===== */
+function ouvrirNouvelApprenant(){
+  var panel = document.getElementById('nouveauApprenantPanel');
+  var frame = document.getElementById('nouveauApprenantFrame');
+  if(!frame.src || frame.src === window.location.href) frame.src = 'admin_add_apprenant.html';
+  panel.style.display = 'block';
+}
+
 function ouvrirFicheRP(id, prenom, nom, pin, statut){
-  // Créer la modal si elle n'existe pas
-  var existing = document.getElementById('ficheRPModal');
-  if(existing) existing.remove();
+  var panel = document.getElementById('ficheRPPanel');
+  var content = document.getElementById('ficheRPContent');
+  if(!panel||!content) return;
+  panel.style.display = 'block';
+  content.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Chargement...</div>';
 
-  var modal = document.createElement('div');
-  modal.id = 'ficheRPModal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9990;overflow-y:auto;padding:16px';
-  modal.innerHTML = '<div style="max-width:480px;margin:0 auto">'
-    // Header
-    +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
-      +'<button onclick="document.getElementById(\'ficheRPModal\').remove()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>'
-      +'<div style="flex:1;font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#A78BFA">⚔️ Fiche RP</div>'
-      +'<a href="responsable.html?id='+id+'&pin='+pin+'" target="_blank" style="padding:8px 14px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none">⚔️ Cockpit</a>'
-    +'</div>'
-    // Identité
-    +'<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:16px;margin-bottom:12px">'
-      +'<div style="display:flex;align-items:center;gap:12px">'
-        +'<div style="width:52px;height:52px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#fff">'+prenom.charAt(0).toUpperCase()+'</div>'
-        +'<div>'
-          +'<div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:var(--text)">'+prenom+' '+nom+'</div>'
-          +'<div style="font-size:11px;color:rgba(255,215,0,.7);font-family:Exo 2,sans-serif;font-weight:700;margin-top:3px">'+id+' · PIN : '+pin+'</div>'
-          +'<span style="display:inline-block;margin-top:4px;padding:3px 10px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+statut+'</span>'
-        +'</div>'
-      +'</div>'
-    +'</div>'
-    // Stats équipe
-    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">'
-      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">📊 Stats équipe du jour</div>'
-      +'<div id="ficheRPStats" style="text-align:center;color:var(--muted);font-size:13px">Chargement...</div>'
-    +'</div>'
-    // Équipe
-    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">'
-      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">🛡️ Équipe du jour</div>'
-      +'<div id="ficheRPEquipe" style="text-align:center;color:var(--muted);font-size:13px">Chargement...</div>'
-    +'</div>'
-    // Actions admin
-    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">'
-      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">⚙️ Actions admin</div>'
-      +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
-        +'<button onclick="envoyerMessageIndividuel(\''+id+'\',\''+prenom+' '+nom+'\');document.getElementById(\'ficheRPModal\').remove()" style="flex:1;padding:10px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">💬 Message</button>'
-        +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+id+'" data-prenom="'+prenom+'" style="flex:1;padding:10px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📝 Notes</button>'
-      +'</div>'
-    +'</div>'
-  +'</div>';
-  document.body.appendChild(modal);
-
-  // Charger les stats équipe
   fetch(APPS_URL+'?action=getEquipeJourStats&rp_id='+encodeURIComponent(id)+'&_t='+Date.now())
     .then(function(r){ return r.json(); })
-    .then(function(d){
-      var equipe = d.equipe || [];
-      var statsEl = document.getElementById('ficheRPStats');
-      var equipeEl = document.getElementById('ficheRPEquipe');
-      if(!equipe.length){
-        if(statsEl) statsEl.textContent = 'Aucune équipe constituée aujourd\'hui';
-        if(equipeEl) equipeEl.textContent = 'Aucun apprenant sélectionné';
-        return;
-      }
-      var totalXP=0, totalVentes=0, totalContacts=0;
-      equipe.forEach(function(a){ totalXP+=a.pts||0; totalVentes+=a.nb_ventes||0; totalContacts+=a.contacts||0; });
-      if(statsEl) statsEl.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
-        +[['⚡',totalXP.toLocaleString('fr-FR'),'XP'],['🛒',totalVentes,'Ventes'],['🤝',totalContacts,'Contacts']].map(function(s){
-          return '<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">'
-            +'<div style="font-size:16px">'+s[0]+'</div>'
-            +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;color:#F5A623">'+s[1]+'</div>'
-            +'<div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif">'+s[2]+'</div>'
-          +'</div>';
-        }).join('')+'</div>';
-      if(equipeEl) equipeEl.innerHTML = equipe.map(function(a){
-        return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">'
-          +'<div style="width:30px;height:30px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60A5FA;flex-shrink:0">'+(a.prenom||'?')[0].toUpperCase()+'</div>'
-          +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
-          +'<div style="font-size:10px;color:var(--muted)">'+((a.pts||0).toLocaleString('fr-FR'))+' XP · '+(a.nb_ventes||0)+' ventes</div></div>'
-          +'<a href="journee.html?id='+a.apprenant_id+'" target="_blank" style="padding:4px 8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:6px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;text-decoration:none">🎮</a>'
-        +'</div>';
-      }).join('');
-    }).catch(function(){
-      var s=document.getElementById('ficheRPStats');
-      if(s) s.textContent = 'Erreur de chargement';
-    });
+    .then(function(d){ renderFicheRP({id:id,prenom:prenom,nom:nom,pin:pin,statut:statut}, d); })
+    .catch(function(){ content.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Erreur de chargement</div>'; });
+}
+
+function renderFicheRP(rp, d){
+  var el = document.getElementById('ficheRPContent');
+  if(!el) return;
+  var equipe = d.equipe || [];
+  var totalXP=0, totalVentes=0, totalContacts=0, totalRefus=0, ontVendu=0, silencieux=0;
+  equipe.forEach(function(a){
+    totalXP += a.pts_jour||0; totalVentes += a.nb_ventes||0;
+    totalContacts += a.contacts||0; totalRefus += a.refus||0;
+    if((a.nb_ventes||0)>0) ontVendu++;
+    if(!(a.contacts||0) && !(a.nb_ventes||0) && !(a.pts_jour||0)) silencieux++;
+  });
+  var letter = rp.prenom.charAt(0).toUpperCase();
+
+  el.innerHTML =
+  '<div style="background:linear-gradient(135deg,#1B0A40,#7C3AED);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center">'
+    +'<div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:22px;font-weight:900;color:#fff;margin:0 auto 10px">'+letter+'</div>'
+    +'<div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#fff">'+rp.prenom+' '+rp.nom+'</div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;font-family:Exo 2,sans-serif">'+rp.id+' · PIN : '+rp.pin+'</div>'
+    +'<span style="display:inline-block;margin-top:8px;padding:4px 12px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.25)':'rgba(232,25,44,.25)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
+  +'</div>'
+  +'<div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">'
+    +'<button onclick="switchFicheRPTab(0)" id="rptab0" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid #A78BFA;background:#A78BFA;color:#fff;cursor:pointer">Stats</button>'
+    +'<button onclick="switchFicheRPTab(1)" id="rptab1" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer">Équipe</button>'
+    +'<button onclick="switchFicheRPTab(2)" id="rptab2" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer">Actions</button>'
+    +'<button onclick="switchFicheRPTab(3)" id="rptab3" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(232,25,44,.3);background:transparent;color:#E8192C;cursor:pointer">⚠️ Admin</button>'
+  +'</div>'
+  // STATS
+  +'<div id="rptabContent0">'
+    +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px">'
+      +[['⚡',totalXP.toLocaleString('fr-FR'),'XP équipe','#F5A623'],['🛒',totalVentes,'Ventes','#00C853'],['🤝',totalContacts,'Contacts','#60A5FA'],['❌',totalRefus,'Refus','#E8192C']].map(function(s){
+        return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:18px">'+s[0]+'</div><div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:'+s[3]+'">'+s[1]+'</div><div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700">'+s[2]+'</div></div>';
+      }).join('')
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'
+      +[['🎯',equipe.length,'Apprenants'],['🏆',ontVendu,'Ont vendu'],['🔴',silencieux,'Silencieux']].map(function(s){
+        return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:16px">'+s[0]+'</div><div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#A78BFA">'+s[1]+'</div><div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700">'+s[2]+'</div></div>';
+      }).join('')
+    +'</div>'
+  +'</div>'
+  // ÉQUIPE
+  +'<div id="rptabContent1" style="display:none">'
+    +(equipe.length ? equipe.map(function(a){
+      var sil = !(a.contacts||0) && !(a.nb_ventes||0) && !(a.pts_jour||0);
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid '+(sil?'rgba(232,25,44,.3)':'var(--border)')+';border-radius:12px;margin-bottom:8px">'
+        +'<div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid '+(sil?'#E8192C':'rgba(96,165,250,.4)')+';display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:'+(sil?'#E8192C':'#60A5FA')+'">'+(a.prenom||'?')[0].toUpperCase()+'</div>'
+        +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+((a.pts_jour||0).toLocaleString('fr-FR'))+' XP · '+(a.nb_ventes||0)+' ventes'+(sil?' · 🔴':' · 🟢')+'</div></div>'
+        +'<a href="journee.html?id='+a.apprenant_id+'" target="_blank" style="padding:6px 10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;text-decoration:none">🎮</a>'
+      +'</div>';
+    }).join('') : '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans l\'équipe</div>')
+  +'</div>'
+  // ACTIONS
+  +'<div id="rptabContent2" style="display:none;display:flex;flex-direction:column;gap:10px">'
+    +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')" style="width:100%;padding:12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">💬 Message individuel</button>'
+    +'<button onclick="setMsgDest(\'EQUIPE\');setTimeout(function(){selectMsgDest(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')},300);switchAdminTab(\'messages\');document.getElementById(\'ficheRPPanel\').style.display=\'none\'" style="width:100%;padding:12px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">📢 Message à l\'équipe</button>'
+    +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="width:100%;padding:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;text-decoration:none;display:block;text-align:center">⚔️ Ouvrir cockpit RP</a>'
+  +'</div>'
+  // ADMIN
+  +'<div id="rptabContent3" style="display:none">'
+    +'<div style="background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.2);border-radius:12px;padding:14px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,25,44,.7);margin-bottom:12px">⚠️ Zone Admin</div>'
+      +'<button onclick="changerStatutRP(\''+rp.id+'\',\''+rp.statut+'\')" style="width:100%;padding:10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.3);color:#FF6B6B;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">'+(rp.statut==='ACTIF'?'🔒 Désactiver ce RP':'✅ Réactiver ce RP')+'</button>'
+    +'</div>'
+  +'</div>';
+}
+
+function switchFicheRPTab(n){
+  for(var i=0;i<4;i++){
+    var c=document.getElementById('rptabContent'+i);
+    var t=document.getElementById('rptab'+i);
+    if(c) c.style.display = i===n ? (i===2?'flex':'block') : 'none';
+    if(t){
+      t.style.background = i===n ? '#A78BFA' : 'transparent';
+      t.style.color = i===n ? '#fff' : (i===3?'#E8192C':'rgba(255,255,255,.5)');
+      t.style.borderColor = i===n ? '#A78BFA' : (i===3?'rgba(232,25,44,.3)':'rgba(255,255,255,.15)');
+    }
+  }
+}
+
+function changerStatutRP(rpId, statutActuel){
+  var newStatut = statutActuel==='ACTIF' ? 'INACTIF' : 'ACTIF';
+  if(!confirm('Changer le statut vers '+newStatut+' ?')) return;
+  fetch(APPS_URL+'?action=changerStatutRP&rp_id='+encodeURIComponent(rpId)+'&statut='+newStatut+'&admin=FC2026ADMIN')
+    .then(function(r){ return r.json(); })
+    .then(function(){ loadResponsables(); document.getElementById('ficheRPPanel').style.display='none'; })
+    .catch(function(){ alert('Erreur réseau'); });
 }
 
 function creerRP(){
