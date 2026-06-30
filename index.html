@@ -291,11 +291,16 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
       <button class="msg-dest-btn d-cyan" id="dest-UN_RP" onclick="setMsgDest('UN_RP')">🎯<br>Un RP précis</button>
     </div>
 
-    <!-- Menu déroulant contextuel -->
+    <!-- Sélecteur RPG contextuel -->
     <div id="msgDestSelect" style="display:none;margin-bottom:12px">
-      <select id="msgDestId" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;outline:none">
-        <option value="">Sélectionner...</option>
-      </select>
+      <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px" id="msgDestSelectLabel">Sélectionner</div>
+      <div id="msgDestList" style="background:var(--card);border:1px solid rgba(245,166,35,.3);border-radius:12px;overflow:hidden;max-height:220px;overflow-y:auto;box-shadow:0 0 16px rgba(245,166,35,.1)">
+        <div class="admin-loading">Chargement...</div>
+      </div>
+      <div id="msgDestSelected" style="display:none;margin-top:8px;padding:10px 14px;background:rgba(245,166,35,.08);border:1.5px solid rgba(245,166,35,.4);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;color:#F5A623;display:flex;align-items:center;justify-content:space-between">
+        <span id="msgDestSelectedName">—</span>
+        <button onclick="clearMsgDestSelected()" style="background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px">✕</button>
+      </div>
     </div>
 
     <!-- Messages rapides -->
@@ -1658,32 +1663,82 @@ function switchAdminTab(tab){
 
 /* ========== MESSAGERIE ========== */
 var _msgDest = 'TOUS';
+var _msgDestId = '';
+var _msgDestNom = '';
 
 function setMsgDest(dest){
   _msgDest = dest;
+  _msgDestId = '';
+  _msgDestNom = '';
   document.querySelectorAll('.msg-dest-btn').forEach(function(b){ b.classList.remove('active'); });
   var btn = document.getElementById('dest-'+dest);
   if(btn) btn.classList.add('active');
   var sel = document.getElementById('msgDestSelect');
   var needSelect = (dest === 'EQUIPE' || dest === 'UN_APPRENANT' || dest === 'UN_RP');
   sel.style.display = needSelect ? 'block' : 'none';
+  var selectedDiv = document.getElementById('msgDestSelected');
+  if(selectedDiv) selectedDiv.style.display = 'none';
   if(!needSelect) return;
-  var select = document.getElementById('msgDestId');
-  select.innerHTML = '<option value="">Sélectionner...</option>';
+
+  var label = document.getElementById('msgDestSelectLabel');
+  var list  = document.getElementById('msgDestList');
+  if(label) label.textContent = dest === 'UN_APPRENANT' ? 'Choisir un apprenant' : dest === 'UN_RP' ? 'Choisir un RP' : 'Choisir l\'équipe d\'un RP';
+
   if(dest === 'UN_APPRENANT'){
-    (_adminData||[]).forEach(function(a){
-      select.innerHTML += '<option value="'+a.id+'">'+a.prenom+' '+a.nom+'</option>';
-    });
+    var items = APPRENANTS.filter(function(a){ return a.actif !== false; });
+    if(!items.length){
+      list.innerHTML = '<div class="admin-loading">Aucun apprenant chargé — attends quelques secondes et reclique.</div>';
+      return;
+    }
+    list.innerHTML = items.map(function(a){
+      var initiale = (a.prenom||'?')[0].toUpperCase();
+      return '<div onclick="selectMsgDest(\''+a.id+'\',\''+escHtml(a.prenom+' '+a.nom)+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-family:Exo 2,sans-serif;transition:background .15s" onmouseover="this.style.background=\'rgba(245,166,35,.08)\'" onmouseout="this.style.background=\'transparent\'">'
+        +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#60A5FA;flex-shrink:0">'+initiale+'</div>'
+        +'<div><div style="font-size:13px;font-weight:700;color:var(--text)">'+escHtml(a.prenom+' '+a.nom)+'</div><div style="font-size:10px;color:var(--muted)">'+a.id+'</div></div>'
+        +'</div>';
+    }).join('');
   } else {
+    list.innerHTML = '<div class="admin-loading">Chargement RP...</div>';
     fetch(APPS_URL+'?action=listResponsables&_t='+Date.now())
       .then(function(r){ return r.json(); })
       .then(function(d){
-        (d.responsables||[]).forEach(function(rp){
-          select.innerHTML += '<option value="'+rp.id+'">'+rp.prenom+' '+rp.nom+'</option>';
-        });
-      });
+        var rps = d.responsables || [];
+        if(!rps.length){ list.innerHTML = '<div class="admin-loading">Aucun RP trouvé.</div>'; return; }
+        list.innerHTML = rps.map(function(rp){
+          var initiale = (rp.prenom||'?')[0].toUpperCase();
+          return '<div onclick="selectMsgDest(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-family:Exo 2,sans-serif;transition:background .15s" onmouseover="this.style.background=\'rgba(245,166,35,.08)\'" onmouseout="this.style.background=\'transparent\'">'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(167,139,250,.15);border:1.5px solid rgba(167,139,250,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#A78BFA;flex-shrink:0">'+initiale+'</div>'
+            +'<div><div style="font-size:13px;font-weight:700;color:var(--text)">'+escHtml(rp.prenom+' '+rp.nom)+'</div><div style="font-size:10px;color:var(--muted)">'+rp.id+' · PIN '+rp.pin+'</div></div>'
+            +'</div>';
+        }).join('');
+      })
+      .catch(function(){ list.innerHTML = '<div class="admin-loading">Erreur de chargement.</div>'; });
   }
 }
+
+function selectMsgDest(id, nom){
+  _msgDestId = id;
+  _msgDestNom = nom;
+  var list = document.getElementById('msgDestList');
+  if(list) list.style.display = 'none';
+  var sel = document.getElementById('msgDestSelected');
+  var nameEl = document.getElementById('msgDestSelectedName');
+  if(sel && nameEl){
+    nameEl.textContent = '🎯 ' + nom;
+    sel.style.display = 'flex';
+  }
+}
+
+function clearMsgDestSelected(){
+  _msgDestId = '';
+  _msgDestNom = '';
+  var list = document.getElementById('msgDestList');
+  if(list) list.style.display = 'block';
+  var sel = document.getElementById('msgDestSelected');
+  if(sel) sel.style.display = 'none';
+}
+
+function escHtml(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
 
 function setMsgRapide(txt){
   document.getElementById('msgTexte').value = txt;
@@ -1692,33 +1747,31 @@ function setMsgRapide(txt){
 function envoyerMessage(){
   var txt = (document.getElementById('msgTexte').value||'').trim();
   if(!txt){ alert('Écris un message avant d\'envoyer.'); return; }
-  var destId = '';
   if(_msgDest === 'EQUIPE' || _msgDest === 'UN_APPRENANT' || _msgDest === 'UN_RP'){
-    destId = document.getElementById('msgDestId').value;
-    if(!destId){ alert('Sélectionne un destinataire.'); return; }
+    if(!_msgDestId){ alert('Sélectionne un destinataire dans la liste.'); return; }
   }
-  var btn = event.target;
-  btn.disabled = true; btn.textContent = '⏳ Envoi...';
+  var btn = document.querySelector('[onclick="envoyerMessage()"]');
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Envoi...'; }
   fetch(APPS_URL, {
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'envoyerMessage', destinataire:_msgDest, destinataireId:destId, message:txt, admin:'FC2026ADMIN'})
+    body: JSON.stringify({action:'envoyerMessage', destinataire:_msgDest, destinataireId:_msgDestId, message:txt, admin:'FC2026ADMIN'})
   })
   .then(function(r){ return r.json(); })
   .then(function(d){
     if(d.success){
       document.getElementById('msgTexte').value = '';
-      btn.textContent = '✅ Envoyé !';
-      setTimeout(function(){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }, 2000);
+      clearMsgDestSelected();
+      if(btn){ btn.textContent = '✅ Envoyé !'; setTimeout(function(){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }, 2000); }
       chargerHistoriqueMessages();
     } else {
       alert('Erreur : '+(d.error||'inconnue'));
-      btn.textContent = '📤 ENVOYER'; btn.disabled = false;
+      if(btn){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }
     }
   })
   .catch(function(){
     alert('Erreur réseau.');
-    btn.textContent = '📤 ENVOYER'; btn.disabled = false;
+    if(btn){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }
   });
 }
 
