@@ -240,10 +240,49 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <!-- PANEL NOUVEL APPRENANT -->
   <div id="nouveauApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
     <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
-      <button onclick="document.getElementById('nouveauApprenantPanel').style.display='none'" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+      <button onclick="fermerNouvelApprenant()" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
       <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#00FF87">＋ Nouvel apprenant</div>
     </div>
-    <iframe id="nouveauApprenantFrame" src="" style="width:100%;border:none;min-height:calc(100vh - 60px)"></iframe>
+    <div style="padding:16px;max-width:480px;margin:0 auto">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">
+        <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Informations</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Prénom *</div>
+            <input id="naPrenom" type="text" placeholder="Rahma" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Nom *</div>
+            <input id="naNom" type="text" placeholder="Dupont" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Téléphone</div>
+          <input id="naTel" type="tel" placeholder="06 00 00 00 00" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Email</div>
+          <input id="naEmail" type="email" placeholder="prenom@email.com" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Adresse</div>
+          <input id="naAdresse" type="text" placeholder="Ville ou adresse" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <button onclick="creerNouvelApprenant()" id="naBtnCreer" style="width:100%;padding:14px;background:linear-gradient(135deg,rgba(0,255,135,.2),rgba(0,255,135,.08));border:1.5px solid #00FF87;color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer">⚡ Créer la fiche apprenant</button>
+      </div>
+      <!-- RÉSULTAT -->
+      <div id="naResultat" style="display:none;background:linear-gradient(135deg,#0D1B6E,#1B2B8F);border:1px solid rgba(41,121,255,.3);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-size:32px;margin-bottom:8px">🎮</div>
+        <div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:4px" id="naResultatNom">—</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px" id="naResultatId">—</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+          <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px"><div style="font-size:10px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:4px">ID</div><div style="font-family:monospace;font-size:14px;font-weight:700;color:#60A5FA" id="naResultatIdVal">—</div></div>
+          <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px"><div style="font-size:10px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:4px">PIN</div><div style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#F5A623" id="naResultatPin">—</div></div>
+        </div>
+        <button onclick="envoyerLiensNouvelApprenant()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1B2B8F,#2979FF);color:#fff;border:none;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px">📤 Envoyer les liens à l'apprenant</button>
+        <button onclick="reinitialiserFormulaire()" style="width:100%;padding:11px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">＋ Créer un autre apprenant</button>
+      </div>
+    </div>
   </div>
 
   <!-- SECTION RESPONSABLES -->
@@ -1034,10 +1073,87 @@ function loadResponsables(){
 
 /* ===== FICHE RP ===== */
 function ouvrirNouvelApprenant(){
+  reinitialiserFormulaire();
+  document.getElementById('nouveauApprenantPanel').style.display = 'block';
+}
+
+function fermerNouvelApprenant(){
+  document.getElementById('nouveauApprenantPanel').style.display = 'none';
+}
+
+var _naData = null;
+
+function creerNouvelApprenant(){
+  var prenom = (document.getElementById('naPrenom').value||'').trim();
+  var nom    = (document.getElementById('naNom').value||'').trim();
+  if(!prenom || !nom){ alert('Prénom et nom obligatoires.'); return; }
+  var tel     = (document.getElementById('naTel').value||'').trim();
+  var email   = (document.getElementById('naEmail').value||'').trim();
+  var adresse = (document.getElementById('naAdresse').value||'').trim();
+  var btn = document.getElementById('naBtnCreer');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Création...'; }
+  fetch(APPS_URL+'?action=addApprenant&prenom='+encodeURIComponent(prenom)+'&nom='+encodeURIComponent(nom)+'&telephone='+encodeURIComponent(tel)+'&email='+encodeURIComponent(email)+'&adresse='+encodeURIComponent(adresse))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.id){
+        _naData = d;
+        document.getElementById('naResultatNom').textContent = d.prenom+' '+d.nom;
+        document.getElementById('naResultatId').textContent = d.id+' · Niv.0 · Débutant';
+        document.getElementById('naResultatIdVal').textContent = d.id;
+        document.getElementById('naResultatPin').textContent = d.pin||'????';
+        document.getElementById('naResultat').style.display = 'block';
+        document.querySelector('[id=naPrenom]').closest('.bg-card, div').style.display = 'none';
+        // Cacher le formulaire
+        var form = document.getElementById('naBtnCreer').closest('div').parentNode;
+        if(form) form.style.display = 'none';
+        chargerListeApprenants(function(){ loadAdminDashboard(); });
+      } else {
+        alert('Erreur : '+(d.message||'impossible de créer l\'apprenant'));
+        if(btn){ btn.disabled=false; btn.textContent='⚡ Créer la fiche apprenant'; }
+      }
+    })
+    .catch(function(){
+      alert('Erreur réseau.');
+      if(btn){ btn.disabled=false; btn.textContent='⚡ Créer la fiche apprenant'; }
+    });
+}
+
+function envoyerLiensNouvelApprenant(){
+  if(!_naData) return;
+  var origin = window.location.origin;
+  var path = window.location.pathname.split('/').slice(0,-1).join('/');
+  var cockpitUrl = origin+path+'/journee.html?id='+encodeURIComponent(_naData.id);
+  var evalUrl    = origin+path+'/formcom-v2.html?id='+encodeURIComponent(_naData.id);
+  var profilUrl  = origin+path+'/profil.html?id='+encodeURIComponent(_naData.id);
+  var msg = 'Bienvenue dans Form\'Com Level Up, '+_naData.prenom+' !\nVoici tes liens personnels :\n\n'
+    +'🎮 Ton cockpit :\n'+cockpitUrl+'\n\n'
+    +'📋 Lien évaluateur (pour tes clients) :\n'+evalUrl+'\n\n'
+    +'🏆 Ton passeport compétences :\n'+profilUrl+'\n\n'
+    +'🔑 Ton PIN : '+(_naData.pin||'????')+'\n\n'
+    +'Form\'Com Level Up 🚀';
+  if(navigator.share){
+    navigator.share({title:'Liens Form\'Com', text:msg}).catch(function(){ _ouvrirWA(msg); });
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      if(confirm('Message copié !\nOuvrir WhatsApp ?')){ _ouvrirWA(msg); }
+    }).catch(function(){ _ouvrirWA(msg); });
+  }
+}
+
+function reinitialiserFormulaire(){
+  _naData = null;
+  ['naPrenom','naNom','naTel','naEmail','naAdresse'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value='';
+  });
+  var btn = document.getElementById('naBtnCreer');
+  if(btn){ btn.disabled=false; btn.textContent='⚡ Créer la fiche apprenant'; }
+  var res = document.getElementById('naResultat'); if(res) res.style.display='none';
+  // Réafficher le formulaire
   var panel = document.getElementById('nouveauApprenantPanel');
-  var frame = document.getElementById('nouveauApprenantFrame');
-  if(!frame.src || frame.src === window.location.href) frame.src = 'admin_add_apprenant.html';
-  panel.style.display = 'block';
+  if(panel){
+    var cards = panel.querySelectorAll('[style*="background:var(--card)"]');
+    cards.forEach(function(c){ c.style.display='block'; });
+  }
 }
 
 function ouvrirFicheRP(id, prenom, nom, pin, statut){
@@ -1105,10 +1221,17 @@ function renderFicheRP(rp, d){
     }).join('') : '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans l\'équipe</div>')
   +'</div>'
   // ACTIONS
-  +'<div id="rptabContent2" style="display:none;display:flex;flex-direction:column;gap:10px">'
+  +'<div id="rptabContent2" style="display:none;flex-direction:column;gap:10px">'
+    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🔑 Accès cockpit</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:6px">Lien direct :</div>'
+      +'<div style="font-family:monospace;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:#A78BFA;word-break:break-all;margin-bottom:10px">'+window.location.origin+'/responsable.html?id='+rp.id+'&pin='+rp.pin+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:4px">PIN : <span style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#F5A623">'+rp.pin+'</span></div>'
+    +'</div>'
+    +'<button onclick="envoyerAccesRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+rp.pin+'\')" style="width:100%;padding:12px;background:rgba(0,255,135,.08);border:1px solid rgba(0,255,135,.25);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">📤 Envoyer les accès à '+rp.prenom+'</button>'
     +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')" style="width:100%;padding:12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">💬 Message individuel</button>'
     +'<button onclick="setMsgDest(\'EQUIPE\');setTimeout(function(){selectMsgDest(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')},300);switchAdminTab(\'messages\');document.getElementById(\'ficheRPPanel\').style.display=\'none\'" style="width:100%;padding:12px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">📢 Message à l\'équipe</button>'
-    +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="width:100%;padding:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;text-decoration:none;display:block;text-align:center">⚔️ Ouvrir cockpit RP</a>'
+    +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="width:100%;padding:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;text-decoration:none;display:block;text-align:center;box-sizing:border-box">⚔️ Ouvrir cockpit RP</a>'
   +'</div>'
   // ADMIN
   +'<div id="rptabContent3" style="display:none">'
@@ -1129,6 +1252,29 @@ function switchFicheRPTab(n){
       t.style.color = i===n ? '#fff' : (i===3?'#E8192C':'rgba(255,255,255,.5)');
       t.style.borderColor = i===n ? '#A78BFA' : (i===3?'rgba(232,25,44,.3)':'rgba(255,255,255,.15)');
     }
+  }
+}
+
+function envoyerAccesRP(id, prenom, pin){
+  var base = window.location.origin + window.location.pathname.replace('index.html','').replace(/\/[^/]*$/, '/');
+  // Construire l'URL proprement
+  var origin = window.location.origin;
+  var path = window.location.pathname.split('/').slice(0,-1).join('/');
+  var cockpitUrl = origin + path + '/responsable.html?id=' + encodeURIComponent(id) + '&pin=' + encodeURIComponent(pin);
+
+  var msg = 'Bonjour ' + prenom + ' 👋\n\n'
+    + 'Voici vos accès Form\'Com Level Up :\n\n'
+    + '⚔️ Votre cockpit Responsable :\n' + cockpitUrl + '\n\n'
+    + '🔑 Votre PIN : ' + pin + '\n'
+    + '🆔 Votre ID : ' + id + '\n\n'
+    + 'Form\'Com Level Up 🚀';
+
+  if(navigator.share){
+    navigator.share({title:'Accès Form\'Com RP', text:msg}).catch(function(){ _ouvrirWA(msg); });
+  } else {
+    navigator.clipboard.writeText(msg).then(function(){
+      if(confirm('Message copié !\nOuvrir WhatsApp pour envoyer à ' + prenom + ' ?')){ _ouvrirWA(msg); }
+    }).catch(function(){ _ouvrirWA(msg); });
   }
 }
 
