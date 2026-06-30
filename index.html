@@ -84,12 +84,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 
 /* HUD NAVIGATION */
 .hud-nav{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.hud-btn{
-  padding:9px 13px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;
-  font-weight:700;cursor:pointer;white-space:nowrap;border:1.5px solid;
-  transition:all .2s;text-decoration:none;display:inline-block;
-  opacity:.45;background:transparent;
-}
+.hud-btn{padding:9px 13px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;border:1.5px solid;transition:all .2s;text-decoration:none;display:inline-block;opacity:.45;background:transparent}
 .hud-btn:hover{opacity:.75}
 .hud-btn.active{opacity:1;transform:scale(1.04)}
 .hud-btn.c-blue{color:#60A5FA;border-color:rgba(96,165,250,.3)}
@@ -97,22 +92,17 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 .hud-btn.c-violet{color:#A78BFA;border-color:rgba(167,139,250,.3)}
 .hud-btn.c-violet.active{border-color:#A78BFA;border-width:2px;box-shadow:0 0 12px rgba(167,139,250,.45),0 0 24px rgba(167,139,250,.2)}
 .hud-btn.c-teal{color:#2DD4BF;border-color:rgba(45,212,191,.3)}
-.hud-btn.c-teal.active{border-color:#2DD4BF;border-width:2px;box-shadow:0 0 12px rgba(45,212,191,.45),0 0 24px rgba(45,212,191,.2)}
+.hud-btn.c-teal.active{border-color:#2DD4BF;border-width:2px;box-shadow:0 0 12px rgba(45,212,191,.45)}
 .hud-btn.c-cyan{color:#38BDF8;border-color:rgba(56,189,248,.3)}
-.hud-btn.c-cyan.active{border-color:#38BDF8;border-width:2px;box-shadow:0 0 12px rgba(56,189,248,.45),0 0 24px rgba(56,189,248,.2)}
+.hud-btn.c-cyan.active{border-color:#38BDF8;border-width:2px;box-shadow:0 0 12px rgba(56,189,248,.45)}
 .hud-btn.c-green{color:#00FF87;border-color:rgba(0,255,135,.3)}
-.hud-btn.c-green.active{border-color:#00FF87;border-width:2px;box-shadow:0 0 12px rgba(0,255,135,.45),0 0 24px rgba(0,255,135,.2)}
+.hud-btn.c-green.active{border-color:#00FF87;border-width:2px;box-shadow:0 0 12px rgba(0,255,135,.45)}
 .hud-btn.c-gold{color:#F5A623;border-color:rgba(245,166,35,.3)}
 .hud-btn.c-gold.active{border-color:#F5A623;border-width:2px;box-shadow:0 0 12px rgba(245,166,35,.45),0 0 24px rgba(245,166,35,.2)}
 
 /* SECTION MESSAGES */
 .msg-dest-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.msg-dest-btn{
-  padding:12px 8px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;
-  font-weight:700;cursor:pointer;text-align:center;border:1.5px solid;
-  transition:all .2s;background:transparent;color:var(--muted);
-  border-color:rgba(255,255,255,.1);opacity:.45;
-}
+.msg-dest-btn{padding:12px 8px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;border:1.5px solid;transition:all .2s;background:transparent;color:var(--muted);border-color:rgba(255,255,255,.1);opacity:.45}
 .msg-dest-btn:hover{opacity:.75}
 .msg-dest-btn.active{opacity:1;transform:scale(1.03)}
 .msg-dest-btn.d-red{color:#FF6B6B;border-color:rgba(255,107,107,.3)}
@@ -127,18 +117,16 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 .msg-dest-btn.d-gold.active{border-color:#F5A623;border-width:2px;box-shadow:0 0 10px rgba(245,166,35,.4)}
 .msg-dest-btn.d-cyan{color:#38BDF8;border-color:rgba(56,189,248,.3)}
 .msg-dest-btn.d-cyan.active{border-color:#38BDF8;border-width:2px;box-shadow:0 0 10px rgba(56,189,248,.4)}
-
 .msg-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
 .msg-quick-btn{padding:9px 10px;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:left;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--text);transition:all .15s}
-.msg-quick-btn:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
-
+.msg-quick-btn:hover{background:rgba(255,255,255,.08)}
 .msg-histo-item{padding:10px 12px;border-bottom:1px solid var(--border);font-family:Exo 2,sans-serif;font-size:12px}
 .msg-histo-item:last-child{border-bottom:none}
 .msg-histo-meta{font-size:10px;color:var(--muted);margin-bottom:3px}
 
 </style>
   <!-- MODE DEV : simulateur backend local. Supprimer en production. -->
-  <script src="mock-api.js"></script>
+
 </head>
 <body>
 
@@ -225,6 +213,15 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
       <button onclick="creerRP()" style="margin-left:auto;padding:8px 14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">+ Nouveau RP</button>
     </div>
     <div id="rpList"><div class="admin-loading">Chargement...</div></div>
+    <div style="margin-top:14px">
+      <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📢 Message broadcast</div>
+      <textarea id="broadcastMsg" style="width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;resize:none;outline:none;min-height:70px;margin-bottom:8px" placeholder="Message à envoyer..."></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <button onclick="envoyerBroadcast('TOUS')" style="padding:10px;background:linear-gradient(135deg,rgba(232,25,44,.15),rgba(124,58,237,.15));border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📢 Tous</button>
+        <button onclick="envoyerBroadcast('RP')" style="padding:10px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚔️ Chefs éq.</button>
+        <button onclick="envoyerBroadcast('APPRENANTS')" style="padding:10px;background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">🎮 Apprenants</button>
+      </div>
+    </div>
   </div>
 
   <!-- SECTION TALENTS -->
@@ -279,8 +276,6 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <!-- SECTION MESSAGES -->
   <div id="sectionMessages" style="display:none;padding-top:16px;margin-bottom:60px">
     <div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:#F5A623;margin-bottom:14px;letter-spacing:.5px">📢 MESSAGERIE</div>
-
-    <!-- 6 boutons destinataires -->
     <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Destinataire</div>
     <div class="msg-dest-grid">
       <button class="msg-dest-btn d-red active" id="dest-TOUS" onclick="setMsgDest('TOUS')">📢<br>Tout le monde</button>
@@ -290,20 +285,14 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
       <button class="msg-dest-btn d-gold" id="dest-UN_APPRENANT" onclick="setMsgDest('UN_APPRENANT')">👤<br>Un apprenant</button>
       <button class="msg-dest-btn d-cyan" id="dest-UN_RP" onclick="setMsgDest('UN_RP')">🎯<br>Un RP précis</button>
     </div>
-
-    <!-- Sélecteur RPG contextuel -->
     <div id="msgDestSelect" style="display:none;margin-bottom:12px">
       <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px" id="msgDestSelectLabel">Sélectionner</div>
-      <div id="msgDestList" style="background:var(--card);border:1px solid rgba(245,166,35,.3);border-radius:12px;overflow:hidden;max-height:220px;overflow-y:auto;box-shadow:0 0 16px rgba(245,166,35,.1)">
-        <div class="admin-loading">Chargement...</div>
-      </div>
-      <div id="msgDestSelected" style="display:none;margin-top:8px;padding:10px 14px;background:rgba(245,166,35,.08);border:1.5px solid rgba(245,166,35,.4);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;color:#F5A623;display:flex;align-items:center;justify-content:space-between">
+      <div id="msgDestList" style="background:var(--card);border:1px solid rgba(245,166,35,.3);border-radius:12px;overflow:hidden;max-height:220px;overflow-y:auto;box-shadow:0 0 16px rgba(245,166,35,.1)"><div class="admin-loading">Chargement...</div></div>
+      <div id="msgDestSelected" style="display:none;margin-top:8px;padding:10px 14px;background:rgba(245,166,35,.08);border:1.5px solid rgba(245,166,35,.4);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;color:#F5A623;align-items:center;justify-content:space-between">
         <span id="msgDestSelectedName">—</span>
         <button onclick="clearMsgDestSelected()" style="background:transparent;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px">✕</button>
       </div>
     </div>
-
-    <!-- Messages rapides -->
     <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Messages rapides</div>
     <div class="msg-quick-grid">
       <button class="msg-quick-btn" onclick="setMsgRapide('🚀 GO GO GO ! C\'est l\'heure de briller — allez chercher vos ventes !')">🚀 Motivation GO</button>
@@ -311,22 +300,14 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
       <button class="msg-quick-btn" onclick="setMsgRapide('📍 Rappel : pensez à bien valider vos contacts et ventes dans le cockpit avant la fin de journée.')">📍 Rappel cockpit</button>
       <button class="msg-quick-btn" onclick="setMsgRapide('⚡ BONUS XP ce soir ! Toute vente enregistrée avant 20h vaut +50 XP supplémentaires.')">⚡ Bonus XP</button>
     </div>
-
-    <!-- Champ texte libre -->
     <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Message libre</div>
     <textarea id="msgTexte" rows="3" placeholder="Écris ton message ici..." style="width:100%;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;resize:none;outline:none;margin-bottom:10px;transition:border-color .2s" onfocus="this.style.borderColor='#F5A623'" onblur="this.style.borderColor='var(--border)'"></textarea>
-
-    <!-- Bouton envoyer -->
-    <button onclick="envoyerMessage()" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(245,166,35,.2),rgba(245,166,35,.08));border:1.5px solid #F5A623;color:#F5A623;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.5px;transition:all .2s" onmouseover="this.style.background='rgba(245,166,35,.25)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(245,166,35,.2),rgba(245,166,35,.08))'">📤 ENVOYER</button>
-
-    <!-- Historique -->
+    <button onclick="envoyerMessage()" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(245,166,35,.2),rgba(245,166,35,.08));border:1.5px solid #F5A623;color:#F5A623;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.5px">📤 ENVOYER</button>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:10px">
       <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Historique</div>
       <button onclick="chargerHistoriqueMessages()" style="padding:5px 12px;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">↻ Actualiser</button>
     </div>
-    <div id="msgHistorique" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-height:320px;overflow-y:auto">
-      <div class="admin-loading">Chargement...</div>
-    </div>
+    <div id="msgHistorique" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-height:320px;overflow-y:auto"><div class="admin-loading">Chargement...</div></div>
   </div>
 
 </div>
@@ -536,7 +517,7 @@ function renderTableImmediat(){
         +'<div style="font-size:10px;color:rgba(255,215,0,.6);font-family:Exo 2,sans-serif;margin-top:2px;font-weight:700">🔑 '+(a.pin||'—')+'</div>'
       +'</div>'
       +'<div id="statut_'+a.id+'" onclick="ouvrirFicheApprenant(\''+a.id+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(136,146,164,.1);color:#8892A4;white-space:nowrap;flex-shrink:0;cursor:pointer">—</div>'
-      +'<button onclick="event.stopPropagation();envoyerMessageIndividuel(\''+a.id+'\',\''+a.prenom+' '+a.nom+'\')" title="Envoyer un message" style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer;flex-shrink:0;transition:all .15s" onmouseover="this.style.background=\'rgba(245,166,35,.2)\'" onmouseout="this.style.background=\'rgba(245,166,35,.08)\'">💬</button>'
+      +'<button onclick="event.stopPropagation();envoyerMessageIndividuel(\''+a.id+'\',\''+a.prenom+' '+a.nom+'\')" title="Message" style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer;flex-shrink:0">💬</button>'
       +'<span onclick="ouvrirFicheApprenant(\''+a.id+'\')" style="color:var(--muted);font-size:16px;flex-shrink:0;cursor:pointer">&#x203A;</span>'
     +'</div>';
   });
@@ -999,7 +980,7 @@ function loadResponsables(){
           +'<div style="display:flex;gap:6px">'
             +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit RP</a>'
             +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
-            +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+rp.prenom+' '+rp.nom+'\')" style="padding:8px 12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">💬</button>'
+            +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+rp.prenom+' '+rp.nom+'\')" style="padding:8px 12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;font-size:13px;cursor:pointer">💬</button>'
           +'</div>'
         +'</div>';
       }).join('');
@@ -1631,14 +1612,7 @@ function voirTousLesPins(){
 
 var _talentsData = [];
 var _talentsFiltreActif = 'tous';
-
-var _hudMap = {
-  apprenants:  'hudApprenants',
-  responsables:'hudResponsables',
-  talents:     'hudTalents',
-  emargement:  'hudEmargement',
-  messages:    'hudMessages'
-};
+var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages'};
 
 function switchAdminTab(tab){
   var tabs = ['responsables','apprenants','talents','emargement','messages'];
@@ -1647,28 +1621,20 @@ function switchAdminTab(tab){
     var hud = document.getElementById(_hudMap[t]);
     var isActive = (t === tab);
     if(sec) sec.style.display = isActive ? 'block' : 'none';
-    if(hud){
-      if(isActive){ hud.classList.add('active'); }
-      else { hud.classList.remove('active'); }
-    }
+    if(hud){ if(isActive) hud.classList.add('active'); else hud.classList.remove('active'); }
   });
   if(tab === 'talents') loadParrainages();
   if(tab === 'responsables') loadResponsables();
   if(tab === 'emargement'){
     var emarDate = document.getElementById('emarDate');
-    if(emarDate && !emarDate.value){
-      emarDate.value = new Date().toISOString().slice(0,10);
-      chargerEmargementJour();
-    }
+    if(emarDate && !emarDate.value){ emarDate.value = new Date().toISOString().slice(0,10); chargerEmargementJour(); }
   }
   if(tab === 'messages'){
     chargerHistoriqueMessages();
-    // Activer "Tout le monde" par défaut si aucun destinataire sélectionné
-    if(_msgDest === 'TOUS'){
-      document.querySelectorAll('.msg-dest-btn').forEach(function(b){ b.classList.remove('active'); });
-      var btnTous = document.getElementById('dest-TOUS');
-      if(btnTous) btnTous.classList.add('active');
-    }
+    document.querySelectorAll('.msg-dest-btn').forEach(function(b){ b.classList.remove('active'); });
+    var btnTous = document.getElementById('dest-TOUS');
+    if(btnTous) btnTous.classList.add('active');
+    _msgDest = 'TOUS';
   }
 }
 
@@ -1678,158 +1644,119 @@ var _msgDestId = '';
 var _msgDestNom = '';
 
 function setMsgDest(dest){
-  _msgDest = dest;
-  _msgDestId = '';
-  _msgDestNom = '';
+  _msgDest = dest; _msgDestId = ''; _msgDestNom = '';
   document.querySelectorAll('.msg-dest-btn').forEach(function(b){ b.classList.remove('active'); });
   var btn = document.getElementById('dest-'+dest);
   if(btn) btn.classList.add('active');
   var sel = document.getElementById('msgDestSelect');
-  var needSelect = (dest === 'EQUIPE' || dest === 'UN_APPRENANT' || dest === 'UN_RP');
+  var needSelect = (dest==='EQUIPE'||dest==='UN_APPRENANT'||dest==='UN_RP');
   sel.style.display = needSelect ? 'block' : 'none';
   var selectedDiv = document.getElementById('msgDestSelected');
   if(selectedDiv) selectedDiv.style.display = 'none';
   if(!needSelect) return;
-
   var label = document.getElementById('msgDestSelectLabel');
-  var list  = document.getElementById('msgDestList');
-  if(label) label.textContent = dest === 'UN_APPRENANT' ? 'Choisir un apprenant' : dest === 'UN_RP' ? 'Choisir un RP' : 'Choisir l\'équipe d\'un RP';
-
-  if(dest === 'UN_APPRENANT'){
-    var items = APPRENANTS.filter(function(a){ return a.actif !== false; });
-    if(!items.length){
-      list.innerHTML = '<div class="admin-loading">Aucun apprenant chargé — attends quelques secondes et reclique.</div>';
-      return;
-    }
+  var list = document.getElementById('msgDestList');
+  if(label) label.textContent = dest==='UN_APPRENANT' ? 'Choisir un apprenant' : dest==='UN_RP' ? 'Choisir un RP' : 'Choisir l\'équipe d\'un RP';
+  if(dest==='UN_APPRENANT'){
+    var items = APPRENANTS.filter(function(a){ return a.actif!==false; });
+    if(!items.length){ list.innerHTML='<div class="admin-loading">Aucun apprenant — attends quelques secondes.</div>'; return; }
     list.innerHTML = items.map(function(a){
-      var initiale = (a.prenom||'?')[0].toUpperCase();
       return '<div onclick="selectMsgDest(\''+a.id+'\',\''+escHtml(a.prenom+' '+a.nom)+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-family:Exo 2,sans-serif;transition:background .15s" onmouseover="this.style.background=\'rgba(245,166,35,.08)\'" onmouseout="this.style.background=\'transparent\'">'
-        +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#60A5FA;flex-shrink:0">'+initiale+'</div>'
+        +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#60A5FA;flex-shrink:0">'+(a.prenom||'?')[0].toUpperCase()+'</div>'
         +'<div><div style="font-size:13px;font-weight:700;color:var(--text)">'+escHtml(a.prenom+' '+a.nom)+'</div><div style="font-size:10px;color:var(--muted)">'+a.id+'</div></div>'
         +'</div>';
     }).join('');
   } else {
-    list.innerHTML = '<div class="admin-loading">Chargement RP...</div>';
+    list.innerHTML='<div class="admin-loading">Chargement RP...</div>';
     fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN&_t='+Date.now())
       .then(function(r){ return r.json(); })
       .then(function(d){
-        var rps = d.responsables || [];
-        if(!rps.length){ list.innerHTML = '<div class="admin-loading">Aucun RP trouvé.</div>'; return; }
-        list.innerHTML = rps.map(function(rp){
-          var initiale = (rp.prenom||'?')[0].toUpperCase();
+        var rps=d.responsables||[];
+        if(!rps.length){ list.innerHTML='<div class="admin-loading">Aucun RP trouvé.</div>'; return; }
+        list.innerHTML=rps.map(function(rp){
           return '<div onclick="selectMsgDest(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-family:Exo 2,sans-serif;transition:background .15s" onmouseover="this.style.background=\'rgba(245,166,35,.08)\'" onmouseout="this.style.background=\'transparent\'">'
-            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(167,139,250,.15);border:1.5px solid rgba(167,139,250,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#A78BFA;flex-shrink:0">'+initiale+'</div>'
+            +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(167,139,250,.15);border:1.5px solid rgba(167,139,250,.4);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#A78BFA;flex-shrink:0">'+(rp.prenom||'?')[0].toUpperCase()+'</div>'
             +'<div><div style="font-size:13px;font-weight:700;color:var(--text)">'+escHtml(rp.prenom+' '+rp.nom)+'</div><div style="font-size:10px;color:var(--muted)">'+rp.id+' · PIN '+rp.pin+'</div></div>'
             +'</div>';
         }).join('');
-      })
-      .catch(function(){ list.innerHTML = '<div class="admin-loading">Erreur de chargement.</div>'; });
+      }).catch(function(){ list.innerHTML='<div class="admin-loading">Erreur.</div>'; });
   }
 }
 
-function selectMsgDest(id, nom){
-  _msgDestId = id;
-  _msgDestNom = nom;
-  var list = document.getElementById('msgDestList');
-  if(list) list.style.display = 'none';
-  var sel = document.getElementById('msgDestSelected');
-  var nameEl = document.getElementById('msgDestSelectedName');
-  if(sel && nameEl){
-    nameEl.textContent = '🎯 ' + nom;
-    sel.style.display = 'flex';
-  }
+function selectMsgDest(id,nom){
+  _msgDestId=id; _msgDestNom=nom;
+  document.getElementById('msgDestList').style.display='none';
+  var sel=document.getElementById('msgDestSelected');
+  var nameEl=document.getElementById('msgDestSelectedName');
+  if(sel&&nameEl){ nameEl.textContent='🎯 '+nom; sel.style.display='flex'; }
 }
 
 function clearMsgDestSelected(){
-  _msgDestId = '';
-  _msgDestNom = '';
-  var list = document.getElementById('msgDestList');
-  if(list) list.style.display = 'block';
-  var sel = document.getElementById('msgDestSelected');
-  if(sel) sel.style.display = 'none';
+  _msgDestId=''; _msgDestNom='';
+  document.getElementById('msgDestList').style.display='block';
+  document.getElementById('msgDestSelected').style.display='none';
 }
 
-function envoyerMessageIndividuel(id, nom){
-  switchAdminTab('messages');
-  // Déterminer si c'est un RP ou un apprenant
-  var dest = id.indexOf('RP-') === 0 ? 'UN_RP' : 'UN_APPRENANT';
-  setMsgDest(dest);
-  // Sélectionner directement la personne
-  setTimeout(function(){
-    selectMsgDest(id, nom);
-  }, 300);
-  // Focus sur le textarea
-  setTimeout(function(){
-    var ta = document.getElementById('msgTexte');
-    if(ta) ta.focus();
-  }, 400);
-}
-
-function escHtml(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
-
-function setMsgRapide(txt){
-  document.getElementById('msgTexte').value = txt;
-}
+function setMsgRapide(txt){ document.getElementById('msgTexte').value=txt; }
 
 function envoyerMessage(){
-  var txt = (document.getElementById('msgTexte').value||'').trim();
+  var txt=(document.getElementById('msgTexte').value||'').trim();
   if(!txt){ alert('Écris un message avant d\'envoyer.'); return; }
-  var destinataires = _msgDest;
-  if(_msgDest === 'UN_APPRENANT' || _msgDest === 'UN_RP'){
-    if(!_msgDestId){ alert('Sélectionne un destinataire dans la liste.'); return; }
-    destinataires = _msgDestId; // ex: ID-0001 ou RP-0001
-  } else if(_msgDest === 'EQUIPE'){
-    if(!_msgDestId){ alert('Sélectionne un RP dans la liste.'); return; }
-    destinataires = 'MON_EQUIPE_' + _msgDestId; // ex: MON_EQUIPE_RP-0001
+  var destinataires=_msgDest;
+  if(_msgDest==='UN_APPRENANT'||_msgDest==='UN_RP'){
+    if(!_msgDestId){ alert('Sélectionne un destinataire.'); return; }
+    destinataires=_msgDestId;
+  } else if(_msgDest==='EQUIPE'){
+    if(!_msgDestId){ alert('Sélectionne un RP.'); return; }
+    destinataires='MON_EQUIPE_'+_msgDestId;
   }
-  var btn = document.querySelector('[onclick="envoyerMessage()"]');
-  if(btn){ btn.disabled = true; btn.textContent = '⏳ Envoi...'; }
-  fetch(APPS_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'envoyerMessage', destinataires:destinataires, message:txt, admin:'FC2026ADMIN'})
-  })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    if(d.status === 'ok'){
-      document.getElementById('msgTexte').value = '';
-      clearMsgDestSelected();
-      if(btn){ btn.textContent = '✅ Envoyé !'; setTimeout(function(){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }, 2000); }
-      chargerHistoriqueMessages();
-    } else {
-      alert('Erreur : '+(d.message||'inconnue'));
-      if(btn){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }
-    }
-  })
-  .catch(function(){
-    alert('Erreur réseau.');
-    if(btn){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }
-  });
+  var btn=document.querySelector('[onclick="envoyerMessage()"]');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Envoi...'; }
+  var url=APPS_URL+'?action=envoyerMessage&admin=FC2026ADMIN&destinataires='+encodeURIComponent(destinataires)+'&message='+encodeURIComponent(txt)+'&_t='+Date.now();
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        document.getElementById('msgTexte').value='';
+        clearMsgDestSelected();
+        if(btn){ btn.textContent='✅ Envoyé !'; setTimeout(function(){ btn.textContent='📤 ENVOYER'; btn.disabled=false; },2000); }
+        chargerHistoriqueMessages();
+      } else {
+        alert('Erreur : '+(d.message||'inconnue'));
+        if(btn){ btn.textContent='📤 ENVOYER'; btn.disabled=false; }
+      }
+    }).catch(function(){ alert('Erreur réseau.'); if(btn){ btn.textContent='📤 ENVOYER'; btn.disabled=false; } });
 }
 
 function chargerHistoriqueMessages(){
-  var wrap = document.getElementById('msgHistorique');
+  var wrap=document.getElementById('msgHistorique');
   if(!wrap) return;
-  wrap.innerHTML = '<div class="admin-loading">Chargement...</div>';
+  wrap.innerHTML='<div class="admin-loading">Chargement...</div>';
   fetch(APPS_URL+'?action=getHistoriqueMessages&admin=FC2026ADMIN&_t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
-      var msgs = d.messages || [];
-      if(!msgs.length){ wrap.innerHTML = '<div class="admin-loading">Aucun message envoyé.</div>'; return; }
-      wrap.innerHTML = msgs.map(function(m){
-        var destLabel = m.destinataires || m.destinataire || '—';
-        if(destLabel === 'TOUS') destLabel = '📢 Tout le monde';
-        else if(destLabel === 'RP') destLabel = '⚔️ Tous les RP';
-        else if(destLabel === 'APPRENANTS') destLabel = '🎮 Tous les apprenants';
-        else if(destLabel.indexOf('MON_EQUIPE_') === 0) destLabel = '🛡️ Équipe de ' + destLabel.replace('MON_EQUIPE_','');
-        return '<div class="msg-histo-item">'
-          +'<div class="msg-histo-meta">'+m.heure+' · '+destLabel+'</div>'
-          +'<div style="color:var(--text)">'+escHtml(m.message)+'</div>'
-          +'</div>';
+      var msgs=d.messages||[];
+      if(!msgs.length){ wrap.innerHTML='<div class="admin-loading">Aucun message envoyé.</div>'; return; }
+      wrap.innerHTML=msgs.map(function(m){
+        var dest=m.destinataires||m.destinataire||'—';
+        if(dest==='TOUS') dest='📢 Tout le monde';
+        else if(dest==='RP') dest='⚔️ Tous les RP';
+        else if(dest==='APPRENANTS') dest='🎮 Tous les apprenants';
+        else if(dest.indexOf('MON_EQUIPE_')===0) dest='🛡️ Équipe de '+dest.replace('MON_EQUIPE_','');
+        return '<div class="msg-histo-item"><div class="msg-histo-meta">'+m.heure+' · '+dest+'</div><div style="color:var(--text)">'+escHtml(m.message)+'</div></div>';
       }).join('');
-    })
-    .catch(function(){ wrap.innerHTML = '<div class="admin-loading">Erreur de chargement.</div>'; });
+    }).catch(function(){ wrap.innerHTML='<div class="admin-loading">Erreur.</div>'; });
 }
+
+function envoyerMessageIndividuel(id,nom){
+  switchAdminTab('messages');
+  var dest=id.indexOf('RP-')===0?'UN_RP':'UN_APPRENANT';
+  setMsgDest(dest);
+  setTimeout(function(){ selectMsgDest(id,nom); },300);
+  setTimeout(function(){ var ta=document.getElementById('msgTexte'); if(ta) ta.focus(); },400);
+}
+
+function escHtml(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
 
 function loadParrainages(){
   var wrap = document.getElementById('parrainagesList');
