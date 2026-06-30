@@ -245,11 +245,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="tab" onclick="switchTab(2)">🧴 Parfum</div>
     <div class="tab" onclick="switchTab(3)">📝 Notes</div>
     <div class="tab" onclick="switchTab(4)">📢 Actions</div>
-    <div class="tab" onclick="switchTab(5)">🧾 Bons</div>
   </div>
 
   <!-- TAB 0 : MON ÉQUIPE -->
   <div class="section active" id="tab0">
+    <!-- PULSE ÉQUIPE -->
+    <div id="pulseEquipe" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"></div>
     <div class="sec-title" id="equipeTitle">Mon équipe — chargement...</div>
     <div id="equipeList"><div style="text-align:center;padding:30px;color:var(--muted);font-size:13px">Chargement de votre équipe...</div></div>
   </div>
@@ -269,16 +270,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="section" id="tab2">
     <div class="sec-title">Valider un bon cadeau</div>
     <div class="search-bon">
-      <div class="search-bon-tabs">
-        <div class="s-tab active" onclick="setSearchType('code',this)">Par code</div>
-        <div class="s-tab" onclick="setSearchType('nom',this)">Par nom</div>
-        <div class="s-tab" onclick="setSearchType('tel',this)">Par téléphone</div>
-      </div>
       <input id="bonSearchInput" class="search-input" type="text" placeholder="CODE" autocomplete="off" oninput="this.value=this.value.toUpperCase()">
-      <div class="search-hint" id="searchHint">Entrez le code 4 chiffres du bon</div>
+      <div class="search-hint">Entrez le code du bon</div>
       <button class="search-btn" onclick="rechercherBon()">🔍 Rechercher</button>
     </div>
     <div id="bonResult" class="bon-result"></div>
+
+    <!-- BONS DE L'ÉQUIPE -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;margin-bottom:10px">
+      <div class="sec-title" style="margin:0">🧾 Bons de mon équipe</div>
+      <button onclick="chargerBons()" style="padding:5px 12px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">↻ Actualiser</button>
+    </div>
+    <input id="bonSearchRP" type="text" placeholder="Filtrer par code, apprenant, client..." oninput="filtrerBons()" style="width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:10px" autocomplete="off">
+    <div id="bonsStats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"></div>
+    <div id="bonsList" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Appuyez sur ↻ pour charger</div>
+    </div>
   </div>
 
   <!-- TAB 3 : NOTES DU JOUR -->
@@ -310,24 +317,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- TAB 5 : BONS DE VENTE -->
-  <div class="section" id="tab5">
-    <div class="sec-title">🧾 Bons de vente — Mon équipe</div>
-
-    <!-- Recherche par numéro -->
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <input id="bonSearchRP" type="text" placeholder="Rechercher par n° de bon..." oninput="filtrerBons()" style="flex:1;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none" autocomplete="off">
-      <button onclick="chargerBons()" style="padding:10px 14px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">↻</button>
-    </div>
-
-    <!-- Stats rapides -->
-    <div id="bonsStats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"></div>
-
-    <!-- Liste des bons -->
-    <div id="bonsList" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
-      <div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Appuyez sur ↻ pour charger</div>
-    </div>
-  </div>
+  <!-- TAB 5 supprimé — bons intégrés dans tab2 -->
 
 </div>
 
@@ -436,7 +426,7 @@ function switchTab(n){
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', i===n); });
   document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
   if(n===3) chargerNotes();
-  if(n===5) chargerBons();
+  if(n===2) chargerBons();
 }
 
 // ─── BONS DE VENTE ────────────────────────────────────────────────────
@@ -543,32 +533,51 @@ function chargerEquipe(){
 function renderEquipe(){
   var el = document.getElementById('equipeList');
   var title = document.getElementById('equipeTitle');
+  var pulse = document.getElementById('pulseEquipe');
   if(!el) return;
   if(monEquipe.length === 0){
     title.textContent = 'Équipe non constituée';
     el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:12px">Allez dans "Sélection" pour constituer votre équipe du jour</div>';
+    if(pulse) pulse.innerHTML = '';
     return;
   }
   title.textContent = 'Mon équipe · ' + monEquipe.length + ' apprenant' + (monEquipe.length > 1 ? 's' : '');
+
+  // PULSE — stats globales
+  var totalXP=0, actifs=0, ontVendu=0;
+  var maintenant = Date.now();
+  monEquipe.forEach(function(a){
+    totalXP += a.pts_jour||0;
+    if((a.contacts||0) > 0 || (a.articles||0) > 0) actifs++;
+    if((a.articles||0) > 0) ontVendu++;
+  });
+  if(pulse) pulse.innerHTML = [
+    ['🟢', actifs+'/'+monEquipe.length, 'Actifs'],
+    ['🛒', ontVendu, 'Ont vendu'],
+    ['⚡', totalXP.toLocaleString('fr-FR'), 'XP équipe']
+  ].map(function(s){
+    return '<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">'
+      +'<div style="font-size:15px">'+s[0]+'</div>'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;color:#F5A623">'+s[1]+'</div>'
+      +'<div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700">'+s[2]+'</div>'
+    +'</div>';
+  }).join('');
+
   var colors = ['#1B2B8F','#059652','#7C3AED','#D97706','#0891B2'];
   el.innerHTML = monEquipe.map(function(a, idx){
-    // Déterminer le niveau d'alerte (simulé — en production vérifier la dernière activité)
-    var alertClass = '';
-    var alertMsg = '';
-    if(a.contacts === 0 && a.articles === 0 && a.pts_jour === 0){
-      alertClass = 'alert-rouge';
-      alertMsg = '⚠️ Aucune activité détectée';
-    } else if(a.articles === 0){
-      alertClass = 'alert-orange';
-      alertMsg = '🟡 Pas d\'article encore';
-    }
+    // Indicateur silence — aucune activité détectée
+    var silence = (a.contacts===0 && a.articles===0 && (a.pts_jour||0)===0);
+    var alertClass = silence ? 'alert-rouge' : (a.articles===0 ? 'alert-orange' : '');
+    var alertMsg = silence
+      ? '🔴 Silence — aucune activité détectée'
+      : (a.articles===0 ? '🟡 Pas de vente encore' : '');
     var letter = a.prenom.charAt(0).toUpperCase();
     var color  = colors[idx % colors.length];
-    var dot    = alertClass === 'alert-rouge' ? 'dot-red' : (alertClass ? 'dot-orange' : 'dot-green');
+    var dot    = silence ? 'dot-red' : (a.articles===0 ? 'dot-orange' : 'dot-green');
 
     return '<div class="ap-card '+alertClass+'">'
       +'<div class="ap-card-header">'
-        +'<div class="ap-avatar" style="background:'+color+'">'+letter+'</div>'
+        +'<div class="ap-avatar" style="background:'+color+(silence?';box-shadow:0 0 0 2px #E8192C':'')+'">'+letter+'</div>'
         +'<div><div class="ap-name">'+a.prenom+' '+a.nom+'</div><div class="ap-id">'+a.id+'</div></div>'
         +'<div class="ap-status"><span class="status-dot '+dot+'"></span></div>'
       +'</div>'
@@ -835,6 +844,21 @@ function envoyerRallye(){
 }
 
 // ─── SOS ──────────────────────────────────────────────────────────────
+function confirmerSOS(){
+  if(!confirm('⚠️ Envoyer un signal d\'urgence à l\'administrateur ?')) return;
+  var btn = document.querySelector('.btn-sos');
+  if(btn){ btn.disabled=true; btn.textContent='🆘 Signal envoyé...'; }
+  fetch(APPS_URL+'?action=signalerSOS&apprenant_id='+encodeURIComponent(RP.id)+'&apprenant_prenom='+encodeURIComponent(RP.prenom+' (RP)')+'&rp_id='+encodeURIComponent(RP.id)+'&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(btn){ btn.textContent='✅ Signal reçu — admin prévenu'; setTimeout(function(){ btn.textContent='🆘 SIGNAL D\'URGENCE — Appeler le responsable'; btn.disabled=false; },5000); }
+      try{ if(navigator.vibrate) navigator.vibrate([300,100,300,100,500]); }catch(e){}
+    })
+    .catch(function(){
+      if(btn){ btn.textContent='❌ Erreur réseau'; btn.disabled=false; }
+    });
+}
+
 function verifierSOS(){
   fetch(APPS_URL+'?action=getSOSActifs&rp_id='+encodeURIComponent(RP.id))
     .then(function(r){ return r.json(); })

@@ -538,9 +538,10 @@ function renderTableImmediat(){
       +'<div style="flex:1;min-width:0;cursor:pointer" onclick="ouvrirFicheApprenant(\''+a.id+'\')">'
         +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+(isFond?' &#x1F451;':'')+'</div>'
         +'<div id="xp_'+a.id+'" style="font-size:12px;color:#8892A4;margin-top:2px">—</div>'
-        +'<div style="font-size:10px;color:rgba(255,215,0,.6);font-family:Exo 2,sans-serif;margin-top:2px;font-weight:700">🔑 '+(a.pin||'—')+'</div>'
+        +'<div style="font-size:11px;color:rgba(255,215,0,.7);font-family:Exo 2,sans-serif;margin-top:3px;font-weight:700;letter-spacing:.5px">'+a.id+' · PIN : '+(a.pin||'—')+'</div>'
       +'</div>'
       +'<div id="statut_'+a.id+'" onclick="ouvrirFicheApprenant(\''+a.id+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(136,146,164,.1);color:#8892A4;white-space:nowrap;flex-shrink:0;cursor:pointer">—</div>'
+      +'<a href="journee.html?id='+a.id+'" target="_blank" onclick="event.stopPropagation()" title="Ouvrir cockpit" style="background:rgba(41,121,255,.08);border:1px solid rgba(41,121,255,.25);color:#60A5FA;border-radius:8px;padding:6px 9px;font-size:11px;font-weight:700;font-family:Exo 2,sans-serif;cursor:pointer;flex-shrink:0;text-decoration:none;display:flex;align-items:center">🎮</a>'
       +'<button onclick="event.stopPropagation();envoyerMessageIndividuel(\''+a.id+'\',\''+a.prenom+' '+a.nom+'\')" title="Message" style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer;flex-shrink:0">💬</button>'
       +'<span onclick="ouvrirFicheApprenant(\''+a.id+'\')" style="color:var(--muted);font-size:16px;flex-shrink:0;cursor:pointer">&#x203A;</span>'
     +'</div>';
@@ -995,20 +996,106 @@ function loadResponsables(){
       el.innerHTML = d.responsables.map(function(rp){
         return '<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:12px 14px;margin-bottom:10px">'
           +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
-            +'<div style="width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
-            +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
-            +'<div style="font-size:10px;color:var(--muted)">'+rp.id+' · PIN : '+rp.pin+'</div></div>'
+            +'<div style="width:36px;height:36px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff;cursor:pointer" onclick="ouvrirFicheRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+escHtml(rp.nom)+'\',\''+rp.pin+'\',\''+rp.statut+'\')">'+rp.prenom.charAt(0).toUpperCase()+'</div>'
+            +'<div style="flex:1;cursor:pointer" onclick="ouvrirFicheRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+escHtml(rp.nom)+'\',\''+rp.pin+'\',\''+rp.statut+'\')">'
+              +'<div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+rp.prenom+' '+rp.nom+'</div>'
+              +'<div style="font-size:10px;color:rgba(255,215,0,.7);font-family:Exo 2,sans-serif;font-weight:700">'+rp.id+' · PIN : '+rp.pin+'</div>'
+            +'</div>'
             +'<span style="padding:3px 8px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
           +'</div>'
           +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
           +'<div style="display:flex;gap:6px">'
-            +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit RP</a>'
-            +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+rp.id+'" data-prenom="'+rp.prenom+'" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">&#128221; Notes</button>'
+            +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit</a>'
+            +'<button onclick="ouvrirFicheRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+escHtml(rp.nom)+'\',\''+rp.pin+'\',\''+rp.statut+'\')" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📊 Fiche</button>'
             +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+rp.prenom+' '+rp.nom+'\')" style="padding:8px 12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;font-size:13px;cursor:pointer">💬</button>'
           +'</div>'
         +'</div>';
       }).join('');
     }).catch(function(){ el.innerHTML = '<div style="color:var(--red);text-align:center;padding:12px">Erreur de chargement</div>'; });
+}
+
+/* ===== FICHE RP ===== */
+function ouvrirFicheRP(id, prenom, nom, pin, statut){
+  // Créer la modal si elle n'existe pas
+  var existing = document.getElementById('ficheRPModal');
+  if(existing) existing.remove();
+
+  var modal = document.createElement('div');
+  modal.id = 'ficheRPModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9990;overflow-y:auto;padding:16px';
+  modal.innerHTML = '<div style="max-width:480px;margin:0 auto">'
+    // Header
+    +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
+      +'<button onclick="document.getElementById(\'ficheRPModal\').remove()" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>'
+      +'<div style="flex:1;font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#A78BFA">⚔️ Fiche RP</div>'
+      +'<a href="responsable.html?id='+id+'&pin='+pin+'" target="_blank" style="padding:8px 14px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none">⚔️ Cockpit</a>'
+    +'</div>'
+    // Identité
+    +'<div style="background:var(--card);border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:16px;margin-bottom:12px">'
+      +'<div style="display:flex;align-items:center;gap:12px">'
+        +'<div style="width:52px;height:52px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#fff">'+prenom.charAt(0).toUpperCase()+'</div>'
+        +'<div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:var(--text)">'+prenom+' '+nom+'</div>'
+          +'<div style="font-size:11px;color:rgba(255,215,0,.7);font-family:Exo 2,sans-serif;font-weight:700;margin-top:3px">'+id+' · PIN : '+pin+'</div>'
+          +'<span style="display:inline-block;margin-top:4px;padding:3px 10px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(statut==='ACTIF'?'rgba(0,200,83,.15)':'rgba(232,25,44,.15)')+';color:'+(statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+statut+'</span>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    // Stats équipe
+    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">📊 Stats équipe du jour</div>'
+      +'<div id="ficheRPStats" style="text-align:center;color:var(--muted);font-size:13px">Chargement...</div>'
+    +'</div>'
+    // Équipe
+    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">🛡️ Équipe du jour</div>'
+      +'<div id="ficheRPEquipe" style="text-align:center;color:var(--muted);font-size:13px">Chargement...</div>'
+    +'</div>'
+    // Actions admin
+    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">⚙️ Actions admin</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+        +'<button onclick="envoyerMessageIndividuel(\''+id+'\',\''+prenom+' '+nom+'\');document.getElementById(\'ficheRPModal\').remove()" style="flex:1;padding:10px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">💬 Message</button>'
+        +'<button class="adm-btn" data-action="voirNotesRP" data-id="'+id+'" data-prenom="'+prenom+'" style="flex:1;padding:10px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📝 Notes</button>'
+      +'</div>'
+    +'</div>'
+  +'</div>';
+  document.body.appendChild(modal);
+
+  // Charger les stats équipe
+  fetch(APPS_URL+'?action=getEquipeJourStats&rp_id='+encodeURIComponent(id)+'&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var equipe = d.equipe || [];
+      var statsEl = document.getElementById('ficheRPStats');
+      var equipeEl = document.getElementById('ficheRPEquipe');
+      if(!equipe.length){
+        if(statsEl) statsEl.textContent = 'Aucune équipe constituée aujourd\'hui';
+        if(equipeEl) equipeEl.textContent = 'Aucun apprenant sélectionné';
+        return;
+      }
+      var totalXP=0, totalVentes=0, totalContacts=0;
+      equipe.forEach(function(a){ totalXP+=a.pts||0; totalVentes+=a.nb_ventes||0; totalContacts+=a.contacts||0; });
+      if(statsEl) statsEl.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
+        +[['⚡',totalXP.toLocaleString('fr-FR'),'XP'],['🛒',totalVentes,'Ventes'],['🤝',totalContacts,'Contacts']].map(function(s){
+          return '<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">'
+            +'<div style="font-size:16px">'+s[0]+'</div>'
+            +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;color:#F5A623">'+s[1]+'</div>'
+            +'<div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif">'+s[2]+'</div>'
+          +'</div>';
+        }).join('')+'</div>';
+      if(equipeEl) equipeEl.innerHTML = equipe.map(function(a){
+        return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">'
+          +'<div style="width:30px;height:30px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid rgba(96,165,250,.4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#60A5FA;flex-shrink:0">'+(a.prenom||'?')[0].toUpperCase()+'</div>'
+          +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
+          +'<div style="font-size:10px;color:var(--muted)">'+((a.pts||0).toLocaleString('fr-FR'))+' XP · '+(a.nb_ventes||0)+' ventes</div></div>'
+          +'<a href="journee.html?id='+a.apprenant_id+'" target="_blank" style="padding:4px 8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:6px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;text-decoration:none">🎮</a>'
+        +'</div>';
+      }).join('');
+    }).catch(function(){
+      var s=document.getElementById('ficheRPStats');
+      if(s) s.textContent = 'Erreur de chargement';
+    });
 }
 
 function creerRP(){
@@ -1800,6 +1887,7 @@ function verifierSOSAdmin(){
         if(banner && txt){
           banner.style.display = 'flex';
           banner.style.animation = 'sosFlash 1s infinite';
+          banner.setAttribute('data-sos-id', s.sos_id);
           txt.textContent = '🆘 SOS — '+s.apprenant_prenom+' a besoin d\'aide ! — '+s.heure;
         }
         if(resoluBtn) resoluBtn.style.display = 'block';
@@ -1820,16 +1908,29 @@ function verifierSOSAdmin(){
 }
 
 function resoudreSosAdmin(){
-  if(!_sosAdminActifId) return;
-  fetch(APPS_URL+'?action=resoudreSOS&sos_id='+encodeURIComponent(_sosAdminActifId)+'&admin=FC2026ADMIN')
+  var banner = document.getElementById('alertBanner');
+  var sosId = _sosAdminActifId || (banner && banner.getAttribute('data-sos-id')) || '';
+  if(!sosId){ alert('ID du SOS introuvable — actualise la page.'); return; }
+  var btn = document.getElementById('sosResoluBtn');
+  if(btn){ btn.disabled=true; btn.textContent='⏳...'; }
+  fetch(APPS_URL+'?action=resoudreSOS&sos_id='+encodeURIComponent(sosId)+'&admin=FC2026ADMIN&_t='+Date.now())
     .then(function(r){ return r.json(); })
-    .then(function(){
-      _sosAdminActifId = null;
-      document.getElementById('sosPopupAdmin').classList.remove('show');
-      var resoluBtn = document.getElementById('sosResoluBtn');
-      if(resoluBtn) resoluBtn.style.display = 'none';
-      verifierAlertes();
-    }).catch(function(){});
+    .then(function(d){
+      if(d.status === 'ok'){
+        _sosAdminActifId = null;
+        document.getElementById('sosPopupAdmin').classList.remove('show');
+        if(banner){ banner.style.display='none'; banner.removeAttribute('data-sos-id'); }
+        if(btn){ btn.style.display='none'; btn.disabled=false; btn.textContent='✓ Résolu'; }
+        verifierAlertes();
+      } else {
+        if(btn){ btn.disabled=false; btn.textContent='✓ Résolu'; }
+        alert('Erreur GAS : SOS non trouvé dans le Sheet.');
+      }
+    })
+    .catch(function(){
+      if(btn){ btn.disabled=false; btn.textContent='✓ Résolu'; }
+      alert('Erreur réseau — réessaie.');
+    });
 }
 
 function loadParrainages(){
