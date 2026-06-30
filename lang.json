@@ -1,0 +1,16 @@
+{
+  "fr": {
+    "tab_cockpit": "Cockpit",
+    "tab_form": "Formulaire",
+    "tab_passeport": "Passeport",
+    "admin_title": "Form'Com Level Up · Dashboard Admin",
+    "admin_sub": "En direct · Mise à jour toutes les 25s"
+  },
+  "en": {
+    "tab_cockpit": "Cockpit",
+    "tab_form": "Form",
+    "tab_passeport": "Passport",
+    "admin_title": "Form'Com Level Up · Admin Dashboard",
+    "admin_sub": "Live · Updated every 25s"
+  }
+}

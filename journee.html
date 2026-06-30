@@ -195,7 +195,7 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .quest-complete-box{background:linear-gradient(135deg,#0A0E1A,#1A1200);border:2px solid #F5A623;border-radius:20px;padding:28px 32px;text-align:center;animation:questPop .6s cubic-bezier(.175,.885,.32,1.275) forwards;box-shadow:0 0 60px rgba(245,166,35,.3);max-width:300px;pointer-events:none}
 .quest-crown{font-size:48px;display:block;margin-bottom:12px}
 .quest-title{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(245,166,35,.6);margin-bottom:6px}
-.quest-complete-text{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:#F5A623;overflow:hidden;white-space:nowrap;animation:questTypewriter .8s steps(14) .4s both;border-right:2px solid #F5A623}
+.quest-complete-text{font-family:'Exo 2',sans-serif;font-size:22px;font-weight:900;color:#F5A623;overflow:hidden;white-space:nowrap;animation:questTypewriter .8s steps(18) .4s both;border-right:2px solid #F5A623}
 .quest-sub{font-family:'Exo 2',sans-serif;font-size:13px;color:rgba(255,255,255,.7);margin-top:10px;line-height:1.4}
 /* QUÊTE */
 .quete-barre-wrap{height:18px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin:10px 0 8px;border:1px solid rgba(255,255,255,.08);position:relative}
@@ -208,6 +208,13 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .quete-jalon-lbl{font-size:8px;color:rgba(255,255,255,.3);font-family:'Exo 2',sans-serif;font-weight:700}
 .quete-jalon-lbl.done,.quete-jalon-lbl.next{color:rgba(245,166,35,.7)}
 /* BOURSE */
+.msg-popup-ap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9998;align-items:center;justify-content:center;padding:20px}
+.msg-popup-ap.show{display:flex}
+.msg-box-ap{background:linear-gradient(135deg,#1B0A40,#2D1B69);border:2px solid #7C3AED;border-radius:16px;padding:24px;max-width:340px;width:100%;text-align:center;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.msg-from-ap{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:8px;font-family:'Exo 2',sans-serif}
+.msg-text-ap{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;color:#fff;line-height:1.4;margin-bottom:20px}
+.msg-lu-ap{width:100%;padding:13px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
 .bourse-locked{background:var(--card);border:1.5px dashed var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center;transition:background .3s}
 .bourse-active{background:linear-gradient(135deg,rgba(27,43,143,0.8),rgba(41,121,255,0.5));border:1.5px solid rgba(41,121,255,.5);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center;box-shadow:0 0 20px rgba(41,121,255,.2)}
 .bourse-emoji{font-size:28px;margin-bottom:6px}
@@ -241,6 +248,8 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- MODE DEV : simulateur backend local. Supprimer en production. -->
+
 </head>
 <body>
 <div class="glow-bg"></div>
@@ -398,6 +407,29 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
       <div style="padding:16px 20px 110px">
 
+      <!-- TABLEAU PARTICIPATION MENSUELLE -->
+      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px">🔁 Participation mensuelle</div>
+      <div style="background:linear-gradient(135deg,#1B2B8F,#2979FF);border-radius:14px;padding:16px 14px;margin-bottom:14px">
+        <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:#F5A623;text-align:center;margin-bottom:14px;line-height:1.3">Choisissez le montant qui vous convient.<br>L'objectif, c'est de rester longtemps ensemble. 🤝</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="mensuelGrid">
+          <div class="tx-amount-btn" onclick="selMensuel(this,5)"><div class="tx-amount-val">5€/mois</div><div class="tx-amount-sub">+125 XP</div></div>
+          <div class="tx-amount-btn tx-recommended" onclick="selMensuel(this,10)"><div class="tx-amount-val">10€/mois</div><div class="tx-amount-sub">+500 XP</div><div class="tx-amount-badge">⭐ Recommandé</div></div>
+          <div class="tx-amount-btn tx-sup" onclick="selMensuel(this,20)"><div class="tx-amount-val">20€/mois</div><div class="tx-amount-sub">+1 200 XP</div><div class="tx-amount-badge">🔥 Niv. sup.</div></div>
+          <div class="tx-amount-btn tx-amb" onclick="selMensuel(this,30)"><div class="tx-amount-val">30€/mois</div><div class="tx-amount-sub">+2 000 XP</div><div class="tx-amount-badge">💎 Ambassadeur</div></div>
+          <div class="tx-amount-btn tx-elite" onclick="selMensuel(this,50)"><div class="tx-amount-val">50€/mois</div><div class="tx-amount-sub">+3 500 XP</div><div class="tx-amount-badge">🚀 Élite</div></div>
+          <div class="tx-amount-btn tx-rare" onclick="selMensuel(this,100)"><div class="tx-amount-val">100€/mois</div><div class="tx-amount-sub">+8 000 XP</div><div class="tx-amount-badge">👑 Rare</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;margin-bottom:10px">
+          <span style="font-size:12px;color:rgba(255,255,255,.5);white-space:nowrap">Autre montant :</span>
+          <input id="mensuelCustom" type="number" min="1" placeholder="0" oninput="selMensuelCustom()" style="flex:1;background:transparent;border:none;font-family:'Exo 2',sans-serif;font-size:18px;font-weight:700;color:#fff;outline:none;text-align:center;-moz-appearance:textfield">
+          <span style="font-size:14px;color:rgba(255,255,255,.4)">€/mois</span>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:#F5A623" id="recurPtsDisplay">+0 XP</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.45)">XP mensuels</div>
+        </div>
+      </div>
+
       <!-- TABLEAU BARÈME ARTICLES -->
       <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px">Participation ponctuelle — <span style="color:#FF8C42">1 article = 10€</span></div>
       <div style="background:#1B2B8F;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.1);margin-bottom:14px">
@@ -428,36 +460,50 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
         <div style="font-size:11px;color:rgba(255,255,255,.4)">XP articles</div>
       </div>
 
-      <!-- TABLEAU PARTICIPATION MENSUELLE -->
-      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px">🔁 Participation mensuelle</div>
-      <div style="background:linear-gradient(135deg,#1B2B8F,#2979FF);border-radius:14px;padding:16px 14px;margin-bottom:14px">
-        <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:#F5A623;text-align:center;margin-bottom:14px;line-height:1.3">Choisissez le montant qui vous convient.<br>L'objectif, c'est de rester longtemps ensemble. 🤝</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="mensuelGrid">
-          <div class="tx-amount-btn" onclick="selMensuel(this,5)"><div class="tx-amount-val">5€/mois</div><div class="tx-amount-sub">+125 XP</div></div>
-          <div class="tx-amount-btn tx-recommended" onclick="selMensuel(this,10)"><div class="tx-amount-val">10€/mois</div><div class="tx-amount-sub">+500 XP</div><div class="tx-amount-badge">⭐ Recommandé</div></div>
-          <div class="tx-amount-btn tx-sup" onclick="selMensuel(this,20)"><div class="tx-amount-val">20€/mois</div><div class="tx-amount-sub">+1 200 XP</div><div class="tx-amount-badge">🔥 Niv. sup.</div></div>
-          <div class="tx-amount-btn tx-amb" onclick="selMensuel(this,30)"><div class="tx-amount-val">30€/mois</div><div class="tx-amount-sub">+2 000 XP</div><div class="tx-amount-badge">💎 Ambassadeur</div></div>
-          <div class="tx-amount-btn tx-elite" onclick="selMensuel(this,50)"><div class="tx-amount-val">50€/mois</div><div class="tx-amount-sub">+3 500 XP</div><div class="tx-amount-badge">🚀 Élite</div></div>
-          <div class="tx-amount-btn tx-rare" onclick="selMensuel(this,100)"><div class="tx-amount-val">100€/mois</div><div class="tx-amount-sub">+8 000 XP</div><div class="tx-amount-badge">👑 Rare</div></div>
+      <!-- MODES DE PAIEMENT -->
+      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2979FF;margin-bottom:10px">&#128179; Mode de paiement</div>
+
+      <!-- PAR DÉFAUT -->
+      <div id="payDefaultBtns" style="margin-bottom:12px">
+        <div style="font-size:12px;color:rgba(255,255,255,.3);text-align:center;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.08)">Choisissez d'abord une formule ci-dessus</div>
+      </div>
+
+      <!-- PONCTUEL SEUL -->
+      <div id="payPonctuelBtns" style="display:none;margin-bottom:12px">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:8px">Ponctuels &mdash; <span id="payMontantLabel" style="color:#F5A623;font-weight:700">0&#8364;</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <button onclick="payerStripe()" style="padding:11px 8px;background:rgba(41,121,255,.15);border:1.5px solid rgba(41,121,255,.4);color:#60A5FA;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128179; Payer<br>maintenant</button>
+          <button onclick="envoyerStripe('ponctuel')" style="padding:11px 8px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);color:rgba(96,165,250,.7);border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128257; Envoyer<br>le lien</button>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 14px;margin-bottom:10px">
-          <span style="font-size:12px;color:rgba(255,255,255,.5);white-space:nowrap">Autre montant :</span>
-          <input id="mensuelCustom" type="number" min="1" placeholder="0" oninput="selMensuelCustom()" style="flex:1;background:transparent;border:none;font-family:'Exo 2',sans-serif;font-size:18px;font-weight:700;color:#fff;outline:none;text-align:center;-moz-appearance:textfield">
-          <span style="font-size:14px;color:rgba(255,255,255,.4)">€/mois</span>
-        </div>
-        <div style="text-align:center">
-          <div style="font-family:'Exo 2',sans-serif;font-size:22px;font-weight:800;color:#F5A623" id="recurPtsDisplay">+0 XP</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.45)">XP mensuels</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button onclick="payerZettle()" style="padding:11px 8px;background:rgba(0,200,83,.08);border:1.5px solid rgba(0,200,83,.2);color:#00C853;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128179; Zettle<br><span id="zettleMontant" style="font-size:10px">0&#8364;</span></button>
+          <button class="tx-pay-btn" onclick="togglePay(this,'Espèces')"><span>&#128181;</span><span>Espèces</span></button>
         </div>
       </div>
 
-      <!-- MODES DE PAIEMENT -->
-      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#2979FF;margin-bottom:10px">💳 Mode(s) de paiement</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-        <button class="tx-pay-btn" onclick="togglePay(this,'Espèces')"><span>💵</span><span>Espèces</span></button>
-        <button class="tx-pay-btn" onclick="togglePay(this,'CB/TPE')"><span>💳</span><span>CB / TPE</span></button>
-        <button class="tx-pay-btn" onclick="togglePay(this,'HelloAsso')"><span>💙</span><span>HelloAsso</span></button>
-        <button class="tx-pay-btn" onclick="togglePay(this,'Virement')"><span>🏦</span><span>Virement</span></button>
+      <!-- MENSUEL SEUL -->
+      <div id="payMensuelBtns" style="display:none;margin-bottom:12px">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:8px">Abonnement &mdash; <span id="payMensuelLabel" style="color:#A78BFA;font-weight:700">0&#8364;/mois</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <button onclick="abonnerMaintenant()" style="padding:11px 8px;background:rgba(124,58,237,.15);border:1.5px solid rgba(124,58,237,.4);color:#A78BFA;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128179; S'abonner<br>maintenant</button>
+          <button onclick="envoyerStripe('abo')" style="padding:11px 8px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);color:rgba(167,139,250,.7);border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128257; Envoyer<br>le lien</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <button class="tx-pay-btn" onclick="togglePay(this,'Espèces')"><span>&#128181;</span><span>Espèces</span></button>
+          <button class="tx-pay-btn" onclick="togglePay(this,'Virement')"><span>&#127974;</span><span>Virement</span></button>
+        </div>
+        <!-- AJOUTER PONCTUEL EN PLUS -->
+        <div style="padding:10px;background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.15);border-radius:8px">
+          <div style="font-size:11px;color:rgba(245,166,35,.7);margin-bottom:8px;font-family:'Exo 2',sans-serif;font-weight:700">&#10133; Ajouter des articles ponctuels ?</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <input type="number" id="addPonctuelNb" min="0" placeholder="0" oninput="majCumul()" style="width:55px;padding:7px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;text-align:center">
+            <span style="font-size:12px;color:rgba(255,255,255,.4)">art. &times; 10&#8364; = <span id="addPonctuelTotal" style="color:#F5A623;font-weight:700">0&#8364;</span></span>
+          </div>
+          <div id="addPonctuelPayBtns" style="display:none;grid-template-columns:1fr 1fr;gap:6px">
+            <button onclick="payerStripe()" style="padding:10px 6px;background:rgba(41,121,255,.12);border:1px solid rgba(41,121,255,.3);color:#60A5FA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;cursor:pointer">&#128179; Payer<br>ponctuels</button>
+            <button onclick="envoyerStripe('ponctuel')" style="padding:10px 6px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);color:rgba(96,165,250,.6);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;cursor:pointer">&#128257; Envoyer<br>le lien</button>
+          </div>
+        </div>
       </div>
 
       <!-- CONTACT CLIENT -->
@@ -480,6 +526,13 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 
 
   <div class="stats-card">
+  <!-- BOUTON SOS DISCRET -->
+  <div id="sosBlock" style="display:none;margin-bottom:10px">
+    <button id="sosBtn" onclick="envoyerSOS()" style="width:100%;padding:10px;background:rgba(232,25,44,.08);border:1.5px solid rgba(232,25,44,.2);color:rgba(232,25,44,.6);border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+      🆘 Signal d'urgence — Appeler mon chef d'équipe
+    </button>
+  </div>
+
   <!-- CAGNOTTE SOLIDAIRE -->
   <div id="cagnotteBlock" style="margin-bottom:12px">
     <div class="sec-title">🔥 Cagnotte solidaire du jour</div>
@@ -569,6 +622,15 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
       <span class="taux-lbl">Resilience</span>
       <div class="taux-bar-w"><div class="taux-bar" id="tR" style="width:0%;background:#F5A623"></div></div>
       <span class="taux-val" id="tRV">0%</span>
+    </div>
+  </div>
+
+  <!-- MESSAGE BROADCAST POPUP -->
+  <div class="msg-popup-ap" id="msgPopupAp">
+    <div class="msg-box-ap">
+      <div class="msg-from-ap" id="msgFromAp">Message</div>
+      <div class="msg-text-ap" id="msgTextAp"></div>
+      <button class="msg-lu-ap" id="msgLuBtn" style="opacity:.4;pointer-events:none" onclick="marquerMessageLuAp()">✓ Message lu</button>
     </div>
   </div>
 
@@ -805,7 +867,7 @@ return {generate:function(text,size){
 }};
 })();
 
-var APPS_URL='https://script.google.com/macros/s/AKfycbzqxuxJ6NZEqqamwupwAUdisgvXm83lU2OE8eT8BpKcgTVQMP1iLEThZdlxeCTOZ7aQzQ/exec';
+var APPS_URL='https://script.google.com/macros/s/AKfycbwKu9PwOOniBsTp-5WNHBx2fgsy2O45R8bwQ2uvqJsyPUQlNokIHoK1Y_KwP929x5xplA/exec';
 var p=new URLSearchParams(window.location.search);
 var AP={
   id:p.get('id')||'AP001',
@@ -1238,6 +1300,11 @@ function ouvrirInterface(data){
 
   // La quête sera mise à jour par loadBourse qui a la valeur correcte de bourse_versee
 
+  // Démarrer la vérification des messages et afficher le SOS
+  demarrerVerificationMessages();
+  var sosB = document.getElementById('sosBlock');
+  if(sosB) sosB.style.display = 'block';
+
   // Recharger prevBadges maintenant que AP.id est connu (clé fiable par apprenant+jour)
   try{
     var bkey = 'fc_badges_'+(AP&&AP.id?AP.id:'x')+'_'+new Date().toISOString().slice(0,10);
@@ -1339,7 +1406,7 @@ function lancerQuestComplete(prenom){
   overlay.innerHTML = '<div class="quest-complete-box" style="pointer-events:all">'
     + '<span class="quest-crown">👑</span>'
     + '<div class="quest-title">Level Up</div>'
-    + '<div class="quest-complete-text">QUEST COMPLETE</div>'
+    + '<div class="quest-complete-text">MISSION ACCOMPLIE !</div>'
     + '<div class="quest-sub" style="margin-bottom:20px">&#127881; ' + (prenom||'Tu') + ', tu l\'as fait !<br>Objectif de financement atteint !</div>'
     + '<button id="questCloseBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#92400E,#F59E0B);color:#fff;border:none;border-radius:12px;font-family:\'Exo 2\',sans-serif;font-size:14px;font-weight:900;cursor:pointer;letter-spacing:1px">✕ Fermer</button>'
     + '</div>';
@@ -1357,10 +1424,22 @@ function lancerQuestComplete(prenom){
     }, 400);
   }
 
+  // Délai de 2 secondes avant d'activer le bouton fermer
+  // pour éviter que le tap initial ferme l'overlay immédiatement
   setTimeout(function(){
     var btn = document.getElementById('questCloseBtn');
-    if(btn) btn.addEventListener('click', fermerQuest);
-  }, 100);
+    if(btn){
+      btn.style.opacity = '0.4';
+      btn.style.pointerEvents = 'none';
+      setTimeout(function(){
+        btn.style.opacity = '1';
+        btn.style.transition = 'opacity .3s';
+        btn.style.pointerEvents = 'all';
+        btn.addEventListener('click', fermerQuest);
+        btn.addEventListener('touchend', function(e){ e.preventDefault(); fermerQuest(); });
+      }, 2000);
+    }
+  }, 200);
 
   // Confetti or — continus pendant que l'overlay est ouvert
   if(typeof confetti === 'function'){
@@ -2505,6 +2584,58 @@ function envoyerLienEval(){
   }
 }
 
+// ─── MESSAGES BROADCAST ──────────────────────────────────────────────
+var _msgActuelId = null;
+var _msgCheckInterval = null;
+
+function demarrerVerificationMessages(){
+  verifierMessageAp();
+  _msgCheckInterval = setInterval(verifierMessageAp, 30000);
+}
+
+function verifierMessageAp(){
+  if(!AP.id) return;
+  fetch(APPS_URL+'?action=getMessage&id='+encodeURIComponent(AP.id)+'&type=apprenant')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.messages && d.messages.length > 0){
+        var msg = d.messages[0];
+        _msgActuelId = msg.msg_id;
+        var fromEl = document.getElementById('msgFromAp');
+        var textEl = document.getElementById('msgTextAp');
+        var luBtn  = document.getElementById('msgLuBtn');
+        var popup  = document.getElementById('msgPopupAp');
+        if(fromEl) fromEl.textContent = msg.expediteur_type === 'ADMIN' ? 'Message Admin' : 'Message Chef équipe';
+        if(textEl) textEl.textContent = msg.message;
+        if(popup)  popup.classList.add('show');
+        // Activer le bouton après 2s
+        if(luBtn){ luBtn.style.opacity='.4'; luBtn.style.pointerEvents='none';
+          setTimeout(function(){ luBtn.style.opacity='1'; luBtn.style.pointerEvents='all'; luBtn.style.transition='opacity .3s'; }, 2000);
+        }
+        try{ if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]); }catch(e){}
+      }
+    }).catch(function(){});
+}
+
+function marquerMessageLuAp(){
+  if(!_msgActuelId) return;
+  fetch(APPS_URL+'?action=marquerMessageLu&msg_id='+encodeURIComponent(_msgActuelId)+'&id='+encodeURIComponent(AP.id))
+    .catch(function(){});
+  var popup = document.getElementById('msgPopupAp');
+  if(popup) popup.classList.remove('show');
+  _msgActuelId = null;
+}
+
+// ─── SOS ─────────────────────────────────────────────────────────────
+function envoyerSOS(){
+  if(!confirm('Envoyer un signal d\'urgence ?')) return;
+  var btn = document.getElementById('sosBtn');
+  if(btn){ btn.textContent = '🆘 Signal envoyé... votre chef arrive'; btn.disabled = true; }
+  fetch(APPS_URL+'?action=signalerSOS&apprenant_id='+encodeURIComponent(AP.id)+'&apprenant_prenom='+encodeURIComponent(AP.prenom)+'&rp_id=')
+    .catch(function(){});
+  try{ if(navigator.vibrate) navigator.vibrate([300,100,300]); }catch(e){}
+}
+
 function ouvrirPasseport(){
   var url = 'profil.html?id=' + encodeURIComponent(AP.id)
     + '&prenom=' + encodeURIComponent(AP.prenom)
@@ -2531,8 +2662,92 @@ function ouvrirFormulaire(){
 
 // ── BARÈME CLIQUABLE ───────────────────────────────────────────────────────
 var txNbArtSelectionne = 0;
+var txMontantPonctuel  = 0;
+var txModeAbo          = 0;
 var txXpArt = 0;
 var txXpMens = 0;
+
+var STRIPE_PONCT = 'https://buy.stripe.com/4gMaEW0Lm8mr38jf6a4ko01';
+var STRIPE_ABO5  = 'https://buy.stripe.com/eVqaEW0LmeKPfV5f6a4ko02';
+var STRIPE_ABO10 = 'https://buy.stripe.com/9B64gy3XycCHdMX8HM4ko00';
+
+function majBoutonsPaiement(){
+  var elDef = document.getElementById('payDefaultBtns');
+  var elPon = document.getElementById('payPonctuelBtns');
+  var elMen = document.getElementById('payMensuelBtns');
+  if(!elDef) return;
+  var hasPon = txNbArtSelectionne > 0;
+  var hasMen = txModeAbo > 0;
+  if(hasMen){
+    elDef.style.display='none'; elPon.style.display='none'; elMen.style.display='block';
+    var ml = document.getElementById('payMensuelLabel');
+    if(ml) ml.textContent = txModeAbo+'€/mois';
+  } else if(hasPon){
+    elDef.style.display='none'; elPon.style.display='block'; elMen.style.display='none';
+    var pl = document.getElementById('payMontantLabel');
+    var zl = document.getElementById('zettleMontant');
+    if(pl) pl.textContent = txMontantPonctuel+'€';
+    if(zl) zl.textContent = txMontantPonctuel+'€';
+  } else {
+    elDef.style.display='block'; elPon.style.display='none'; elMen.style.display='none';
+  }
+}
+
+function majCumul(){
+  var nb = parseInt(document.getElementById('addPonctuelNb').value)||0;
+  var tot = document.getElementById('addPonctuelTotal');
+  var payBtns = document.getElementById('addPonctuelPayBtns');
+  if(tot) tot.textContent = (nb*10)+'€';
+  if(payBtns) payBtns.style.display = nb > 0 ? 'grid' : 'none';
+  if(nb > 0){
+    txNbArtSelectionne = nb;
+    txMontantPonctuel  = nb * 10;
+    txXpArt = calcXpArticles(nb);
+    updateTxXpTotal();
+  }
+}
+
+function getLienAbo(){
+  return (txModeAbo <= 5 ? STRIPE_ABO5 : STRIPE_ABO10)+'?client_reference_id='+encodeURIComponent(AP.id||'');
+}
+
+function payerStripe(){
+  window.open(STRIPE_PONCT+'?client_reference_id='+encodeURIComponent(AP.id||''), '_blank');
+}
+
+function envoyerStripe(type){
+  var lien  = type==='abo' ? getLienAbo() : STRIPE_PONCT+'?client_reference_id='+encodeURIComponent(AP.id||'');
+  var label = type==='abo' ? 'Abonnement solidaire '+txModeAbo+'€/mois' : 'Parfum ponctuel '+txMontantPonctuel+'€';
+  var msg   = 'Voici votre lien FormCom :\n\n'+label+'\n\n'+lien+'\n\nMerci !';
+  if(navigator.share){
+    navigator.share({title:'FormCom Level Up',text:msg}).catch(function(){
+      window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+    });
+  } else {
+    window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  }
+}
+
+function abonnerMaintenant(){
+  window.open(getLienAbo(), '_blank');
+}
+
+function fermerZettle(){
+  var el = document.getElementById('zettleOverlay');
+  if(el) el.remove();
+}
+
+function payerZettle(){
+  var m = txMontantPonctuel.toFixed(2);
+  var o = document.createElement('div');
+  o.id  = 'zettleOverlay';
+  o.style.cssText = 'position:fixed;inset:0;background:rgba(6,11,24,.97);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center';
+  o.innerHTML = '<div style="font-size:12px;font-family:Exo 2,sans-serif;font-weight:700;color:#8892A4;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">Encaisser sur Zettle</div>'
+    +'<div style="font-family:Exo 2,sans-serif;font-size:72px;font-weight:900;color:#F5A623;margin-bottom:8px">'+m+'&#8364;</div>'
+    +'<div style="font-size:13px;color:#8892A4;margin-bottom:32px">Tapez ce montant sur le terminal</div>'
+    +'<button onclick="fermerZettle()" style="padding:14px 28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#F0F4FF;border-radius:12px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:700;cursor:pointer">&#8592; Retour</button>';
+  document.body.appendChild(o);
+}
 
 function selectBaremeTx(el, nbArt, xp){
   // Désélectionner tous
@@ -2542,15 +2757,18 @@ function selectBaremeTx(el, nbArt, xp){
   el.classList.add('sel');
   txNbArtSelectionne = nbArt;
   txXpArt = xp;
-  // Mettre à jour le champ custom
+  txMontantPonctuel = nbArt * 10;
   document.getElementById('nbArtVal').value = nbArt;
   updateTxXpTotal();
+  majBoutonsPaiement();
   updateArtPtsDisplay();
 }
 
 function setNbArt(val){
   val = parseInt(val) || 0;
   txNbArtSelectionne = val;
+  txMontantPonctuel = val * 10;
+  majBoutonsPaiement();
   // Désélectionner le tableau si valeur custom
   var rows = document.querySelectorAll('.tx-bareme-row');
   rows.forEach(function(r){ r.classList.remove('sel'); });
@@ -2578,6 +2796,8 @@ function updateArtPtsDisplay(){
 }
 
 function selMensuel(el, montant){
+  txModeAbo = montant;
+  majBoutonsPaiement();
   var btns = document.querySelectorAll('.tx-amount-btn');
   btns.forEach(function(b){ b.classList.remove('tx-sel'); });
   el.classList.add('tx-sel');
@@ -2673,7 +2893,7 @@ function validerNewTx(){
   // Synchroniser avec le barème cliquable
   if(txNbArtSelectionne > 0) newTxNbArt = txNbArtSelectionne;
   if(newTxNbArt === 0 && newTxMensuel === 0){ alert('Sélectionne au moins 1 article ou une participation mensuelle.'); return; }
-  if(newTxPayModes.length === 0){ alert('Sélectionnez au moins un mode de paiement.'); return; }
+  if(newTxPayModes.length === 0){ newTxPayModes.push('Paiement'); }
   if(!document.getElementById('txAttestation').checked){ alert('Confirmez l\'attestation pour continuer.'); return; }
 
   var telEl   = document.getElementById('txClientTel');
