@@ -162,7 +162,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     <button onclick="switchAdminTab('talents')" id="hudTalents" class="hud-btn c-teal">🌿 Talents</button>
     <button onclick="switchAdminTab('emargement')" id="hudEmargement" class="hud-btn c-cyan">📋 Émargement</button>
     <button onclick="switchAdminTab('messages')" id="hudMessages" class="hud-btn c-gold">📢 Messages</button>
-    <a onclick="ouvrirNouvelApprenant();return false;" href="#" class="hud-btn c-green">＋ Nouvel apprenant</a>
+    <button onclick="switchAdminTab('nouveauApprenant')" id="hudNouveauApprenant" class="hud-btn c-green">＋ Nouvel apprenant</button>
     <div style="position:relative;margin-left:auto">
       <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 13px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
@@ -283,6 +283,60 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     <!-- Détail apprenant -->
     <div id="emarTable" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;padding:12px;display:none">
       <div class="admin-loading">Sélectionnez un apprenant</div>
+    </div>
+  </div>
+
+  <!-- SECTION NOUVEL APPRENANT -->
+  <div id="sectionNouveauApprenant" style="display:none;padding-top:16px;margin-bottom:60px">
+    <div style="background:linear-gradient(135deg,#0A1628,#0D1F4A);border:1px solid rgba(41,121,255,.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px">
+      <div style="font-size:40px;margin-bottom:8px">⚡</div>
+      <div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Recruter un apprenant</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif">Un nouvel aventurier rejoint la guilde</div>
+    </div>
+    <div id="naFormWrap">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">
+        <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">🎖️ Identité du recrue</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-size:11px;color:#60A5FA;font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Prénom *</div>
+            <input id="naPrenom" type="text" placeholder="Rahma" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none" onfocus="this.style.borderColor='#2979FF'" onblur="this.style.borderColor='rgba(41,121,255,.2)'">
+          </div>
+          <div>
+            <div style="font-size:11px;color:#60A5FA;font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Nom *</div>
+            <input id="naNom" type="text" placeholder="Dupont" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none" onfocus="this.style.borderColor='#2979FF'" onblur="this.style.borderColor='rgba(41,121,255,.2)'">
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">📱 Téléphone</div>
+          <input id="naTel" type="tel" placeholder="06 00 00 00 00" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">✉️ Email</div>
+          <input id="naEmail" type="email" placeholder="prenom@email.com" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">📍 Ville / Adresse</div>
+          <input id="naAdresse" type="text" placeholder="Paris, 75001" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <button onclick="creerNouvelApprenant()" id="naBtnCreer" style="width:100%;padding:15px;background:linear-gradient(135deg,rgba(0,255,135,.25),rgba(0,255,135,.08));border:2px solid #00FF87;color:#00FF87;border-radius:12px;font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;cursor:pointer;letter-spacing:.5px">⚡ CRÉER LA FICHE APPRENANT</button>
+      </div>
+    </div>
+    <div id="naResultat" style="display:none;background:linear-gradient(135deg,#0D1B6E,#1B2B8F);border:1px solid rgba(41,121,255,.3);border-radius:16px;padding:24px;text-align:center">
+      <div style="font-size:48px;margin-bottom:10px">🎮</div>
+      <div style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px" id="naResultatNom">—</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px" id="naResultatSubtitle">—</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+        <div style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:12px;padding:14px">
+          <div style="font-size:10px;color:rgba(96,165,250,.7);font-family:Exo 2,sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">ID</div>
+          <div style="font-family:monospace;font-size:16px;font-weight:700;color:#60A5FA" id="naResultatIdVal">—</div>
+        </div>
+        <div style="background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:12px;padding:14px">
+          <div style="font-size:10px;color:rgba(245,166,35,.7);font-family:Exo 2,sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">PIN</div>
+          <div style="font-family:Exo 2,sans-serif;font-size:24px;font-weight:900;color:#F5A623" id="naResultatPin">—</div>
+        </div>
+      </div>
+      <button onclick="envoyerLiensNouvelApprenant()" style="width:100%;padding:14px;background:linear-gradient(135deg,#1B2B8F,#2979FF);color:#fff;border:none;border-radius:12px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px">📤 Envoyer les liens à l'apprenant</button>
+      <button onclick="reinitialiserFormulaire()" style="width:100%;padding:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">＋ Recruter un autre apprenant</button>
     </div>
   </div>
 
@@ -1008,11 +1062,15 @@ function loadResponsables(){
 /* ===== FICHE RP ===== */
 function ouvrirNouvelApprenant(){
   reinitialiserFormulaire();
+  var nav = document.getElementById('shellNav');
+  if(nav) nav.style.display = 'none';
   document.getElementById('nouveauApprenantPanel').style.display = 'block';
 }
 
 function fermerNouvelApprenant(){
   document.getElementById('nouveauApprenantPanel').style.display = 'none';
+  var nav = document.getElementById('shellNav');
+  if(nav) nav.style.display = '';
 }
 
 var _naData = null;
@@ -1838,10 +1896,10 @@ function voirTousLesPins(){
 
 var _talentsData = [];
 var _talentsFiltreActif = 'tous';
-var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages'};
+var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages',nouveauApprenant:'hudNouveauApprenant'};
 
 function switchAdminTab(tab){
-  var tabs = ['responsables','apprenants','talents','emargement','messages'];
+  var tabs = ['responsables','apprenants','talents','emargement','messages','nouveauApprenant'];
   tabs.forEach(function(t){
     var sec = document.getElementById('section'+t.charAt(0).toUpperCase()+t.slice(1));
     var hud = document.getElementById(_hudMap[t]);
@@ -1862,6 +1920,7 @@ function switchAdminTab(tab){
     if(btnTous) btnTous.classList.add('active');
     _msgDest = 'TOUS';
   }
+  if(tab === 'nouveauApprenant') reinitialiserFormulaire();
 }
 
 /* ========== MESSAGERIE ========== */
