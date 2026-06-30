@@ -533,6 +533,7 @@ function renderTableImmediat(){
       +'<div style="flex:1;min-width:0;cursor:pointer" onclick="ouvrirFicheApprenant(\''+a.id+'\')">'
         +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+(isFond?' &#x1F451;':'')+'</div>'
         +'<div id="xp_'+a.id+'" style="font-size:12px;color:#8892A4;margin-top:2px">—</div>'
+        +'<div style="font-size:10px;color:rgba(255,215,0,.6);font-family:Exo 2,sans-serif;margin-top:2px;font-weight:700">🔑 '+(a.pin||'—')+'</div>'
       +'</div>'
       +'<div id="statut_'+a.id+'" onclick="ouvrirFicheApprenant(\''+a.id+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(136,146,164,.1);color:#8892A4;white-space:nowrap;flex-shrink:0;cursor:pointer">—</div>'
       +'<button onclick="event.stopPropagation();envoyerMessageIndividuel(\''+a.id+'\',\''+a.prenom+' '+a.nom+'\')" title="Envoyer un message" style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer;flex-shrink:0;transition:all .15s" onmouseover="this.style.background=\'rgba(245,166,35,.2)\'" onmouseout="this.style.background=\'rgba(245,166,35,.08)\'">💬</button>'
