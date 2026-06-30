@@ -219,72 +219,6 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <div id="adminListWrap"></div>
   </div>
 
-  <!-- FICHE DÉTAIL APPRENANT — panneau plein écran -->
-  <div id="ficheApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
-    <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
-      <button onclick="fermerFicheApprenant()" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
-      <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">Fiche apprenant</div>
-    </div>
-    <div id="ficheApprenantContent" style="padding:16px;padding-bottom:60px"></div>
-  </div>
-
-  <!-- PANEL FICHE RP -->
-  <div id="ficheRPPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
-    <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
-      <button onclick="document.getElementById('ficheRPPanel').style.display='none'" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
-      <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#A78BFA">⚔️ Fiche Responsable</div>
-    </div>
-    <div id="ficheRPContent" style="padding:16px;padding-bottom:60px"></div>
-  </div>
-
-  <!-- PANEL NOUVEL APPRENANT -->
-  <div id="nouveauApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9998;overflow-y:auto">
-    <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
-      <button onclick="fermerNouvelApprenant()" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
-      <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#00FF87">＋ Nouvel apprenant</div>
-    </div>
-    <div style="padding:16px;max-width:480px;margin:0 auto">
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">
-        <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Informations</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-          <div>
-            <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Prénom *</div>
-            <input id="naPrenom" type="text" placeholder="Rahma" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-          </div>
-          <div>
-            <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Nom *</div>
-            <input id="naNom" type="text" placeholder="Dupont" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-          </div>
-        </div>
-        <div style="margin-bottom:10px">
-          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Téléphone</div>
-          <input id="naTel" type="tel" placeholder="06 00 00 00 00" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-        </div>
-        <div style="margin-bottom:10px">
-          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Email</div>
-          <input id="naEmail" type="email" placeholder="prenom@email.com" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-        </div>
-        <div style="margin-bottom:14px">
-          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Adresse</div>
-          <input id="naAdresse" type="text" placeholder="Ville ou adresse" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-        </div>
-        <button onclick="creerNouvelApprenant()" id="naBtnCreer" style="width:100%;padding:14px;background:linear-gradient(135deg,rgba(0,255,135,.2),rgba(0,255,135,.08));border:1.5px solid #00FF87;color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer">⚡ Créer la fiche apprenant</button>
-      </div>
-      <!-- RÉSULTAT -->
-      <div id="naResultat" style="display:none;background:linear-gradient(135deg,#0D1B6E,#1B2B8F);border:1px solid rgba(41,121,255,.3);border-radius:14px;padding:20px;text-align:center">
-        <div style="font-size:32px;margin-bottom:8px">🎮</div>
-        <div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:4px" id="naResultatNom">—</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px" id="naResultatId">—</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
-          <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px"><div style="font-size:10px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:4px">ID</div><div style="font-family:monospace;font-size:14px;font-weight:700;color:#60A5FA" id="naResultatIdVal">—</div></div>
-          <div style="background:rgba(255,255,255,.08);border-radius:10px;padding:12px"><div style="font-size:10px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:4px">PIN</div><div style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#F5A623" id="naResultatPin">—</div></div>
-        </div>
-        <button onclick="envoyerLiensNouvelApprenant()" style="width:100%;padding:13px;background:linear-gradient(135deg,#1B2B8F,#2979FF);color:#fff;border:none;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px">📤 Envoyer les liens à l'apprenant</button>
-        <button onclick="reinitialiserFormulaire()" style="width:100%;padding:11px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">＋ Créer un autre apprenant</button>
-      </div>
-    </div>
-  </div>
-
   <!-- SECTION RESPONSABLES -->
   <div id="sectionResponsables" style="display:none;padding-top:16px;margin-bottom:40px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
@@ -1098,14 +1032,11 @@ function creerNouvelApprenant(){
       if(d.id){
         _naData = d;
         document.getElementById('naResultatNom').textContent = d.prenom+' '+d.nom;
-        document.getElementById('naResultatId').textContent = d.id+' · Niv.0 · Débutant';
+        document.getElementById('naResultatSubtitle').textContent = d.id+' · Niv.0 · Débutant · Bienvenue !';
         document.getElementById('naResultatIdVal').textContent = d.id;
         document.getElementById('naResultatPin').textContent = d.pin||'????';
         document.getElementById('naResultat').style.display = 'block';
-        document.querySelector('[id=naPrenom]').closest('.bg-card, div').style.display = 'none';
-        // Cacher le formulaire
-        var form = document.getElementById('naBtnCreer').closest('div').parentNode;
-        if(form) form.style.display = 'none';
+        document.getElementById('naFormWrap').style.display = 'none';
         chargerListeApprenants(function(){ loadAdminDashboard(); });
       } else {
         alert('Erreur : '+(d.message||'impossible de créer l\'apprenant'));
@@ -1146,14 +1077,9 @@ function reinitialiserFormulaire(){
     var el = document.getElementById(id); if(el) el.value='';
   });
   var btn = document.getElementById('naBtnCreer');
-  if(btn){ btn.disabled=false; btn.textContent='⚡ Créer la fiche apprenant'; }
+  if(btn){ btn.disabled=false; btn.textContent='⚡ CRÉER LA FICHE APPRENANT'; }
   var res = document.getElementById('naResultat'); if(res) res.style.display='none';
-  // Réafficher le formulaire
-  var panel = document.getElementById('nouveauApprenantPanel');
-  if(panel){
-    var cards = panel.querySelectorAll('[style*="background:var(--card)"]');
-    cards.forEach(function(c){ c.style.display='block'; });
-  }
+  var form = document.getElementById('naFormWrap'); if(form) form.style.display='block';
 }
 
 function ouvrirFicheRP(id, prenom, nom, pin, statut){
@@ -2392,5 +2318,96 @@ initShell();
 </div>
  <script>
   document.getElementById("adminWrap").style.display = "block";
-</script></body>
+</script>
+
+<!-- PANELS HORS adminWrap — z-index élevé, couvrent tout y compris le HUD -->
+
+<!-- FICHE APPRENANT -->
+<div id="ficheApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;overflow-y:auto">
+  <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
+    <button onclick="fermerFicheApprenant()" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+    <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:var(--text)">Fiche apprenant</div>
+  </div>
+  <div id="ficheApprenantContent" style="padding:16px;padding-bottom:60px"></div>
+</div>
+
+<!-- FICHE RP -->
+<div id="ficheRPPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;overflow-y:auto">
+  <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
+    <button onclick="document.getElementById('ficheRPPanel').style.display='none'" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+    <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#A78BFA">⚔️ Fiche Responsable</div>
+  </div>
+  <div id="ficheRPContent" style="padding:16px;padding-bottom:60px"></div>
+</div>
+
+<!-- NOUVEL APPRENANT -->
+<div id="nouveauApprenantPanel" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;overflow-y:auto">
+  <div style="position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:1">
+    <button onclick="fermerNouvelApprenant()" style="background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer;padding:4px">&#x2190;</button>
+    <div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:800;color:#00FF87">＋ Nouvel apprenant</div>
+  </div>
+  <div style="padding:16px;max-width:480px;margin:0 auto;padding-bottom:60px">
+
+    <!-- HERO -->
+    <div style="background:linear-gradient(135deg,#0A1628,#0D1F4A);border:1px solid rgba(41,121,255,.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px">
+      <div style="font-size:40px;margin-bottom:8px">⚡</div>
+      <div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Recruter un apprenant</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);font-family:Exo 2,sans-serif">Un nouvel aventurier rejoint la guilde</div>
+    </div>
+
+    <!-- FORMULAIRE -->
+    <div id="naFormWrap">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px">
+        <div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px">🎖️ Identité du recrue</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div style="font-size:11px;color:#60A5FA;font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Prénom *</div>
+            <input id="naPrenom" type="text" placeholder="Rahma" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#2979FF'" onblur="this.style.borderColor='rgba(41,121,255,.2)'">
+          </div>
+          <div>
+            <div style="font-size:11px;color:#60A5FA;font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">Nom *</div>
+            <input id="naNom" type="text" placeholder="Dupont" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='#2979FF'" onblur="this.style.borderColor='rgba(41,121,255,.2)'">
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">📱 Téléphone</div>
+          <input id="naTel" type="tel" placeholder="06 00 00 00 00" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">✉️ Email</div>
+          <input id="naEmail" type="email" placeholder="prenom@email.com" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700;margin-bottom:6px">📍 Ville / Adresse</div>
+          <input id="naAdresse" type="text" placeholder="Paris, 75001" autocomplete="off" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <button onclick="creerNouvelApprenant()" id="naBtnCreer" style="width:100%;padding:15px;background:linear-gradient(135deg,rgba(0,255,135,.25),rgba(0,255,135,.08));border:2px solid #00FF87;color:#00FF87;border-radius:12px;font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;cursor:pointer;letter-spacing:.5px;transition:all .2s" onmouseover="this.style.background='rgba(0,255,135,.2)'" onmouseout="this.style.background='linear-gradient(135deg,rgba(0,255,135,.25),rgba(0,255,135,.08))'">⚡ CRÉER LA FICHE APPRENANT</button>
+      </div>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div id="naResultat" style="display:none">
+      <div style="background:linear-gradient(135deg,#0D1B6E,#1B2B8F);border:1px solid rgba(41,121,255,.3);border-radius:16px;padding:24px;text-align:center;margin-bottom:12px">
+        <div style="font-size:48px;margin-bottom:10px;animation:popIn .4s cubic-bezier(.175,.885,.32,1.275)">🎮</div>
+        <div style="font-family:Exo 2,sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px" id="naResultatNom">—</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px" id="naResultatSubtitle">Niv.0 · Débutant · Bienvenue !</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+          <div style="background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:12px;padding:14px">
+            <div style="font-size:10px;color:rgba(96,165,250,.7);font-family:Exo 2,sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">ID</div>
+            <div style="font-family:monospace;font-size:16px;font-weight:700;color:#60A5FA" id="naResultatIdVal">—</div>
+          </div>
+          <div style="background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);border-radius:12px;padding:14px">
+            <div style="font-size:10px;color:rgba(245,166,35,.7);font-family:Exo 2,sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">PIN</div>
+            <div style="font-family:Exo 2,sans-serif;font-size:24px;font-weight:900;color:#F5A623" id="naResultatPin">—</div>
+          </div>
+        </div>
+        <button onclick="envoyerLiensNouvelApprenant()" style="width:100%;padding:14px;background:linear-gradient(135deg,#1B2B8F,#2979FF);color:#fff;border:none;border-radius:12px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px">📤 Envoyer les liens à l'apprenant</button>
+        <button onclick="reinitialiserFormulaire()" style="width:100%;padding:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">＋ Recruter un autre apprenant</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
 </html>
