@@ -1699,7 +1699,7 @@ function setMsgDest(dest){
     }).join('');
   } else {
     list.innerHTML = '<div class="admin-loading">Chargement RP...</div>';
-    fetch(APPS_URL+'?action=listResponsables&_t='+Date.now())
+    fetch(APPS_URL+'?action=listRP&admin=FC2026ADMIN&_t='+Date.now())
       .then(function(r){ return r.json(); })
       .then(function(d){
         var rps = d.responsables || [];
@@ -1747,25 +1747,30 @@ function setMsgRapide(txt){
 function envoyerMessage(){
   var txt = (document.getElementById('msgTexte').value||'').trim();
   if(!txt){ alert('Écris un message avant d\'envoyer.'); return; }
-  if(_msgDest === 'EQUIPE' || _msgDest === 'UN_APPRENANT' || _msgDest === 'UN_RP'){
+  var destinataires = _msgDest;
+  if(_msgDest === 'UN_APPRENANT' || _msgDest === 'UN_RP'){
     if(!_msgDestId){ alert('Sélectionne un destinataire dans la liste.'); return; }
+    destinataires = _msgDestId; // ex: ID-0001 ou RP-0001
+  } else if(_msgDest === 'EQUIPE'){
+    if(!_msgDestId){ alert('Sélectionne un RP dans la liste.'); return; }
+    destinataires = 'MON_EQUIPE_' + _msgDestId; // ex: MON_EQUIPE_RP-0001
   }
   var btn = document.querySelector('[onclick="envoyerMessage()"]');
   if(btn){ btn.disabled = true; btn.textContent = '⏳ Envoi...'; }
   fetch(APPS_URL, {
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'envoyerMessage', destinataire:_msgDest, destinataireId:_msgDestId, message:txt, admin:'FC2026ADMIN'})
+    body: JSON.stringify({action:'envoyerMessage', destinataires:destinataires, message:txt, admin:'FC2026ADMIN'})
   })
   .then(function(r){ return r.json(); })
   .then(function(d){
-    if(d.success){
+    if(d.status === 'ok'){
       document.getElementById('msgTexte').value = '';
       clearMsgDestSelected();
       if(btn){ btn.textContent = '✅ Envoyé !'; setTimeout(function(){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }, 2000); }
       chargerHistoriqueMessages();
     } else {
-      alert('Erreur : '+(d.error||'inconnue'));
+      alert('Erreur : '+(d.message||'inconnue'));
       if(btn){ btn.textContent = '📤 ENVOYER'; btn.disabled = false; }
     }
   })
@@ -1779,15 +1784,20 @@ function chargerHistoriqueMessages(){
   var wrap = document.getElementById('msgHistorique');
   if(!wrap) return;
   wrap.innerHTML = '<div class="admin-loading">Chargement...</div>';
-  fetch(APPS_URL+'?action=getHistoriqueMessages&_t='+Date.now())
+  fetch(APPS_URL+'?action=getHistoriqueMessages&admin=FC2026ADMIN&_t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
       var msgs = d.messages || [];
       if(!msgs.length){ wrap.innerHTML = '<div class="admin-loading">Aucun message envoyé.</div>'; return; }
       wrap.innerHTML = msgs.map(function(m){
+        var destLabel = m.destinataires || m.destinataire || '—';
+        if(destLabel === 'TOUS') destLabel = '📢 Tout le monde';
+        else if(destLabel === 'RP') destLabel = '⚔️ Tous les RP';
+        else if(destLabel === 'APPRENANTS') destLabel = '🎮 Tous les apprenants';
+        else if(destLabel.indexOf('MON_EQUIPE_') === 0) destLabel = '🛡️ Équipe de ' + destLabel.replace('MON_EQUIPE_','');
         return '<div class="msg-histo-item">'
-          +'<div class="msg-histo-meta">'+m.date+' · '+m.destinataire+'</div>'
-          +'<div style="color:var(--text)">'+m.message+'</div>'
+          +'<div class="msg-histo-meta">'+m.heure+' · '+destLabel+'</div>'
+          +'<div style="color:var(--text)">'+escHtml(m.message)+'</div>'
           +'</div>';
       }).join('');
     })
