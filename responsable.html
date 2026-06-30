@@ -245,6 +245,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="tab" onclick="switchTab(2)">🧴 Parfum</div>
     <div class="tab" onclick="switchTab(3)">📝 Notes</div>
     <div class="tab" onclick="switchTab(4)">📢 Actions</div>
+    <div class="tab" onclick="switchTab(5)">🧾 Bons</div>
   </div>
 
   <!-- TAB 0 : MON ÉQUIPE -->
@@ -306,6 +307,25 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <div style="font-size:12px;color:var(--muted)">Connecté en tant que</div>
       <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:#A78BFA;margin-top:4px" id="rpInfoDisplay">—</div>
       <button onclick="deconnexion()" style="margin-top:10px;width:100%;padding:10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.2);color:var(--red);border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- TAB 5 : BONS DE VENTE -->
+  <div class="section" id="tab5">
+    <div class="sec-title">🧾 Bons de vente — Mon équipe</div>
+
+    <!-- Recherche par numéro -->
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input id="bonSearchRP" type="text" placeholder="Rechercher par n° de bon..." oninput="filtrerBons()" style="flex:1;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none" autocomplete="off">
+      <button onclick="chargerBons()" style="padding:10px 14px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer">↻</button>
+    </div>
+
+    <!-- Stats rapides -->
+    <div id="bonsStats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px"></div>
+
+    <!-- Liste des bons -->
+    <div id="bonsList" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Appuyez sur ↻ pour charger</div>
     </div>
   </div>
 
@@ -416,6 +436,98 @@ function switchTab(n){
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', i===n); });
   document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
   if(n===3) chargerNotes();
+  if(n===5) chargerBons();
+}
+
+// ─── BONS DE VENTE ────────────────────────────────────────────────────
+var _tousLesBons = [];
+
+function chargerBons(){
+  var list = document.getElementById('bonsList');
+  var stats = document.getElementById('bonsStats');
+  if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Chargement...</div>';
+
+  // Récupérer les IDs de l'équipe puis les transactions
+  var idsEquipe = monEquipe.map(function(a){ return a.apprenant_id; });
+  if(!idsEquipe.length){
+    if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans votre équipe.</div>';
+    return;
+  }
+
+  fetch(APPS_URL+'?action=listTransactions&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var toutes = d.transactions || [];
+      // Filtrer pour l'équipe du RP
+      _tousLesBons = toutes.filter(function(t){
+        return idsEquipe.indexOf(t.apprenant_id) > -1;
+      });
+      afficherBons(_tousLesBons);
+    })
+    .catch(function(){
+      if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Erreur de chargement.</div>';
+    });
+}
+
+function afficherBons(bons){
+  var list  = document.getElementById('bonsList');
+  var stats = document.getElementById('bonsStats');
+  if(!list) return;
+
+  // Stats rapides
+  var totalArt = 0, totalMont = 0, totalAbos = 0;
+  bons.forEach(function(b){
+    totalArt  += b.nb_articles || 0;
+    totalMont += b.montant || 0;
+    if(b.participation_mensuelle > 0) totalAbos++;
+  });
+  if(stats) stats.innerHTML = [
+    ['🧾', bons.length, 'bons'],
+    ['📦', totalArt, 'articles'],
+    ['💶', totalMont.toFixed(0)+'€', 'CA']
+  ].map(function(s){
+    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">'
+      +'<div style="font-size:18px">'+s[0]+'</div>'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;color:#F5A623">'+s[1]+'</div>'
+      +'<div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700">'+s[2]+'</div>'
+      +'</div>';
+  }).join('');
+
+  if(!bons.length){
+    list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun bon pour votre équipe.</div>';
+    return;
+  }
+
+  list.innerHTML = bons.map(function(b){
+    var statutColor = b.statut === 'VALIDÉ' ? '#00FF87' : b.statut === 'EXPIRÉ' ? '#E8192C' : '#F5A623';
+    var isAbo = b.participation_mensuelle > 0;
+    return '<div style="padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px">'
+      +'<div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);display:flex;align-items:center;justify-content:center;font-size:16px">'+(isAbo?'🔄':'📦')+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'
+          +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+b.apprenant_prenom+'</span>'
+          +'<span style="font-family:monospace;font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px">'+b.code+'</span>'
+          +'<span style="font-size:10px;font-weight:700;color:'+statutColor+';font-family:Exo 2,sans-serif">'+b.statut+'</span>'
+        +'</div>'
+        +'<div style="font-size:12px;color:var(--muted);margin-top:3px">'
+          +(isAbo ? '🔄 Abo '+b.participation_mensuelle+'€/mois' : '📦 '+b.nb_articles+' art. · '+b.montant+'€')
+          +' · '+(b.date_formulaire||'—')
+        +'</div>'
+        +(b.client_prenom ? '<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px">Client : '+b.client_prenom+' '+b.client_nom+'</div>' : '')
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function filtrerBons(){
+  var q = (document.getElementById('bonSearchRP').value||'').toLowerCase().trim();
+  if(!q){ afficherBons(_tousLesBons); return; }
+  var filtered = _tousLesBons.filter(function(b){
+    return b.code.toLowerCase().indexOf(q) > -1
+      || b.apprenant_prenom.toLowerCase().indexOf(q) > -1
+      || (b.client_prenom||'').toLowerCase().indexOf(q) > -1;
+  });
+  afficherBons(filtered);
 }
 
 // ─── ÉQUIPE ──────────────────────────────────────────────────────────
