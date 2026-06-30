@@ -176,6 +176,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <div id="alertBanner" style="display:none;background:rgba(232,25,44,.08);border-bottom:1px solid rgba(232,25,44,.2);padding:8px 16px;display:flex;align-items:center;gap:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#FF6B6B">
     <span style="font-size:14px">&#9888;</span>
     <span id="alertText">Chargement alertes...</span>
+    <button id="sosResoluBtn" onclick="resoudreSosAdmin()" style="display:none;margin-left:auto;padding:5px 14px;background:#E8192C;color:#fff;border:none;border-radius:6px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">✓ Résolu</button>
   </div>
 
   <!-- POPUP SOS ADMIN -->
@@ -1788,20 +1789,20 @@ function verifierSOSAdmin(){
   fetch(APPS_URL+'?action=getSOSActifs&admin=FC2026ADMIN&_t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
-      var banner = document.getElementById('alertBanner');
-      var txt    = document.getElementById('alertText');
-      var popup  = document.getElementById('sosPopupAdmin');
+      var banner    = document.getElementById('alertBanner');
+      var txt       = document.getElementById('alertText');
+      var popup     = document.getElementById('sosPopupAdmin');
+      var resoluBtn = document.getElementById('sosResoluBtn');
       if(d.sos && d.sos.length > 0){
         var s = d.sos[0];
         var isNew = _sosAdminActifId !== s.sos_id;
         _sosAdminActifId = s.sos_id;
-        // Bandeau
         if(banner && txt){
           banner.style.display = 'flex';
           banner.style.animation = 'sosFlash 1s infinite';
           txt.textContent = '🆘 SOS — '+s.apprenant_prenom+' a besoin d\'aide ! — '+s.heure;
         }
-        // Popup uniquement si nouveau SOS
+        if(resoluBtn) resoluBtn.style.display = 'block';
         if(isNew && popup){
           document.getElementById('sosAdmNom').textContent = s.apprenant_prenom;
           document.getElementById('sosAdmHeure').textContent = s.heure;
@@ -1812,7 +1813,7 @@ function verifierSOSAdmin(){
       } else {
         _sosAdminActifId = null;
         if(popup) popup.classList.remove('show');
-        // Remettre le bandeau normal
+        if(resoluBtn) resoluBtn.style.display = 'none';
         verifierAlertes();
       }
     }).catch(function(){});
@@ -1825,6 +1826,8 @@ function resoudreSosAdmin(){
     .then(function(){
       _sosAdminActifId = null;
       document.getElementById('sosPopupAdmin').classList.remove('show');
+      var resoluBtn = document.getElementById('sosResoluBtn');
+      if(resoluBtn) resoluBtn.style.display = 'none';
       verifierAlertes();
     }).catch(function(){});
 }

@@ -2671,24 +2671,38 @@ function envoyerSOS(){
 
 function envoyerMsgRP(){
   var txt = (document.getElementById('msgRPTexte').value||'').trim();
-  if(!txt){ return; }
+  if(!txt){ 
+    document.getElementById('msgRPTexte').style.borderColor = '#E8192C';
+    setTimeout(function(){ document.getElementById('msgRPTexte').style.borderColor = 'rgba(255,255,255,.1)'; }, 1500);
+    return; 
+  }
   var btn = document.getElementById('msgRPBtn');
-  if(btn){ btn.disabled=true; btn.textContent='⏳ Envoi...'; }
-  // Trouver le RP de l'apprenant via getEquipe
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Envoi en cours...'; }
   fetch(APPS_URL+'?action=getEquipe&apprenant_id='+encodeURIComponent(AP.id)+'&_t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
       var rpId = (d.rp_id || d.responsable_id || '');
-      var dest = rpId || 'RP'; // fallback : tous les RP
+      var dest = rpId || 'RP';
       return fetch(APPS_URL+'?action=envoyerMessage&destinataires='+encodeURIComponent(dest)+'&message='+encodeURIComponent('💬 '+AP.prenom+' : '+txt)+'&expediteur_id='+encodeURIComponent(AP.id)+'&_t='+Date.now());
     })
     .then(function(r){ return r.json(); })
     .then(function(){
       document.getElementById('msgRPTexte').value='';
-      if(btn){ btn.textContent='✅ Envoyé !'; setTimeout(function(){ btn.textContent='📤 Envoyer à mon chef'; btn.disabled=false; },2000); }
+      // Feedback visuel clair
+      var bloc = document.getElementById('msgRPBlock');
+      if(bloc){
+        var conf = document.createElement('div');
+        conf.style.cssText = 'background:rgba(41,121,255,.15);border:1px solid rgba(41,121,255,.4);border-radius:8px;padding:10px;text-align:center;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;color:#60A5FA;margin-top:8px';
+        conf.textContent = '✅ Message envoyé à ton chef d\'équipe !';
+        bloc.appendChild(conf);
+        setTimeout(function(){ if(conf.parentNode) conf.parentNode.removeChild(conf); },3000);
+      }
+      if(btn){ btn.textContent='📤 Envoyer à mon chef'; btn.disabled=false; }
     })
     .catch(function(){
-      if(btn){ btn.textContent='📤 Envoyer à mon chef'; btn.disabled=false; }
+      if(btn){ btn.textContent='❌ Erreur — réessaie'; btn.disabled=false; 
+        setTimeout(function(){ btn.textContent='📤 Envoyer à mon chef'; },2000);
+      }
     });
 }
 
