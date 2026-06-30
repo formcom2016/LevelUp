@@ -215,6 +215,13 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 .msg-from-ap{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(167,139,250,.7);margin-bottom:8px;font-family:'Exo 2',sans-serif}
 .msg-text-ap{font-family:'Exo 2',sans-serif;font-size:16px;font-weight:800;color:#fff;line-height:1.4;margin-bottom:20px}
 .msg-lu-ap{width:100%;padding:13px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
+/* CLOCHE NOTIFICATION */
+#msgCloche{position:fixed;top:14px;right:16px;z-index:9999;width:44px;height:44px;border-radius:50%;background:rgba(14,23,48,.9);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,.1);display:none;align-items:center;justify-content:center;font-size:20px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);transition:transform .2s}
+#msgCloche.visible{display:flex}
+#msgCloche.ringing{animation:clocheRing .5s ease-in-out infinite alternate}
+@keyframes clocheRing{0%{transform:rotate(-12deg);box-shadow:0 0 0 0 rgba(232,25,44,.7)}100%{transform:rotate(12deg);box-shadow:0 0 0 8px rgba(232,25,44,0)}}
+#msgBadge{position:absolute;top:-3px;right:-3px;min-width:16px;height:16px;border-radius:99px;background:#E8192C;color:#fff;font-size:9px;font-weight:800;font-family:'Exo 2',sans-serif;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid #060B18;animation:badgePulse 1.2s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 .bourse-locked{background:var(--card);border:1.5px dashed var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center;transition:background .3s}
 .bourse-active{background:linear-gradient(135deg,rgba(27,43,143,0.8),rgba(41,121,255,0.5));border:1.5px solid rgba(41,121,255,.5);border-radius:var(--r);padding:16px;margin-bottom:12px;text-align:center;box-shadow:0 0 20px rgba(41,121,255,.2)}
 .bourse-emoji{font-size:28px;margin-bottom:6px}
@@ -531,6 +538,12 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
     <button id="sosBtn" onclick="envoyerSOS()" style="width:100%;padding:10px;background:rgba(232,25,44,.08);border:1.5px solid rgba(232,25,44,.2);color:rgba(232,25,44,.6);border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
       🆘 Signal d'urgence — Appeler mon chef d'équipe
     </button>
+    <!-- MESSAGE VERS RP -->
+    <div id="msgRPBlock" style="margin-top:8px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.15);border-radius:var(--r);padding:10px 12px">
+      <div style="font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(96,165,250,.6);margin-bottom:8px">💬 Message à mon chef d'équipe</div>
+      <textarea id="msgRPTexte" rows="2" placeholder="Écris ton message..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#F0F4FF;font-family:'Inter',sans-serif;font-size:13px;padding:8px 10px;resize:none;outline:none;margin-bottom:8px"></textarea>
+      <button onclick="envoyerMsgRP()" id="msgRPBtn" style="width:100%;padding:9px;background:rgba(41,121,255,.15);border:1px solid rgba(41,121,255,.3);color:#60A5FA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer">📤 Envoyer à mon chef</button>
+    </div>
   </div>
 
   <!-- CAGNOTTE SOLIDAIRE -->
@@ -632,6 +645,11 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
       <div class="msg-text-ap" id="msgTextAp"></div>
       <button class="msg-lu-ap" id="msgLuBtn" style="opacity:.4;pointer-events:none" onclick="marquerMessageLuAp()">✓ Message lu</button>
     </div>
+  </div>
+
+  <!-- CLOCHE NOTIFICATIONS -->
+  <div id="msgCloche" onclick="ouvrirPopupMsg()">
+    🔔<div id="msgBadge">!</div>
   </div>
 
   <!-- QUÊTE DE FINANCEMENT — VERROUILLÉE -->
@@ -2598,23 +2616,38 @@ function verifierMessageAp(){
   fetch(APPS_URL+'?action=getMessage&id='+encodeURIComponent(AP.id)+'&type=apprenant')
     .then(function(r){ return r.json(); })
     .then(function(d){
+      var cloche = document.getElementById('msgCloche');
       if(d.messages && d.messages.length > 0){
         var msg = d.messages[0];
         _msgActuelId = msg.msg_id;
+        // Préparer le popup
         var fromEl = document.getElementById('msgFromAp');
         var textEl = document.getElementById('msgTextAp');
         var luBtn  = document.getElementById('msgLuBtn');
-        var popup  = document.getElementById('msgPopupAp');
-        if(fromEl) fromEl.textContent = msg.expediteur_type === 'ADMIN' ? 'Message Admin' : 'Message Chef équipe';
+        if(fromEl) fromEl.textContent = msg.expediteur_type === 'ADMIN' ? '📢 Message Admin' : '⚔️ Message Chef équipe';
         if(textEl) textEl.textContent = msg.message;
-        if(popup)  popup.classList.add('show');
-        // Activer le bouton après 2s
         if(luBtn){ luBtn.style.opacity='.4'; luBtn.style.pointerEvents='none';
           setTimeout(function(){ luBtn.style.opacity='1'; luBtn.style.pointerEvents='all'; luBtn.style.transition='opacity .3s'; }, 2000);
         }
+        // Montrer la cloche animée
+        if(cloche){ cloche.classList.add('visible','ringing'); }
+        // Vibrer
         try{ if(navigator.vibrate) navigator.vibrate([200,100,200,100,300]); }catch(e){}
+        // Ouvrir le popup après 1s pour laisser la cloche capter l'attention
+        setTimeout(function(){
+          var popup = document.getElementById('msgPopupAp');
+          if(popup) popup.classList.add('show');
+          if(cloche) cloche.classList.remove('ringing');
+        }, 1000);
+      } else {
+        if(cloche){ cloche.classList.remove('visible','ringing'); }
       }
     }).catch(function(){});
+}
+
+function ouvrirPopupMsg(){
+  var popup = document.getElementById('msgPopupAp');
+  if(popup) popup.classList.add('show');
 }
 
 function marquerMessageLuAp(){
@@ -2634,6 +2667,29 @@ function envoyerSOS(){
   fetch(APPS_URL+'?action=signalerSOS&apprenant_id='+encodeURIComponent(AP.id)+'&apprenant_prenom='+encodeURIComponent(AP.prenom)+'&rp_id=')
     .catch(function(){});
   try{ if(navigator.vibrate) navigator.vibrate([300,100,300]); }catch(e){}
+}
+
+function envoyerMsgRP(){
+  var txt = (document.getElementById('msgRPTexte').value||'').trim();
+  if(!txt){ return; }
+  var btn = document.getElementById('msgRPBtn');
+  if(btn){ btn.disabled=true; btn.textContent='⏳ Envoi...'; }
+  // Trouver le RP de l'apprenant via getEquipe
+  fetch(APPS_URL+'?action=getEquipe&apprenant_id='+encodeURIComponent(AP.id)+'&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var rpId = (d.rp_id || d.responsable_id || '');
+      var dest = rpId || 'RP'; // fallback : tous les RP
+      return fetch(APPS_URL+'?action=envoyerMessage&destinataires='+encodeURIComponent(dest)+'&message='+encodeURIComponent('💬 '+AP.prenom+' : '+txt)+'&expediteur_id='+encodeURIComponent(AP.id)+'&_t='+Date.now());
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){
+      document.getElementById('msgRPTexte').value='';
+      if(btn){ btn.textContent='✅ Envoyé !'; setTimeout(function(){ btn.textContent='📤 Envoyer à mon chef'; btn.disabled=false; },2000); }
+    })
+    .catch(function(){
+      if(btn){ btn.textContent='📤 Envoyer à mon chef'; btn.disabled=false; }
+    });
 }
 
 function ouvrirPasseport(){

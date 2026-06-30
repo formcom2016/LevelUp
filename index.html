@@ -123,6 +123,14 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 .msg-histo-item{padding:10px 12px;border-bottom:1px solid var(--border);font-family:Exo 2,sans-serif;font-size:12px}
 .msg-histo-item:last-child{border-bottom:none}
 .msg-histo-meta{font-size:10px;color:var(--muted);margin-bottom:3px}
+/* POPUP SOS ADMIN */
+#sosPopupAdmin{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:10001;align-items:center;justify-content:center;padding:20px}
+#sosPopupAdmin.show{display:flex}
+.sos-adm-box{background:linear-gradient(135deg,#2D0A0A,#4A0E0E);border:2px solid #E8192C;border-radius:20px;padding:28px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 0 60px rgba(232,25,44,.4);animation:sosPopIn .4s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes sosPopIn{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+.sos-adm-icon{font-size:56px;margin-bottom:12px;animation:sosPulse .6s ease-in-out infinite alternate}
+@keyframes sosPulse{0%{transform:scale(1)}100%{transform:scale(1.1)}}
+@keyframes sosFlash{0%,100%{opacity:1}50%{opacity:.5}}
 
 </style>
   <!-- MODE DEV : simulateur backend local. Supprimer en production. -->
@@ -168,6 +176,19 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
   <div id="alertBanner" style="display:none;background:rgba(232,25,44,.08);border-bottom:1px solid rgba(232,25,44,.2);padding:8px 16px;display:flex;align-items:center;gap:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;color:#FF6B6B">
     <span style="font-size:14px">&#9888;</span>
     <span id="alertText">Chargement alertes...</span>
+  </div>
+
+  <!-- POPUP SOS ADMIN -->
+  <div id="sosPopupAdmin">
+    <div class="sos-adm-box">
+      <div class="sos-adm-icon">🆘</div>
+      <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,107,107,.7);margin-bottom:8px">Signal d'urgence</div>
+      <div style="font-family:Exo 2,sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px" id="sosAdmNom">—</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:6px" id="sosAdmHeure">—</div>
+      <div style="font-size:12px;color:rgba(255,107,107,.7);margin-bottom:24px" id="sosAdmRP">—</div>
+      <button onclick="resoudreSosAdmin()" style="width:100%;padding:14px;background:#E8192C;color:#fff;border:none;border-radius:12px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:10px">✓ Marquer comme résolu</button>
+      <button onclick="document.getElementById('sosPopupAdmin').classList.remove('show')" style="width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">✕ Fermer (garder actif)</button>
+    </div>
   </div>
 
   <!-- BANDEAU CA / MRR -->
@@ -457,6 +478,8 @@ function initShell(){
       initAdminExtras();
     });
     setInterval(loadAdminDashboard, 25000);
+    verifierSOSAdmin();
+    setInterval(verifierSOSAdmin, 25000);
     return;
   }
 
@@ -1757,6 +1780,54 @@ function envoyerMessageIndividuel(id,nom){
 }
 
 function escHtml(s){ return (s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+
+/* ========== SOS ADMIN ========== */
+var _sosAdminActifId = null;
+
+function verifierSOSAdmin(){
+  fetch(APPS_URL+'?action=getSOSActifs&admin=FC2026ADMIN&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var banner = document.getElementById('alertBanner');
+      var txt    = document.getElementById('alertText');
+      var popup  = document.getElementById('sosPopupAdmin');
+      if(d.sos && d.sos.length > 0){
+        var s = d.sos[0];
+        var isNew = _sosAdminActifId !== s.sos_id;
+        _sosAdminActifId = s.sos_id;
+        // Bandeau
+        if(banner && txt){
+          banner.style.display = 'flex';
+          banner.style.animation = 'sosFlash 1s infinite';
+          txt.textContent = '🆘 SOS — '+s.apprenant_prenom+' a besoin d\'aide ! — '+s.heure;
+        }
+        // Popup uniquement si nouveau SOS
+        if(isNew && popup){
+          document.getElementById('sosAdmNom').textContent = s.apprenant_prenom;
+          document.getElementById('sosAdmHeure').textContent = s.heure;
+          document.getElementById('sosAdmRP').textContent = s.rp_id ? 'RP : '+s.rp_id : '';
+          popup.classList.add('show');
+          try{ if(navigator.vibrate) navigator.vibrate([300,100,300,100,500]); }catch(e){}
+        }
+      } else {
+        _sosAdminActifId = null;
+        if(popup) popup.classList.remove('show');
+        // Remettre le bandeau normal
+        verifierAlertes();
+      }
+    }).catch(function(){});
+}
+
+function resoudreSosAdmin(){
+  if(!_sosAdminActifId) return;
+  fetch(APPS_URL+'?action=resoudreSOS&sos_id='+encodeURIComponent(_sosAdminActifId)+'&admin=FC2026ADMIN')
+    .then(function(r){ return r.json(); })
+    .then(function(){
+      _sosAdminActifId = null;
+      document.getElementById('sosPopupAdmin').classList.remove('show');
+      verifierAlertes();
+    }).catch(function(){});
+}
 
 function loadParrainages(){
   var wrap = document.getElementById('parrainagesList');
