@@ -162,13 +162,13 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     <button onclick="switchAdminTab('talents')" id="hudTalents" class="hud-btn c-teal">🌿 Talents</button>
     <button onclick="switchAdminTab('emargement')" id="hudEmargement" class="hud-btn c-cyan">📋 Émargement</button>
     <button onclick="switchAdminTab('messages')" id="hudMessages" class="hud-btn c-gold">📢 Messages</button>
-    <button onclick="switchAdminTab('secteurs')" id="hudSecteurs" class="hud-btn" style="color:#F472B6;border-color:rgba(244,114,182,.3)">🗺️ Secteurs</button>
     <button onclick="switchAdminTab('nouveauApprenant')" id="hudNouveauApprenant" class="hud-btn c-green">＋ Nouvel apprenant</button>
     <div style="position:relative;margin-left:auto">
       <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 13px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
       <div id="adminMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;min-width:200px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden">
         <button onclick="voirTousLesPins();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#FFD700;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔑 Générer PINs en masse</button>
         <button onclick="repairerEntetes();closeAdminMenu()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#A78BFA;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">🔧 Réparer colonnes Sheet</button>
+        <button onclick="modifierMsgBienvenue()" style="width:100%;padding:11px 14px;background:transparent;border:none;color:#2DD4BF;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:left">👋 Modifier msg bienvenue Talent</button>
       </div>
     </div>
   </div>
@@ -287,61 +287,6 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     </div>
   </div>
 
-
-  <!-- SECTION SECTEURS -->
-  <div id="sectionSecteurs" style="display:none;padding-top:16px;margin-bottom:60px">
-    <div style="background:linear-gradient(135deg,rgba(244,114,182,.06),rgba(124,58,237,.06));border:1px solid rgba(244,114,182,.2);border-radius:16px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div>
-        <div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#F472B6">🗺️ Gestion des Secteurs</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px">Secteurs actifs, en attente de validation, et missions du jour par équipe</div>
-      </div>
-      <button onclick="chargerSecteursAdmin()" style="padding:9px 16px;background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.2);color:#F472B6;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔄 Actualiser</button>
-    </div>
-
-    <!-- Missions du jour par RP -->
-    <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(244,114,182,.6);margin-bottom:10px">Missions du jour</div>
-    <div id="missionsDuJourAdmin" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-      <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Chargement...</div>
-    </div>
-
-    <!-- Secteurs en attente de validation -->
-    <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(245,166,35,.6);margin-bottom:10px">En attente de validation</div>
-    <div id="secteursEnAttenteAdmin" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-      <div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun secteur en attente</div>
-    </div>
-
-    <!-- Tous les secteurs actifs -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-      <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(96,165,250,.6)">Secteurs actifs</div>
-      <button onclick="ouvrirAjoutSecteurAdmin()" style="padding:7px 12px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">＋ Ajouter un secteur</button>
-    </div>
-    <div id="secteursActifsAdmin" style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
-      <div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Chargement...</div>
-    </div>
-
-    <!-- Formulaire ajout secteur admin -->
-    <div id="formAjoutSecteurAdmin" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
-      <div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px">＋ Nouveau secteur</div>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <input id="adminSecNom" type="text" placeholder="Nom du secteur *" style="padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <select id="adminSecType" style="padding:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:12px;outline:none">
-            <option value="Zone géographique">🌍 Zone géo</option>
-            <option value="Quartier">🏘️ Quartier</option>
-            <option value="Centre commercial">🏬 Centre commercial</option>
-            <option value="Résidence">🏠 Résidence</option>
-            <option value="Autre">📍 Autre</option>
-          </select>
-          <input id="adminSecVille" type="text" placeholder="Ville *" style="padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
-        </div>
-        <div style="display:flex;gap:8px">
-          <button onclick="ajouterSecteurAdmin()" style="flex:1;padding:10px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer">✅ Ajouter</button>
-          <button onclick="document.getElementById('formAjoutSecteurAdmin').style.display='none'" style="padding:10px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Annuler</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- SECTION NOUVEL APPRENANT -->
   <div id="sectionNouveauApprenant" style="display:none;padding-top:16px;margin-bottom:60px">
     <div style="background:linear-gradient(135deg,#0A1628,#0D1F4A);border:1px solid rgba(41,121,255,.2);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px">
@@ -448,6 +393,10 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
 
 <script>
 var APPS_URL='https://script.google.com/macros/s/AKfycbwKu9PwOOniBsTp-5WNHBx2fgsy2O45R8bwQ2uvqJsyPUQlNokIHoK1Y_KwP929x5xplA/exec';
+
+// ── Texte de bienvenue Talent — modifiable ici ──
+var MSG_BIENVENUE_TALENT = localStorage.getItem('fc_msg_bienvenue_talent')
+  || 'Bonjour {prenom} 👋\n\nJ\'ai pensé à vous pour une opportunité unique dans notre programme Form\'Com Level Up.\n\nNous recrutons des personnalités motivées pour développer leurs compétences commerciales sur le terrain, avec un accompagnement personnalisé et une rémunération à la performance.\n\nCela pourrait vous intéresser ? Je serais ravi(e) d\'en parler avec vous 🚀\n\nForm\'Com Level Up';
 
 // ================= I18N =================
 var I18N = {};
@@ -1218,16 +1167,23 @@ function reinitialiserFormulaire(){
   var form = document.getElementById('naFormWrap'); if(form) form.style.display='block';
 }
 
+var _rpEnCours = null;
+var _derniereEquipeRP = [];
+
 function ouvrirFicheRP(id, prenom, nom, pin, statut){
   var panel = document.getElementById('ficheRPPanel');
   var content = document.getElementById('ficheRPContent');
   if(!panel||!content) return;
+  _rpEnCours = {id:id, prenom:prenom, nom:nom, pin:pin, statut:statut};
   panel.style.display = 'block';
   content.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Chargement...</div>';
 
   fetch(APPS_URL+'?action=getEquipeJourStats&rp_id='+encodeURIComponent(id)+'&_t='+Date.now())
     .then(function(r){ return r.json(); })
-    .then(function(d){ renderFicheRP({id:id,prenom:prenom,nom:nom,pin:pin,statut:statut}, d); })
+    .then(function(d){
+      _derniereEquipeRP = d.equipe || [];
+      renderFicheRP({id:id,prenom:prenom,nom:nom,pin:pin,statut:statut}, d);
+    })
     .catch(function(){ content.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Erreur de chargement</div>'; });
 }
 
@@ -1243,24 +1199,27 @@ function renderFicheRP(rp, d){
     if(!(a.contacts||0) && !(a.articles||0) && !(a.pts_jour||0)) silencieux++;
   });
   var letter = rp.prenom.charAt(0).toUpperCase();
+  var estActif = rp.statut === 'ACTIF';
 
   el.innerHTML =
+  // ── HEADER ──
   '<div style="background:linear-gradient(135deg,#1B0A40,#7C3AED);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center">'
     +'<div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:22px;font-weight:900;color:#fff;margin:0 auto 10px">'+letter+'</div>'
     +'<div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:#fff">'+rp.prenom+' '+rp.nom+'</div>'
-    +'<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;font-family:Exo 2,sans-serif">'+rp.id+' · PIN : '+rp.pin+'</div>'
-    +'<span style="display:inline-block;margin-top:8px;padding:4px 12px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(rp.statut==='ACTIF'?'rgba(0,200,83,.25)':'rgba(232,25,44,.25)')+';color:'+(rp.statut==='ACTIF'?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;font-family:Exo 2,sans-serif">'+rp.id+' · PIN : <span style="color:#F5A623;font-weight:900">'+rp.pin+'</span></div>'
+    +'<span style="display:inline-block;margin-top:8px;padding:4px 12px;border-radius:99px;font-size:9px;font-weight:700;font-family:Exo 2,sans-serif;background:'+(estActif?'rgba(0,200,83,.25)':'rgba(232,25,44,.25)')+';color:'+(estActif?'#00C853':'#FF6B6B')+'">'+rp.statut+'</span>'
   +'</div>'
+  // ── ONGLETS ──
   +'<div style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">'
-    +'<button onclick="switchFicheRPTab(0)" id="rptab0" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid #A78BFA;background:#A78BFA;color:#fff;cursor:pointer">Stats</button>'
-    +'<button onclick="switchFicheRPTab(1)" id="rptab1" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer">Équipe</button>'
-    +'<button onclick="switchFicheRPTab(2)" id="rptab2" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer">Actions</button>'
-    +'<button onclick="switchFicheRPTab(3)" id="rptab3" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(232,25,44,.3);background:transparent;color:#E8192C;cursor:pointer">⚠️ Admin</button>'
+    +'<button onclick="switchFicheRPTab(0)" id="rptab0" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid #A78BFA;background:#A78BFA;color:#fff;cursor:pointer">📊 Stats</button>'
+    +'<button onclick="switchFicheRPTab(1)" id="rptab1" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer">👥 Équipe ('+equipe.length+')</button>'
+    +'<button onclick="switchFicheRPTab(2)" id="rptab2" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.5);cursor:pointer">⚙️ Actions</button>'
+    +'<button onclick="switchFicheRPTab(3)" id="rptab3" style="flex-shrink:0;padding:7px 14px;border-radius:99px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;border:1px solid rgba(232,25,44,.3);background:transparent;color:#E8192C;cursor:pointer">🔧 Admin</button>'
   +'</div>'
-  // STATS
+  // ── STATS ──
   +'<div id="rptabContent0">'
     +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px">'
-      +[['⚡',totalXP.toLocaleString('fr-FR'),'XP équipe','#F5A623'],['🛒',totalVentes,'Ventes','#00C853'],['🤝',totalContacts,'Contacts','#60A5FA'],['❌',totalRefus,'Refus','#E8192C']].map(function(s){
+      +[['⚡',totalXP.toLocaleString('fr-FR'),'XP équipe','#F5A623'],['🛒',totalVentes,'Articles','#00C853'],['🤝',totalContacts,'Contacts','#60A5FA'],['❌',totalRefus,'Refus','#E8192C']].map(function(s){
         return '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:18px">'+s[0]+'</div><div style="font-family:Exo 2,sans-serif;font-size:18px;font-weight:900;color:'+s[3]+'">'+s[1]+'</div><div style="font-size:10px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700">'+s[2]+'</div></div>';
       }).join('')
     +'</div>'
@@ -1270,82 +1229,171 @@ function renderFicheRP(rp, d){
       }).join('')
     +'</div>'
   +'</div>'
-  // ÉQUIPE
+  // ── ÉQUIPE avec fiche apprenant + retrait individuel ──
   +'<div id="rptabContent1" style="display:none">'
-    +(equipe.length ? equipe.map(function(a){
-      var sil = !(a.contacts||0) && !(a.articles||0) && !(a.pts_jour||0);
-      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid '+(sil?'rgba(232,25,44,.3)':'var(--border)')+';border-radius:12px;margin-bottom:8px">'
-        +'<div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid '+(sil?'#E8192C':'rgba(96,165,250,.4)')+';display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:'+(sil?'#E8192C':'#60A5FA')+'">'+(a.prenom||'?')[0].toUpperCase()+'</div>'
-        +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
-        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+((a.pts_jour||0).toLocaleString('fr-FR'))+' XP · '+(a.articles||0)+' ventes'+(sil?' · 🔴':' · 🟢')+'</div></div>'
-        +'<a href="journee.html?id='+a.id+'" target="_blank" style="padding:6px 10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;text-decoration:none">🎮</a>'
-      +'</div>';
-    }).join('') : '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans l\'équipe</div>')
+    +(equipe.length ? ''
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px">'
+        +'<div style="font-size:11px;color:var(--muted);font-family:Exo 2,sans-serif">Sélectionne les apprenants à retirer</div>'
+        +'<div style="display:flex;gap:6px">'
+          +'<button onclick="toutSelectionnerRP()" style="padding:5px 10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:7px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Tout sélectionner</button>'
+          +'<button onclick="retirerSelectionRP(\''+rp.id+'\')" style="padding:5px 10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.2);color:#E8192C;border-radius:7px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Retirer sélection</button>'
+        +'</div>'
+      +'</div>'
+      + equipe.map(function(a){
+        var sil = !(a.contacts||0) && !(a.articles||0) && !(a.pts_jour||0);
+        return '<div class="rp-appr-card" data-id="'+a.id+'" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid '+(sil?'rgba(232,25,44,.3)':'var(--border)')+';border-radius:12px;margin-bottom:8px;cursor:pointer" onclick="toggleSelectionRP(this)">'
+          +'<div class="rp-check" style="width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s"></div>'
+          +'<div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid '+(sil?'#E8192C':'rgba(96,165,250,.4)')+';display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:'+(sil?'#E8192C':'#60A5FA')+';flex-shrink:0">'+((a.prenom||'?')[0].toUpperCase())+'</div>'
+          +'<div style="flex:1;min-width:0">'
+            +'<div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
+            +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+((a.pts_jour||0).toLocaleString('fr-FR'))+' XP · '+(a.articles||0)+' art. · '+(a.contacts||0)+' cont.'+(sil?' · 🔴':' · 🟢')+'</div>'
+          +'</div>'
+          +'<div style="display:flex;gap:6px" onclick="event.stopPropagation()">'
+            +'<button onclick="ouvrirFicheApprenant(\''+a.id+'\',\''+escHtml(a.prenom)+'\',\''+escHtml(a.nom)+'\',\''+rp.id+'\')" style="padding:5px 8px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:#A78BFA;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;cursor:pointer">👤</button>'
+            +'<button onclick="envoyerMessageApprenant(\''+a.id+'\',\''+escHtml(a.prenom+' '+a.nom)+'\')" style="padding:5px 8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;cursor:pointer">💬</button>'
+            +'<a href="journee.html?id='+a.id+'" target="_blank" style="padding:5px 8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;text-decoration:none">🎮</a>'
+          +'</div>'
+        +'</div>';
+      }).join('')
+    : '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans l\'équipe</div>')
   +'</div>'
-  // ACTIONS
+  // ── ACTIONS ──
   +'<div id="rptabContent2" style="display:none;flex-direction:column;gap:10px">'
-    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px">'
-      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">🔑 Accès cockpit</div>'
-      +'<div style="font-size:12px;color:var(--muted);margin-bottom:6px">Lien direct :</div>'
-      +'<div style="font-family:monospace;font-size:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:#A78BFA;word-break:break-all;margin-bottom:10px">'+window.location.origin+'/responsable.html?id='+rp.id+'&pin='+rp.pin+'</div>'
-      +'<div style="font-size:12px;color:var(--muted);margin-bottom:4px">PIN : <span style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#F5A623">'+rp.pin+'</span></div>'
+    +'<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">🔑 PIN d\'accès</div>'
+      +'<div style="font-size:22px;font-family:Exo 2,sans-serif;font-weight:900;color:#F5A623;text-align:center;letter-spacing:6px;margin-bottom:8px">'+rp.pin+'</div>'
     +'</div>'
-    +'<button onclick="envoyerAccesRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+rp.pin+'\')" style="width:100%;padding:12px;background:rgba(0,255,135,.08);border:1px solid rgba(0,255,135,.25);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">📤 Envoyer les accès à '+rp.prenom+'</button>'
+    +'<button onclick="envoyerAccesRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+rp.pin+'\')" style="width:100%;padding:12px;background:rgba(0,255,135,.08);border:1px solid rgba(0,255,135,.25);color:#00FF87;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">📤 Envoyer le PIN à '+rp.prenom+'</button>'
     +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')" style="width:100%;padding:12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">💬 Message individuel</button>'
     +'<button onclick="setMsgDest(\'EQUIPE\');setTimeout(function(){selectMsgDest(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')},300);switchAdminTab(\'messages\');document.getElementById(\'ficheRPPanel\').style.display=\'none\'" style="width:100%;padding:12px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer">📢 Message à l\'équipe</button>'
-    +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="width:100%;padding:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;text-decoration:none;display:block;text-align:center;box-sizing:border-box">⚔️ Ouvrir cockpit RP</a>'
+    +'<a href="responsable.html?pin='+rp.pin+'" target="_blank" style="width:100%;padding:12px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;text-decoration:none;display:block;text-align:center;box-sizing:border-box">⚔️ Ouvrir cockpit RP</a>'
   +'</div>'
-  // ADMIN
+  // ── ADMIN ──
   +'<div id="rptabContent3" style="display:none">'
-    +'<div style="background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.2);border-radius:12px;padding:14px">'
-      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,25,44,.7);margin-bottom:12px">⚠️ Zone Admin</div>'
-      +'<button onclick="changerStatutRP(\''+rp.id+'\',\''+rp.statut+'\')" style="width:100%;padding:10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.3);color:#FF6B6B;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">'+(rp.statut==='ACTIF'?'🔒 Désactiver ce RP':'✅ Réactiver ce RP')+'</button>'
+    +'<div style="background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,25,44,.7);margin-bottom:4px">🔧 Gestion du compte</div>'
+      // Modifier PIN
+      +'<div style="display:flex;gap:8px;align-items:center">'
+        +'<input id="newPinRPInput" type="text" maxlength="4" placeholder="Nouveau PIN (4 chiffres)" style="flex:1;padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none;text-align:center;letter-spacing:4px">'
+        +'<button onclick="changerPinRP(\''+rp.id+'\')" style="padding:9px 14px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔑 Modifier PIN</button>'
+      +'</div>'
+      // Désactiver / Réactiver
+      +(estActif
+        ? '<button onclick="desactiverRP(\''+rp.id+'\')" style="width:100%;padding:10px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔒 Désactiver ce RP</button>'
+        : '<button onclick="reactiverRP(\''+rp.id+'\')" style="width:100%;padding:10px;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:#00C853;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">✅ Réactiver ce RP</button>')
+      // Supprimer définitivement
+      +'<button onclick="supprimerRP(\''+rp.id+'\',\''+escHtml(rp.prenom+' '+rp.nom)+'\')" style="width:100%;padding:10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.3);color:#E8192C;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">🗑️ Supprimer définitivement</button>'
     +'</div>'
   +'</div>';
 }
 
-function switchFicheRPTab(n){
-  for(var i=0;i<4;i++){
-    var c=document.getElementById('rptabContent'+i);
-    var t=document.getElementById('rptab'+i);
-    if(c) c.style.display = i===n ? (i===2?'flex':'block') : 'none';
-    if(t){
-      t.style.background = i===n ? '#A78BFA' : 'transparent';
-      t.style.color = i===n ? '#fff' : (i===3?'#E8192C':'rgba(255,255,255,.5)');
-      t.style.borderColor = i===n ? '#A78BFA' : (i===3?'rgba(232,25,44,.3)':'rgba(255,255,255,.15)');
-    }
-  }
-}
-
-function envoyerAccesRP(id, prenom, pin){
-  var base = window.location.origin + window.location.pathname.replace('index.html','').replace(/\/[^/]*$/, '/');
-  // Construire l'URL proprement
-  var origin = window.location.origin;
-  var path = window.location.pathname.split('/').slice(0,-1).join('/');
-  var cockpitUrl = origin + path + '/responsable.html?id=' + encodeURIComponent(id) + '&pin=' + encodeURIComponent(pin);
-
-  var msg = 'Bonjour ' + prenom + ' 👋\n\n'
-    + 'Voici vos accès Form\'Com Level Up :\n\n'
-    + '⚔️ Votre cockpit Responsable :\n' + cockpitUrl + '\n\n'
-    + '🔑 Votre PIN : ' + pin + '\n'
-    + '🆔 Votre ID : ' + id + '\n\n'
-    + 'Form\'Com Level Up 🚀';
-
-  if(navigator.share){
-    navigator.share({title:'Accès Form\'Com RP', text:msg}).catch(function(){ _ouvrirWA(msg); });
+// ── Sélection / retrait individuel dans la fiche RP ──
+function toggleSelectionRP(card){
+  card.classList.toggle('selected');
+  var check = card.querySelector('.rp-check');
+  if(card.classList.contains('selected')){
+    card.style.borderColor = '#E8192C';
+    card.style.background  = 'rgba(232,25,44,.08)';
+    if(check){ check.style.background = '#E8192C'; check.style.borderColor = '#E8192C'; check.textContent = '✓'; check.style.color = '#fff'; }
   } else {
-    navigator.clipboard.writeText(msg).then(function(){
-      if(confirm('Message copié !\nOuvrir WhatsApp pour envoyer à ' + prenom + ' ?')){ _ouvrirWA(msg); }
-    }).catch(function(){ _ouvrirWA(msg); });
+    card.style.borderColor = 'var(--border)';
+    card.style.background  = 'var(--card)';
+    if(check){ check.style.background = 'transparent'; check.style.borderColor = 'var(--border)'; check.textContent = ''; }
   }
 }
 
-function changerStatutRP(rpId, statutActuel){
-  var newStatut = statutActuel==='ACTIF' ? 'INACTIF' : 'ACTIF';
-  if(!confirm('Changer le statut vers '+newStatut+' ?')) return;
-  fetch(APPS_URL+'?action=changerStatutRP&rp_id='+encodeURIComponent(rpId)+'&statut='+newStatut+'&admin=FC2026ADMIN')
+function toutSelectionnerRP(){
+  document.querySelectorAll('.rp-appr-card').forEach(function(c){
+    if(!c.classList.contains('selected')) toggleSelectionRP(c);
+  });
+}
+
+function retirerSelectionRP(rpId){
+  var ids = [];
+  document.querySelectorAll('.rp-appr-card.selected').forEach(function(c){ ids.push(c.dataset.id); });
+  if(!ids.length){ alert('Sélectionne au moins un apprenant à retirer.'); return; }
+  if(!confirm('Retirer '+ids.length+' apprenant(s) de l\'équipe ?\n\nIls redeviennent disponibles pour les autres RP.')) return;
+  fetch(APPS_URL+'?action=retirerApprenants&rp_id='+encodeURIComponent(rpId)+'&apprenant_ids='+encodeURIComponent(ids.join(',')))
     .then(function(r){ return r.json(); })
-    .then(function(){ loadResponsables(); document.getElementById('ficheRPPanel').style.display='none'; })
+    .then(function(d){
+      if(d.status==='ok'){
+        loadResponsables();
+        // Recharger la fiche RP
+        var rp = _rpEnCours;
+        if(rp) ouvrirFicheRP(rp.id, rp.prenom, rp.nom, rp.pin, rp.statut);
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
+}
+
+// ── Fiche apprenant depuis la vue RP ──
+function ouvrirFicheApprenant(apprId, prenom, nom, rpId){
+  // Chercher les stats dans l'équipe déjà chargée
+  var rp = _rpEnCours;
+  var equipe = _derniereEquipeRP || [];
+  var appr = equipe.filter(function(a){ return a.id === apprId; })[0] || {prenom:prenom, nom:nom, id:apprId};
+  var modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;max-width:400px;width:100%;max-height:80vh;overflow-y:auto">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+      +'<div style="font-family:Exo 2,sans-serif;font-size:15px;font-weight:900;color:var(--text)">👤 '+prenom+' '+nom+'</div>'
+      +'<button onclick="this.closest(\'[style*=fixed]\').remove()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">'
+      +[['⚡',(appr.pts_jour||0).toLocaleString('fr-FR'),'XP','#F5A623'],['📦',appr.articles||0,'Articles','#00C853'],['🔄',appr.fidel||0,'Abos','#A78BFA'],['🤝',appr.contacts||0,'Contacts','#60A5FA'],['❌',appr.refus||0,'Refus','#E8192C'],['⭐',appr.evals||0,'Évals','#FFD166']].map(function(s){
+        return '<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center"><div style="font-size:14px">'+s[0]+'</div><div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:'+s[3]+'">'+s[1]+'</div><div style="font-size:9px;color:var(--muted);font-family:Exo 2,sans-serif;font-weight:700">'+s[2]+'</div></div>';
+      }).join('')
+    +'</div>'
+    +'<button onclick="envoyerMessageApprenant(\''+apprId+'\',\''+escHtml(prenom+' '+nom)+'\');this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:11px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px">💬 Envoyer un message</button>'
+    +'<a href="journee.html?id='+apprId+'" target="_blank" style="width:100%;padding:11px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:700;text-decoration:none;display:block;text-align:center;box-sizing:border-box">🎮 Ouvrir cockpit</a>'
+  +'</div>';
+  document.body.appendChild(modal);
+}
+
+function envoyerMessageApprenant(apprId, nomComplet){
+  var msg = prompt('Message pour '+nomComplet+' :');
+  if(!msg) return;
+  fetch(APPS_URL+'?action=envoyerMessage'
+    +'&expediteur_id=ADMIN&expediteur_nom=Administrateur'
+    +'&destinataire=UN_APPRENANT&apprenant_id='+encodeURIComponent(apprId)
+    +'&texte='+encodeURIComponent(msg), {method:'GET'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok') alert('Message envoyé à '+nomComplet+' ✅'); })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+// ── CRUD RP ──
+function changerPinRP(rpId){
+  var pin = (document.getElementById('newPinRPInput').value||'').trim();
+  if(!/^\d{4}$/.test(pin)){ alert('Le PIN doit être 4 chiffres.'); return; }
+  if(!confirm('Changer le PIN de ce RP pour '+pin+' ?')) return;
+  fetch(APPS_URL+'?action=updatePinRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(rpId)+'&pin='+encodeURIComponent(pin))
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok'){ alert('PIN modifié : '+pin); loadResponsables(); } })
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function desactiverRP(rpId){
+  if(!confirm('Désactiver ce RP ? Il ne pourra plus accéder à son cockpit.')) return;
+  fetch(APPS_URL+'?action=bloquerRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(rpId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok'){ loadResponsables(); document.getElementById('ficheRPPanel').style.display='none'; }})
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function reactiverRP(rpId){
+  if(!confirm('Réactiver ce RP ?')) return;
+  fetch(APPS_URL+'?action=reactiverRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(rpId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok'){ loadResponsables(); document.getElementById('ficheRPPanel').style.display='none'; }})
+    .catch(function(){ alert('Erreur réseau'); });
+}
+
+function supprimerRP(rpId, nom){
+  if(!confirm('⚠️ SUPPRIMER DÉFINITIVEMENT '+nom+' ?\n\nCette action est IRRÉVERSIBLE.\nSon équipe sera libérée.')) return;
+  if(!confirm('Dernière confirmation — supprimer '+nom+' ?')) return;
+  fetch(APPS_URL+'?action=supprimerRP&admin=FC2026ADMIN&rp_id='+encodeURIComponent(rpId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.status==='ok'){ alert('RP supprimé.'); loadResponsables(); document.getElementById('ficheRPPanel').style.display='none'; }})
     .catch(function(){ alert('Erreur réseau'); });
 }
 
@@ -1974,10 +2022,10 @@ function voirTousLesPins(){
 
 var _talentsData = [];
 var _talentsFiltreActif = 'tous';
-var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages',secteurs:'hudSecteurs',nouveauApprenant:'hudNouveauApprenant'};
+var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages',nouveauApprenant:'hudNouveauApprenant'};
 
 function switchAdminTab(tab){
-  var tabs = ['responsables','apprenants','talents','emargement','messages','secteurs','nouveauApprenant'];
+  var tabs = ['responsables','apprenants','talents','emargement','messages','nouveauApprenant'];
   tabs.forEach(function(t){
     var sec = document.getElementById('section'+t.charAt(0).toUpperCase()+t.slice(1));
     var hud = document.getElementById(_hudMap[t]);
@@ -1987,7 +2035,6 @@ function switchAdminTab(tab){
   });
   if(tab === 'talents') loadParrainages();
   if(tab === 'responsables') loadResponsables();
-  if(tab === 'secteurs') chargerSecteursAdmin();
   if(tab === 'emargement'){
     var emarDate = document.getElementById('emarDate');
     if(emarDate && !emarDate.value){ emarDate.value = new Date().toISOString().slice(0,10); chargerEmargementJour(); }
@@ -2000,138 +2047,6 @@ function switchAdminTab(tab){
     _msgDest = 'TOUS';
   }
   if(tab === 'nouveauApprenant') reinitialiserFormulaire();
-}
-
-/* ========== SECTEURS ADMIN ========== */
-var _secteursAdmin = [];
-var _missionsDuJour = [];
-
-function chargerSecteursAdmin(){
-  // Charger la liste des secteurs
-  fetch(APPS_URL+'?action=listSecteurs&_t='+Date.now())
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      _secteursAdmin = d.secteurs || [];
-      afficherSecteursAdmin();
-    }).catch(function(){});
-
-  // Charger les missions du jour (secteur choisi par chaque RP)
-  fetch(APPS_URL+'?action=listRP&_t='+Date.now())
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var rps = d.responsables || [];
-      var promises = rps.map(function(rp){
-        return fetch(APPS_URL+'?action=getSecteurDuJour&id='+encodeURIComponent(rp.id)+'&_t='+Date.now())
-          .then(function(r){ return r.json(); })
-          .then(function(s){ return {rp:rp, secteur:s.secteur}; })
-          .catch(function(){ return {rp:rp, secteur:null}; });
-      });
-      return Promise.all(promises);
-    })
-    .then(function(results){
-      _missionsDuJour = results;
-      afficherMissionsDuJour();
-    }).catch(function(){});
-}
-
-function afficherMissionsDuJour(){
-  var el = document.getElementById('missionsDuJourAdmin');
-  if(!el) return;
-  if(!_missionsDuJour.length){
-    el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun RP actif</div>';
-    return;
-  }
-  el.innerHTML = _missionsDuJour.map(function(m){
-    var hasSecteur = m.secteur && m.secteur.nom;
-    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid '+(hasSecteur?'rgba(124,58,237,.25)':'rgba(245,166,35,.2)')+';border-radius:10px">'
-      +'<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff;flex-shrink:0">'+m.rp.prenom.charAt(0)+'</div>'
-      +'<div style="flex:1;min-width:0">'
-        +'<div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+m.rp.prenom+' '+m.rp.nom+'</div>'
-        +(hasSecteur
-          ? '<div style="font-size:11px;color:#A78BFA;margin-top:2px">📍 '+m.secteur.nom+(m.secteur.ville?' · '+m.secteur.ville:'')+(m.secteur.heure?' · '+m.secteur.heure:'')+'</div>'
-          : '<div style="font-size:11px;color:rgba(245,166,35,.8);margin-top:2px">⚠️ Pas encore de secteur choisi</div>')
-      +'</div>'
-    +'</div>';
-  }).join('');
-}
-
-function afficherSecteursAdmin(){
-  var enAttente = _secteursAdmin.filter(function(s){ return s.statut==='EN_ATTENTE'; });
-  var actifs    = _secteursAdmin.filter(function(s){ return s.statut==='ACTIF'; });
-
-  // En attente
-  var elAtt = document.getElementById('secteursEnAttenteAdmin');
-  if(elAtt){
-    if(!enAttente.length){
-      elAtt.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun secteur en attente ✅</div>';
-    } else {
-      elAtt.innerHTML = enAttente.map(function(s){
-        return '<div style="padding:12px 14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.25);border-radius:10px">'
-          +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">'
-            +'<div>'
-              +'<div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:#F5A623">'+s.nom+'</div>'
-              +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+s.type+' · '+s.ville+' · Proposé par RP '+s.propose_par+'</div>'
-            +'</div>'
-            +'<div style="display:flex;gap:6px">'
-              +'<button onclick="validerSecteurAdmin(\''+s.id+'\',\'ACTIF\')" style="padding:7px 12px;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:#00C853;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">✅ Valider</button>'
-              +'<button onclick="validerSecteurAdmin(\''+s.id+'\',\'ARCHIVE\')" style="padding:7px 12px;background:rgba(232,25,44,.08);border:1px solid rgba(232,25,44,.2);color:#E8192C;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">🗑️ Refuser</button>'
-            +'</div>'
-          +'</div>'
-        +'</div>';
-      }).join('');
-    }
-  }
-
-  // Actifs
-  var elAct = document.getElementById('secteursActifsAdmin');
-  if(elAct){
-    if(!actifs.length){
-      elAct.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun secteur actif</div>';
-    } else {
-      var typeIcons = {'Centre commercial':'🏬','Zone géographique':'🌍','Quartier':'🏘️','Résidence':'🏠','Autre':'📍'};
-      elAct.innerHTML = actifs.map(function(s){
-        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;flex-wrap:wrap">'
-          +'<div style="flex:1;min-width:0">'
-            +'<div style="font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;color:var(--text)">'+(typeIcons[s.type]||'📍')+' '+s.nom+'</div>'
-            +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+s.type+(s.ville?' · '+s.ville:'')+'</div>'
-          +'</div>'
-          +'<button onclick="validerSecteurAdmin(\''+s.id+'\',\'ARCHIVE\')" style="padding:6px 10px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:rgba(232,25,44,.7);border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Archiver</button>'
-        +'</div>';
-      }).join('');
-    }
-  }
-}
-
-function validerSecteurAdmin(secId, decision){
-  var label = decision==='ACTIF' ? 'valider' : 'archiver';
-  if(!confirm('Confirmer : '+label+' ce secteur ?')) return;
-  fetch(APPS_URL+'?action=validerSecteur&secteur_id='+encodeURIComponent(secId)+'&decision='+encodeURIComponent(decision))
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(d.status==='ok') chargerSecteursAdmin();
-    }).catch(function(){});
-}
-
-function ouvrirAjoutSecteurAdmin(){
-  var f = document.getElementById('formAjoutSecteurAdmin');
-  if(f) f.style.display = f.style.display==='none' ? 'block' : 'none';
-}
-
-function ajouterSecteurAdmin(){
-  var nom   = (document.getElementById('adminSecNom').value||'').trim();
-  var type  = document.getElementById('adminSecType').value;
-  var ville = (document.getElementById('adminSecVille').value||'').trim();
-  if(!nom || !ville){ alert('Remplis le nom et la ville.'); return; }
-  fetch(APPS_URL+'?action=addSecteur&rp_id=ADMIN&nom='+encodeURIComponent(nom)+'&type='+encodeURIComponent(type)+'&ville='+encodeURIComponent(ville))
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(d.status==='ok'){
-        // Valider directement (admin n'a pas besoin de validation)
-        return fetch(APPS_URL+'?action=validerSecteur&secteur_id='+encodeURIComponent(d.id)+'&decision=ACTIF');
-      }
-    })
-    .then(function(){ chargerSecteursAdmin(); document.getElementById('formAjoutSecteurAdmin').style.display='none'; })
-    .catch(function(){});
 }
 
 /* ========== MESSAGERIE ========== */
@@ -2402,6 +2317,7 @@ function renderTalents(filtre){
             +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:var(--text)">'+t.filleul_prenom+' '+t.filleul_nom+'</div>'
             +'<div style="display:flex;align-items:center;gap:6px">'
               +'<span style="font-family:Exo 2,sans-serif;font-size:10px;font-weight:800;color:'+statutColor+';background:'+statutColor+'22;border:1px solid '+statutColor+'55;border-radius:99px;padding:3px 10px;white-space:nowrap">'+statut+'</span>'
+              +'<button onclick="envoyerBienvenuetalent(\''+escHtml(t.filleul_prenom)+'\',\''+escHtml(t.filleul_tel)+'\')" title="Envoyer message de bienvenue" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(45,212,191,.3);background:rgba(45,212,191,.08);color:#2DD4BF;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">👋</button>'
               +(statut.indexOf('CONTACT')===-1 ? '<button onclick="marquerContacteBtn(this)" data-row="'+t.row+'" title="Marquer comme contacté" style="width:28px;height:28px;border-radius:8px;border:1px solid rgba(0,255,135,.3);background:rgba(0,255,135,.08);color:#00FF87;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#9989;</button>' : '')
               +'<button onclick="supprimerTalentBtn(this)" data-row="'+t.row+'" data-nom="'+t.filleul_prenom+' '+t.filleul_nom+'" title="Supprimer" style="width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#128465;</button>'
             +'</div>'
@@ -2422,6 +2338,24 @@ function marquerContacteBtn(btn){
     .then(function(r){ return r.json(); })
     .then(function(){ loadParrainages(); })
     .catch(function(){ loadParrainages(); });
+}
+
+function envoyerBienvenuetalent(prenom, tel){
+  var msg = MSG_BIENVENUE_TALENT.replace(/\{prenom\}/g, prenom);
+  if(navigator.share){
+    navigator.share({title:'Message bienvenue Talent', text:msg}).catch(function(){ _ouvrirWA(msg, tel); });
+  } else {
+    _ouvrirWA(msg, tel);
+  }
+}
+
+function modifierMsgBienvenue(){
+  var nouveau = prompt('Modifie le texte de bienvenue Talent :\n(utilise {prenom} pour insérer le prénom)', MSG_BIENVENUE_TALENT);
+  if(nouveau === null) return;
+  MSG_BIENVENUE_TALENT = nouveau;
+  try{ localStorage.setItem('fc_msg_bienvenue_talent', nouveau); }catch(e){}
+  alert('Texte de bienvenue mis à jour ✅');
+  closeAdminMenu();
 }
 
 function supprimerTalentBtn(btn){

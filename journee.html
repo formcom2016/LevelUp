@@ -280,15 +280,6 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 </div>
 <div class="container" id="mainContainer" style="display:none">
 
-  <!-- BANNIÈRE SECTEUR DU JOUR — discrète, non intrusive -->
-  <div id="bannerSecteur" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:8px 12px;margin-bottom:10px;display:none;align-items:center;gap:8px">
-    <span style="font-size:14px">📍</span>
-    <div style="flex:1;min-width:0">
-      <span style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:rgba(167,139,250,.9)" id="bannerSecteurNom"></span>
-      <span style="font-size:11px;color:var(--muted)" id="bannerSecteurMeta"></span>
-    </div>
-  </div>
-
   <!-- HERO -->
 <div class="hero-pass" id="heroSection">
   <div class="ring-container">
@@ -1343,32 +1334,10 @@ function ouvrirInterface(data){
   setTimeout(loadMessageMatinal, 500);
   loadBourse();
   loadAbonnements();
-  setTimeout(loadBourse, 2500);
+  setTimeout(loadBourse, 2500); // filet de sécurité si le 1er appel arrive trop tôt
   setTimeout(loadAbonnements, 2500);
   setTimeout(loadLeaderboard, 1500);
   setTimeout(loadTrophees, 2000);
-
-  // Secteur du jour — chargé au login, puis toutes les 5 min
-  setTimeout(chargerSecteurDuJour, 800);
-  setInterval(chargerSecteurDuJour, 300000);
-}
-
-function chargerSecteurDuJour(){
-  if(!AP || !AP.id) return;
-  fetch(APPS_URL+'?action=getSecteurDuJour&id='+encodeURIComponent(AP.id)+'&_t='+Date.now())
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      var banner = document.getElementById('bannerSecteur');
-      if(!banner) return;
-      if(d.secteur && d.secteur.nom){
-        document.getElementById('bannerSecteurNom').textContent = d.secteur.nom + ' ';
-        document.getElementById('bannerSecteurMeta').textContent =
-          '· ' + (d.secteur.type||'') + (d.secteur.ville ? ', '+d.secteur.ville : '');
-        banner.style.display = 'flex';
-      } else {
-        banner.style.display = 'none';
-      }
-    }).catch(function(){});
 }
 
 // Détection changement de jour (page laissée ouverte)
@@ -2594,7 +2563,7 @@ function validerDepuisVitrine(){
 }
 
 function envoyerLienEval(){
-  var url = window.location.origin + '/formcom-v2.html'
+  var url = new URL('formcom-v2.html', window.location.href).href.split('?')[0]
     + '?id=' + encodeURIComponent(AP.id)
     + '&prenom=' + encodeURIComponent(AP.prenom)
     + '&nom=' + encodeURIComponent(AP.nom)
