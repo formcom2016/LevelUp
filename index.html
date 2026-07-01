@@ -2403,10 +2403,14 @@ function loadParrainages(){
       _talentsData = (d.parrainages || []).sort(function(a,b){
         return (b.date||'').localeCompare(a.date||'');
       });
-      renderTalents(_talentsFiltreActif);
+      try {
+        renderTalents(_talentsFiltreActif);
+      } catch(renderErr) {
+        wrap.innerHTML = '<div style="font-size:12px;color:#E8192C;text-align:center;padding:20px">Erreur rendu : '+renderErr.message+'</div>';
+      }
     })
-    .catch(function(){
-      wrap.innerHTML = '<div style="font-size:12px;color:#E8192C;text-align:center;padding:20px">Erreur de chargement</div>';
+    .catch(function(netErr){
+      wrap.innerHTML = '<div style="font-size:12px;color:#E8192C;text-align:center;padding:20px">Erreur réseau : '+(netErr.message||'inconnue')+'</div>';
     });
 }
 
