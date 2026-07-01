@@ -700,10 +700,16 @@ function validerEquipe(){
   fetch(url).then(function(r){ return r.json(); })
     .then(function(d){
       if(d.status === 'ok'){
-        alert('✅ Équipe constituée ! '+ids.length+' apprenant'+(ids.length>1?'s':''));
+        var msg = '✅ Équipe constituée ! '+d.equipe.length+' apprenant'+(d.equipe.length>1?'s':'');
+        if(d.refuses && d.refuses.length > 0){
+          msg += '\n⚠️ '+d.refuses.length+' apprenant'+(d.refuses.length>1?'s':'')+' déjà dans une autre équipe (ignoré'+(d.refuses.length>1?'s':'')+').';
+        }
+        alert(msg);
         RP.objectif = obj;
         chargerEquipe();
         switchTab(0);
+      } else {
+        alert('Erreur : '+(d.message||'Réessayez'));
       }
     }).catch(function(){ alert('Erreur réseau'); });
 }
