@@ -1216,6 +1216,19 @@ function reinitialiserFormulaire(){
   var form = document.getElementById('naFormWrap'); if(form) form.style.display='block';
 }
 
+function switchFicheRPTab(n){
+  for(var i=0;i<4;i++){
+    var c = document.getElementById('rptabContent'+i);
+    var t = document.getElementById('rptab'+i);
+    if(c) c.style.display = i===n ? (i===2?'flex':'block') : 'none';
+    if(t){
+      t.style.background   = i===n ? '#A78BFA' : 'transparent';
+      t.style.color        = i===n ? '#fff' : (i===3?'#E8192C':'rgba(255,255,255,.5)');
+      t.style.borderColor  = i===n ? '#A78BFA' : (i===3?'rgba(232,25,44,.3)':'rgba(255,255,255,.15)');
+    }
+  }
+}
+
 var _rpEnCours = null;
 var _derniereEquipeRP = [];
 
