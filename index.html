@@ -717,7 +717,9 @@ function loadAdminDashboard(){
         el.style.color = parts.length > 1 ? '#00FF87' : 'rgba(255,255,255,.35)';
       }).catch(function(){});
   });
-    p.then(function(res){
+
+  Promise.all(apPromises).then(function(results){
+    results.forEach(function(res){
       var a=res.a, data=res.data;
       if(!data||!data.found) return;
       var pts = Number(data.pts)||0;
