@@ -2070,7 +2070,8 @@ function saveDailyStatsToSheet(){
   if (cnt > 0) url += '&contacts='+cnt;
   if (ref > 0) url += '&refus='+ref;
   return fetch(url, {method:'GET'})
-    .catch(function(){ return {ok:false}; });
+    .then(function(r){ return r; })
+    .catch(function(){ return Promise.resolve({ok:false}); });
 }
 
 function initPinCheck(){
@@ -3058,39 +3059,32 @@ function validerNewTx(){
       try{ loadBourse(); }catch(e){}
       try{ loadAbonnements(); }catch(e){}
 
-      // ── ÉTAPE 4 : Sauvegarder, PUIS ouvrir le reçu (attendre la fin de l'écriture) ──
+      // ── ÉTAPE 4 : Ouvrir la fenêtre du reçu MAINTENANT (avant tout async)
+      // Safari bloque window.open dans les callbacks async — il faut l'ouvrir ici, dans le .then synchrone de createTransaction
+      var fullRecuUrl = recuBase
+        +'&code='    + encodeURIComponent(code)
+        +'&xpToday=' + (AP.ptsToday||0)
+        +'&xpTotal=' + (AP.pts||0)
+        +'&sArt='    + artNow
+        +'&sFid='    + fidNow
+        +'&sSol='    + solNow
+        +'&sTal='    + talNow
+        +'&sCont='   + (counters.contact||0)
+        +'&sRef='    + (counters.refus||0);
+
+      var recuTab = window.open(fullRecuUrl, '_blank');
+      if(!recuTab){
+        var a = document.createElement('a');
+        a.href = fullRecuUrl; a.target = '_blank'; a.rel = 'noopener';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      }
+
+      // ── ÉTAPE 5 : Sauvegarder en arrière-plan (n'bloque plus le reçu) ──
       saveDailyStatsToSheet().then(function(){
-
-        // ── ÉTAPE 5 : Fermer le modal ─────────────────────────────────
         closeNewTx();
-        // Rafraîchir les stats affichées après transaction
         try{ loadDailyStatsFromSheet(); }catch(e){}
-
-        // ── ÉTAPE 6 : Ouvrir le reçu dans un NOUVEL ONGLET ───────────
-        // Le cockpit reste ouvert → JS garde tous les XP en mémoire
-        var fullRecuUrl = recuBase
-          +'&code='    + encodeURIComponent(code)
-          +'&xpToday=' + (AP.ptsToday||0)
-          +'&xpTotal=' + (AP.pts||0)
-          +'&sArt='    + artNow
-          +'&sFid='    + fidNow
-          +'&sSol='    + solNow
-          +'&sTal='    + talNow
-          +'&sCont='   + (counters.contact||0)
-          +'&sRef='    + (counters.refus||0);
-
-        // Ouvrir dans un nouvel onglet (le cockpit reste intact)
-        var recuTab = window.open(fullRecuUrl, '_blank');
-        if(!recuTab){
-          // Fallback si popup bloqué : créer un lien et cliquer dessus
-          var a = document.createElement('a');
-          a.href = fullRecuUrl;
-          a.target = '_blank';
-          a.rel = 'noopener';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
+      }).catch(function(){
+        closeNewTx();
       });
     })
     .catch(function(){
