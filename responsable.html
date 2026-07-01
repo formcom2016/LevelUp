@@ -248,7 +248,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="tab" onclick="switchTab(1)">Sélection</div>
     <div class="tab" onclick="switchTab(2)">🧴 Parfum</div>
     <div class="tab" onclick="switchTab(3)">📝 Notes</div>
-    <div class="tab" onclick="switchTab(4)">📢 Actions</div>
+    <div class="tab" onclick="switchTab(4)">🗺️ Secteur</div>
+    <div class="tab" onclick="switchTab(5)">📢 Actions</div>
   </div>
 
   <!-- TAB 0 : MON ÉQUIPE -->
@@ -298,29 +299,31 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div id="notesList"></div>
   </div>
 
-  <!-- TAB 4 : ACTIONS / MESSAGES -->
+  <!-- TAB 4 : SECTEUR DU JOUR -->
   <div class="section" id="tab4">
-
-    <!-- MISSION DU JOUR -->
     <div class="sec-title">🗺️ Mission du jour</div>
-    <div id="missionDuJourBlock" style="margin-bottom:18px">
-      <div id="secteurActuelCard" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(96,165,250,.08));border:1px solid rgba(124,58,237,.3);border-radius:var(--r);padding:14px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-          <div>
-            <div style="font-size:10px;color:rgba(167,139,250,.6);font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">📍 Secteur en cours</div>
-            <div id="secteurActuelNom" style="font-family:'Exo 2',sans-serif;font-size:17px;font-weight:900;color:#A78BFA"></div>
-            <div id="secteurActuelMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div>
-          </div>
-          <button onclick="ouvrirChoixSecteur()" style="padding:8px 14px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">✏️ Changer</button>
-        </div>
-      </div>
-      <div id="secteurVideCard" style="background:rgba(245,166,35,.06);border:1px dashed rgba(245,166,35,.3);border-radius:var(--r);padding:14px;margin-bottom:12px;text-align:center">
-        <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Aucun secteur choisi pour aujourd'hui</div>
-        <button onclick="ouvrirChoixSecteur()" style="padding:10px 20px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer">🗺️ Choisir le secteur du jour</button>
-      </div>
+
+    <!-- Secteur actuel -->
+    <div id="secteurActuelCard" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(96,165,250,.08));border:1px solid rgba(124,58,237,.3);border-radius:var(--r);padding:16px;margin-bottom:14px">
+      <div style="font-size:10px;color:rgba(167,139,250,.6);font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">📍 Secteur en cours</div>
+      <div id="secteurActuelNom" style="font-family:'Exo 2',sans-serif;font-size:20px;font-weight:900;color:#A78BFA;margin-bottom:4px"></div>
+      <div id="secteurActuelMeta" style="font-size:12px;color:var(--muted);margin-bottom:14px"></div>
+      <button onclick="ouvrirChoixSecteur()" style="width:100%;padding:10px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">✏️ Changer de secteur</button>
     </div>
 
-    <!-- MODAL CHOIX SECTEUR -->
+    <!-- Pas encore de secteur -->
+    <div id="secteurVideCard" style="background:rgba(245,166,35,.06);border:2px dashed rgba(245,166,35,.3);border-radius:var(--r);padding:24px;margin-bottom:14px;text-align:center">
+      <div style="font-size:32px;margin-bottom:8px">🗺️</div>
+      <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;color:#F5A623;margin-bottom:6px">Aucun secteur choisi</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">Choisis le secteur du jour pour ton équipe</div>
+      <button onclick="ouvrirChoixSecteur()" style="padding:12px 24px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer">🗺️ Choisir le secteur</button>
+    </div>
+  </div>
+
+  <!-- TAB 5 : ACTIONS / MESSAGES -->
+  <div class="section" id="tab5">
+
+    <!-- MODAL CHOIX SECTEUR — accessible depuis tab4 -->
     <div id="modalSecteur" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:20px">
       <div style="max-width:500px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
@@ -376,8 +379,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <button onclick="deconnexion()" style="margin-top:10px;width:100%;padding:10px;background:rgba(232,25,44,.1);border:1px solid rgba(232,25,44,.2);color:var(--red);border-radius:8px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Déconnexion</button>
     </div>
   </div>
-
-  <!-- TAB 5 supprimé — bons intégrés dans tab2 -->
 
 </div>
 
