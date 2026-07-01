@@ -2050,8 +2050,10 @@ function saveDailyStatsToSheet(){
   var fid = parseInt((document.getElementById('sFidel')||{textContent:'0'}).textContent)||0;
   var sol = parseInt((document.getElementById('sSolidaires')||{textContent:'0'}).textContent)||0;
   var tal = parseInt((document.getElementById('sTalents')||{textContent:'0'}).textContent)||0;
-  // contacts/refus exclus du cache — gérés exclusivement par le GAS via les boutons +/-
-  var data = { articles: art, fidel: fid, solidaires: sol, talents: tal };
+  // contacts/refus inclus — source de vérité côté client, sauvegardés à chaque changement
+  var cnt = counters.contact || 0;
+  var ref = counters.refus   || 0;
+  var data = { articles: art, fidel: fid, solidaires: sol, talents: tal, contacts: cnt, refus: ref };
   try{
     var cacheKey = 'fc_daily_'+AP.id+'_'+new Date().toISOString().slice(0,10);
     localStorage.setItem(cacheKey, JSON.stringify(data));
@@ -2061,7 +2063,9 @@ function saveDailyStatsToSheet(){
     +'&articles='+art
     +'&fidel='+fid
     +'&solidaires='+sol
-    +'&talents='+tal,
+    +'&talents='+tal
+    +'&contacts='+cnt
+    +'&refus='+ref,
     {method:'GET'})
     .catch(function(){ return {ok:false}; });
 }
