@@ -323,42 +323,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <!-- TAB 5 : ACTIONS / MESSAGES -->
   <div class="section" id="tab5">
 
-    <!-- MODAL CHOIX SECTEUR — accessible depuis tab4 -->
-    <div id="modalSecteur" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:20px">
-      <div style="max-width:500px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <div style="font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:var(--text)">🗺️ Choisir le secteur</div>
-          <button onclick="fermerModalSecteur()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
-        </div>
-        <input id="secteurSearch" type="text" placeholder="🔍 Rechercher..." oninput="filtrerSecteurs()" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:12px;box-sizing:border-box">
-        <div id="filtresType" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-          <button onclick="filtrerParType('')" class="filtre-type actif" data-type="">Tous</button>
-          <button onclick="filtrerParType('Centre commercial')" class="filtre-type" data-type="Centre commercial">🏬 CC</button>
-          <button onclick="filtrerParType('Zone géographique')" class="filtre-type" data-type="Zone géographique">🌍 Zone</button>
-          <button onclick="filtrerParType('Quartier')" class="filtre-type" data-type="Quartier">🏘️ Quartier</button>
-          <button onclick="filtrerParType('Résidence')" class="filtre-type" data-type="Résidence">🏠 Résidence</button>
-        </div>
-        <div id="listeSecteurs" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
-        <div style="border-top:1px solid var(--border);padding-top:14px">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Secteur introuvable ? Propose-en un :</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <input id="newSecNom" type="text" placeholder="Nom du secteur *" style="padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <select id="newSecType" style="padding:9px 10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
-                <option value="Zone géographique">🌍 Zone géo</option>
-                <option value="Quartier">🏘️ Quartier</option>
-                <option value="Centre commercial">🏬 Centre commercial</option>
-                <option value="Résidence">🏠 Résidence</option>
-                <option value="Autre">📍 Autre</option>
-              </select>
-              <input id="newSecVille" type="text" placeholder="Ville *" style="padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
-            </div>
-            <button onclick="proposerNouveauSecteur()" style="padding:10px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer">＋ Proposer ce secteur</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="sec-title">Message de ralliement</div>
     <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:var(--r);padding:14px;margin-bottom:14px">
       <div style="font-size:11px;color:rgba(167,139,250,.6);margin-bottom:8px;font-family:'Exo 2',sans-serif;font-weight:700">Envoyer un message à toute l'équipe — apparaît immédiatement dans leur cockpit</div>
@@ -380,6 +344,42 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
+</div>
+
+<!-- MODAL SECTEUR — hors de tous les tabs pour rester visible depuis n'importe quel onglet -->
+<div id="modalSecteur" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:20px">
+  <div style="max-width:500px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:var(--text)">🗺️ Choisir le secteur</div>
+      <button onclick="fermerModalSecteur()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+    </div>
+    <input id="secteurSearch" type="text" placeholder="🔍 Rechercher..." oninput="filtrerSecteurs()" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:12px;box-sizing:border-box">
+    <div id="filtresType" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+      <button onclick="filtrerParType('')" class="filtre-type actif" data-type="">Tous</button>
+      <button onclick="filtrerParType('Centre commercial')" class="filtre-type" data-type="Centre commercial">🏬 CC</button>
+      <button onclick="filtrerParType('Zone géographique')" class="filtre-type" data-type="Zone géographique">🌍 Zone</button>
+      <button onclick="filtrerParType('Quartier')" class="filtre-type" data-type="Quartier">🏘️ Quartier</button>
+      <button onclick="filtrerParType('Résidence')" class="filtre-type" data-type="Résidence">🏠 Résidence</button>
+    </div>
+    <div id="listeSecteurs" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+    <div style="border-top:1px solid var(--border);padding-top:14px">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Secteur introuvable ? Propose-en un :</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input id="newSecNom" type="text" placeholder="Nom du secteur *" style="padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <select id="newSecType" style="padding:9px 10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+            <option value="Zone géographique">🌍 Zone géo</option>
+            <option value="Quartier">🏘️ Quartier</option>
+            <option value="Centre commercial">🏬 Centre commercial</option>
+            <option value="Résidence">🏠 Résidence</option>
+            <option value="Autre">📍 Autre</option>
+          </select>
+          <input id="newSecVille" type="text" placeholder="Ville *" style="padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+        </div>
+        <button onclick="proposerNouveauSecteur()" style="padding:10px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer">＋ Proposer ce secteur</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- BARRE FIXE BAS -->
