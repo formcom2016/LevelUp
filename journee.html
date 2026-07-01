@@ -482,10 +482,11 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
           <button onclick="payerStripe()" style="padding:11px 8px;background:rgba(41,121,255,.15);border:1.5px solid rgba(41,121,255,.4);color:#60A5FA;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128179; Payer<br>maintenant</button>
           <button onclick="envoyerStripe('ponctuel')" style="padding:11px 8px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);color:rgba(96,165,250,.7);border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128257; Envoyer<br>le lien</button>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <button onclick="payerZettle()" style="padding:11px 8px;background:rgba(0,200,83,.08);border:1.5px solid rgba(0,200,83,.2);color:#00C853;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128179; Zettle<br><span id="zettleMontant" style="font-size:10px">0&#8364;</span></button>
           <button class="tx-pay-btn" onclick="togglePay(this,'Espèces')"><span>&#128181;</span><span>Espèces</span></button>
         </div>
+        <button onclick="confirmerPaiementStripe()" style="width:100%;padding:10px;background:rgba(0,200,83,.12);border:1.5px solid rgba(0,200,83,.3);color:#00C853;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:800;cursor:pointer">✅ Paiement Stripe confirmé — valider</button>
       </div>
 
       <!-- MENSUEL SEUL -->
@@ -495,22 +496,11 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
           <button onclick="abonnerMaintenant()" style="padding:11px 8px;background:rgba(124,58,237,.15);border:1.5px solid rgba(124,58,237,.4);color:#A78BFA;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128179; S'abonner<br>maintenant</button>
           <button onclick="envoyerStripe('abo')" style="padding:11px 8px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);color:rgba(167,139,250,.7);border-radius:10px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:800;cursor:pointer">&#128257; Envoyer<br>le lien</button>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <button class="tx-pay-btn" onclick="togglePay(this,'Espèces')"><span>&#128181;</span><span>Espèces</span></button>
           <button class="tx-pay-btn" onclick="togglePay(this,'Virement')"><span>&#127974;</span><span>Virement</span></button>
         </div>
-        <!-- AJOUTER PONCTUEL EN PLUS -->
-        <div style="padding:10px;background:rgba(245,166,35,.05);border:1px solid rgba(245,166,35,.15);border-radius:8px">
-          <div style="font-size:11px;color:rgba(245,166,35,.7);margin-bottom:8px;font-family:'Exo 2',sans-serif;font-weight:700">&#10133; Ajouter des articles ponctuels ?</div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <input type="number" id="addPonctuelNb" min="0" placeholder="0" oninput="majCumul()" style="width:55px;padding:7px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;text-align:center">
-            <span style="font-size:12px;color:rgba(255,255,255,.4)">art. &times; 10&#8364; = <span id="addPonctuelTotal" style="color:#F5A623;font-weight:700">0&#8364;</span></span>
-          </div>
-          <div id="addPonctuelPayBtns" style="display:none;grid-template-columns:1fr 1fr;gap:6px">
-            <button onclick="payerStripe()" style="padding:10px 6px;background:rgba(41,121,255,.12);border:1px solid rgba(41,121,255,.3);color:#60A5FA;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;cursor:pointer">&#128179; Payer<br>ponctuels</button>
-            <button onclick="envoyerStripe('ponctuel')" style="padding:10px 6px;background:rgba(41,121,255,.06);border:1px solid rgba(41,121,255,.2);color:rgba(96,165,250,.6);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:800;cursor:pointer">&#128257; Envoyer<br>le lien</button>
-          </div>
-        </div>
+        <button onclick="confirmerPaiementStripe()" style="width:100%;padding:10px;background:rgba(0,200,83,.12);border:1.5px solid rgba(0,200,83,.3);color:#00C853;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:800;cursor:pointer">✅ Paiement Stripe confirmé — valider</button>
       </div>
 
       <!-- CONTACT CLIENT -->
@@ -2071,12 +2061,10 @@ function saveDailyStatsToSheet(){
     contacts: counters.contact||0, refus: counters.refus||0,
     articles: art, fidel: fid, solidaires: sol, talents: tal
   };
-  // Cache local — survit aux rechargements même si le Sheet échoue
   try{
     var cacheKey = 'fc_daily_'+AP.id+'_'+new Date().toISOString().slice(0,10);
     localStorage.setItem(cacheKey, JSON.stringify(data));
   }catch(e){}
-  // Envoi au Sheet — retourne la promesse pour pouvoir être attendue avant un rechargement
   return fetch(APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
     +'&contacts='+data.contacts
@@ -2086,7 +2074,7 @@ function saveDailyStatsToSheet(){
     +'&solidaires='+data.solidaires
     +'&talents='+data.talents,
     {method:'GET',keepalive:true})
-    .catch(function(){});
+    .catch(function(){ return {ok:false}; }); // toujours retourner une Promise résolue
 }
 
 function initPinCheck(){
@@ -2780,6 +2768,17 @@ function majCumul(){
 
 function getLienAbo(){
   return (txModeAbo <= 5 ? STRIPE_ABO5 : STRIPE_ABO10)+'?client_reference_id='+encodeURIComponent(AP.id||'');
+}
+
+function confirmerPaiementStripe(){
+  // Marquer le mode Stripe si pas déjà fait
+  if(newTxPayModes.indexOf('Stripe')===-1){ newTxPayModes.push('Stripe'); }
+  // Cocher l'attestation uniquement — l'apprenant valide lui-même
+  var att = document.getElementById('txAttestation');
+  if(att) att.checked = true;
+  // Feedback visuel sur le bouton
+  var btns = document.querySelectorAll('[onclick="confirmerPaiementStripe()"]');
+  btns.forEach(function(b){ b.textContent = '✅ Stripe sélectionné — tu peux valider'; b.style.opacity = '0.7'; b.style.cursor = 'default'; });
 }
 
 function payerStripe(){
