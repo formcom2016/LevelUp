@@ -1634,7 +1634,7 @@ function validerTalent(){
     +'&filleul_tel='+encodeURIComponent(tel)
     +'&filleul_email='+encodeURIComponent(document.getElementById('talentEmail').value.trim())
     +'&note='+encodeURIComponent(document.getElementById('talentNote').value.trim()),
-    {method:'GET',keepalive:true})
+    {method:'GET'})
     .then(function(r){return r.json();})
     .then(function(data){
       // Incrémenter le compteur Talents (visuel)
@@ -2030,7 +2030,7 @@ validerTalent = function(){
     +'&filleul_tel='+encodeURIComponent(tel)
     +'&filleul_email='+encodeURIComponent(document.getElementById('talentEmail').value.trim())
     +'&note='+encodeURIComponent(document.getElementById('talentNote').value.trim()),
-    {method:'GET',keepalive:true})
+    {method:'GET'})
     .then(function(r){return r.json();})
     .then(function(){
       // Incrémenter compteur sTalents
@@ -2062,7 +2062,7 @@ function saveDailyStatsToSheet(){
     +'&fidel='+fid
     +'&solidaires='+sol
     +'&talents='+tal,
-    {method:'GET',keepalive:true})
+    {method:'GET'})
     .catch(function(){ return {ok:false}; });
 }
 
@@ -2286,7 +2286,7 @@ function validerSolidaire(){
     + '&apprenant_nom='    + encodeURIComponent(AP.nom)
     + '&montant='          + montant
     + '&mode_paiement='    + encodeURIComponent(solMode),
-    {method:'GET', keepalive:true})
+    {method:'GET'})
     .then(function(r){ return r.json(); })
     .then(function(data){
       // Compteur solidaires
@@ -2379,10 +2379,10 @@ function fermerJournee(){
     +'&solidaires='+sol
     +'&talents='+tal
     +'&ferme=OUI',
-    {method:'GET', keepalive:true})
+    {method:'GET'})
     .then(function(){
       // Enregistrer l'heure de fermeture pour l'émargement (présence Qualiopi/AFEST)
-      return fetch(APPS_URL+'?action=fermerEmargement&apprenant_id='+encodeURIComponent(AP.id), {method:'GET', keepalive:true});
+      return fetch(APPS_URL+'?action=fermerEmargement&apprenant_id='+encodeURIComponent(AP.id), {method:'GET'});
     })
     .then(function(){
       try{ sessionStorage.removeItem('cockpit_open_date'); }catch(e){}
@@ -3001,7 +3001,7 @@ function validerNewTx(){
     +'&participation_mensuelle=' + newTxMensuel
     +'&client_tel='        + encodeURIComponent(tel)
     +'&client_email='      + encodeURIComponent(email),
-    {method:'GET', keepalive:true})
+    {method:'GET'})
     .then(function(r){return r.json();})
     .then(function(data){
       var code = (data.status==='ok') ? data.code : '????';
