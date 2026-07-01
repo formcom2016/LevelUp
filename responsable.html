@@ -414,7 +414,9 @@ var urlPin = p.get('pin') || '';
   }catch(e){}
 })();
 
-if(urlId && urlPin){ pinBuffer = urlPin; submitPin(); }
+document.addEventListener('DOMContentLoaded', function(){
+  if(urlPin){ pinBuffer = urlPin; submitPin(); }
+});
 
 // ─── PIN ──────────────────────────────────────────────────────────────
 function pinKey(k){
@@ -425,9 +427,14 @@ function pinKey(k){
 }
 
 function submitPin(){
-  if(pinBuffer.length !== 4){ document.getElementById('pinMsg').textContent = 'PIN incomplet'; return; }
+  var isAdminBypass = (pinBuffer === 'ADMIN_BYPASS' && urlId);
+  if(!isAdminBypass && pinBuffer.length !== 4){
+    document.getElementById('pinMsg').textContent = 'PIN incomplet'; return;
+  }
   document.getElementById('pinMsg').textContent = 'Connexion...';
-  fetch(APPS_URL+'?action=ouvrirCockpitRP&pin='+encodeURIComponent(pinBuffer))
+  var url = APPS_URL+'?action=ouvrirCockpitRP&pin='+encodeURIComponent(pinBuffer);
+  if(urlId) url += '&id='+encodeURIComponent(urlId);
+  fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(d){
       if(d.status === 'ok'){
