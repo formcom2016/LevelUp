@@ -2197,16 +2197,16 @@ function ajouterSecteurAdmin(){
   fetch(APPS_URL+'?action=addSecteur&rp_id=ADMIN&nom='+encodeURIComponent(nom)+'&type='+encodeURIComponent(type)+'&ville='+encodeURIComponent(ville))
     .then(function(r){ return r.json(); })
     .then(function(d){
-      if(d.status==='ok'){
-        return fetch(APPS_URL+'?action=validerSecteur&secteur_id='+encodeURIComponent(d.id)+'&decision=ACTIF');
-      }
-    })
-    .then(function(){
-      chargerSecteursAdmin();
+      // Vider le formulaire et fermer
       document.getElementById('formAjoutSecteurAdmin').style.display='none';
       document.getElementById('adminSecNom').value='';
       document.getElementById('adminSecVille').value='';
-    }).catch(function(){});
+      // Recharger la liste immédiatement — garanti quelle que soit la réponse
+      chargerSecteursAdmin();
+    }).catch(function(){
+      // Même en cas d'erreur réseau, recharger la liste
+      chargerSecteursAdmin();
+    });
 }
 
 /* ========== MESSAGERIE ========== */

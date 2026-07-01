@@ -2694,7 +2694,9 @@ function ouvrirPasseport(){
 }
 
 function ouvrirFormulaire(){
-  var url = 'formcom-v2.html?id=' + encodeURIComponent(AP.id)
+  var base = new URL('formcom-v2.html', window.location.href).href.split('?')[0];
+  var url = base
+    + '?id=' + encodeURIComponent(AP.id)
     + '&prenom='       + encodeURIComponent(AP.prenom)
     + '&nom='          + encodeURIComponent(AP.nom)
     + '&niveau='       + encodeURIComponent(AP.niveau)
