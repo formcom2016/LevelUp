@@ -431,7 +431,7 @@ function submitPin(){
     .then(function(r){ return r.json(); })
     .then(function(d){
       if(d.status === 'ok'){
-        RP.id = d.id; RP.prenom = d.prenom; RP.nom = d.nom; RP.objectif = d.objectif_session || '';
+        RP.id = d.id; RP.prenom = d.prenom || 'RP'; RP.nom = d.nom || d.id || ''; RP.objectif = d.objectif_session || '';
         ouvrirInterface();
       } else {
         document.getElementById('pinMsg').textContent = d.message || 'PIN incorrect';
@@ -444,8 +444,8 @@ function ouvrirInterface(){
   document.getElementById('pinScreen').style.display = 'none';
   document.getElementById('mainContainer').style.display = 'block';
   document.getElementById('bottomBar').style.display = 'block';
-  document.getElementById('rpNomDisplay').textContent = RP.prenom + ' ' + RP.nom;
-  document.getElementById('rpInfoDisplay').textContent = RP.id + ' · ' + RP.prenom + ' ' + RP.nom;
+  document.getElementById('rpNomDisplay').textContent = (RP.prenom||'') + (RP.nom ? ' '+RP.nom : '');
+  document.getElementById('rpInfoDisplay').textContent = RP.id + ' · ' + (RP.prenom||'') + (RP.nom ? ' '+RP.nom : '');
   if(RP.objectif) document.getElementById('objectifInput').value = RP.objectif;
   chargerEquipe();
   chargerSelection();
