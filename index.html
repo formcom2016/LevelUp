@@ -1126,7 +1126,7 @@ function loadResponsables(){
           +'</div>'
           +(rp.objectif_session ? '<div style="font-size:10px;color:rgba(167,139,250,.7);font-family:Exo 2,sans-serif;padding:6px 8px;background:rgba(124,58,237,.06);border-radius:6px;margin-bottom:8px">🎯 '+rp.objectif_session+'</div>' : '')
           +'<div style="display:flex;gap:6px">'
-            +'<a href="responsable.html?id='+rp.id+'&pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit</a>'
+            +'<a href="responsable.html?pin='+rp.pin+'" target="_blank" style="flex:1;padding:8px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⚔️ Cockpit</a>'
             +'<button onclick="ouvrirFicheRP(\''+rp.id+'\',\''+escHtml(rp.prenom)+'\',\''+escHtml(rp.nom)+'\',\''+rp.pin+'\',\''+rp.statut+'\')" style="flex:1;padding:8px;background:rgba(41,121,255,.1);border:1px solid rgba(41,121,255,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">📊 Fiche</button>'
             +'<button onclick="envoyerMessageIndividuel(\''+rp.id+'\',\''+rp.prenom+' '+rp.nom+'\')" style="padding:8px 12px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);color:#F5A623;border-radius:8px;font-size:13px;cursor:pointer">💬</button>'
           +'</div>'
@@ -2116,7 +2116,7 @@ function chargerSecteursAdmin(){
     .then(function(d){
       var rps = d.responsables || [];
       return Promise.all(rps.map(function(rp){
-        return fetch(APPS_URL+'?action=getSecteurDuJour&id='+encodeURIComponent(rp.id)+'&_t='+Date.now())
+        return fetch(APPS_URL+'?action=getSecteurDuJour&rp_id='+encodeURIComponent(rp.id)+'&_t='+Date.now())
           .then(function(r){ return r.json(); })
           .then(function(s){ return {rp:rp, secteur:s.secteur}; })
           .catch(function(){ return {rp:rp, secteur:null}; });

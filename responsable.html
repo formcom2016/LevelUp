@@ -651,6 +651,7 @@ function renderEquipe(){
       +'<div class="ap-actions">'
         +'<button class="ap-btn btn-note" onclick="ouvrirNote(\''+a.id+'\',\''+a.prenom+'\')">📝 Note</button>'
         +'<button class="ap-btn btn-presence" onclick="validerPresence(\''+a.id+'\',\''+a.prenom+'\')">✅ Présence</button>'
+        +'<button class="ap-btn" onclick="retirerUnApprenant(\''+a.id+'\',\''+a.prenom+'\')" style="background:rgba(232,25,44,.1);border-color:rgba(232,25,44,.3);color:#E8192C">✖ Retirer</button>'
       +'</div>'
     +'</div>';
   }).join('');
@@ -688,6 +689,18 @@ function toggleSelection(id){
   if(selectionActive[id]) delete selectionActive[id];
   else selectionActive[id] = true;
   renderSelection();
+}
+
+function retirerUnApprenant(apprId, prenom){
+  if(!confirm('Retirer '+prenom+' de ton équipe ?\nIl redeviendra disponible pour les autres RP.')) return;
+  fetch(APPS_URL+'?action=retirerApprenant&rp_id='+encodeURIComponent(RP.id)+'&apprenant_id='+encodeURIComponent(apprId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        chargerEquipe();
+        chargerSelection();
+      }
+    }).catch(function(){ alert('Erreur réseau'); });
 }
 
 function validerEquipe(){
@@ -1055,7 +1068,7 @@ function afficherListeSecteurs(list){
 }
 
 function choisirSecteur(secId, secNom){
-  if(!confirm('Choisir "'+secNom+'" comme secteur du jour pour toute ton équipe ?')) return;
+  // Sélection directe sans confirmation — l'utilisateur a déjà cliqué volontairement
   fetch(APPS_URL+'?action=setSecteurDuJour&rp_id='+encodeURIComponent(RP.id)+'&secteur_id='+encodeURIComponent(secId))
     .then(function(r){ return r.json(); })
     .then(function(d){
@@ -1063,13 +1076,14 @@ function choisirSecteur(secId, secNom){
         _secteurActuel = d;
         afficherSecteurActuel();
         fermerModalSecteur();
-        // Notifier l'équipe automatiquement
         var msg = '📍 Mission du jour : '+d.nom+(d.ville?' — '+d.ville:'')+' ('+d.type+')';
         fetch(APPS_URL+'?action=envoyerMessage'
           +'&expediteur_id='+encodeURIComponent(RP.id)
           +'&expediteur_nom='+encodeURIComponent(RP.prenom+' '+RP.nom)
           +'&destinataire=equipe_rp&rp_id='+encodeURIComponent(RP.id)
           +'&texte='+encodeURIComponent(msg), {method:'GET'}).catch(function(){});
+      } else {
+        alert('Erreur : '+(d.message||'Réessayez'));
       }
     }).catch(function(){ alert('Erreur réseau'); });
 }
