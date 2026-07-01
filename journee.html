@@ -1842,6 +1842,7 @@ function loadDailyStatsFromSheet(){
       setFromSheet('sFidel',     sheetFid);
       setFromSheet('sSolidaires',sheetSol);
       setFromSheet('sTalents',   sheetTal);
+      setFromSheet('sPts',       sheetPts);
       var sE=document.getElementById('sEvals');
       if(sE) sE.textContent = d.evals_jour || 0;
       // Cagnotte solidaire
@@ -2782,6 +2783,11 @@ function getLienAbo(){
 }
 
 function payerStripe(){
+  // Sélectionner mode Stripe si pas déjà sélectionné
+  if(newTxPayModes.indexOf('Stripe')===-1){ newTxPayModes.push('Stripe'); }
+  // Cocher l'attestation automatiquement
+  var att = document.getElementById('txAttestation');
+  if(att) att.checked = true;
   window.open(STRIPE_PONCT+'?client_reference_id='+encodeURIComponent(AP.id||''), '_blank');
 }
 
@@ -2799,6 +2805,11 @@ function envoyerStripe(type){
 }
 
 function abonnerMaintenant(){
+  // Sélectionner mode Stripe si pas déjà sélectionné
+  if(newTxPayModes.indexOf('Stripe')===-1){ newTxPayModes.push('Stripe'); }
+  // Cocher l'attestation automatiquement
+  var att = document.getElementById('txAttestation');
+  if(att) att.checked = true;
   window.open(getLienAbo(), '_blank');
 }
 
@@ -2808,6 +2819,11 @@ function fermerZettle(){
 }
 
 function payerZettle(){
+  // Sélectionner mode Zettle si pas déjà sélectionné
+  if(newTxPayModes.indexOf('Zettle')===-1){ newTxPayModes.push('Zettle'); }
+  // Cocher l'attestation automatiquement
+  var att = document.getElementById('txAttestation');
+  if(att) att.checked = true;
   var m = txMontantPonctuel.toFixed(2);
   var o = document.createElement('div');
   o.id  = 'zettleOverlay';
@@ -3021,6 +3037,8 @@ function validerNewTx(){
       if(pb) pb.textContent = AP.ptsToday.toLocaleString('fr-FR')+' XP';
 
       // ── ÉTAPE 2 : Mettre à jour compteurs ─────────────────────────
+      var sPtsEl = document.getElementById('sPts');
+      if(sPtsEl) sPtsEl.textContent = AP.ptsToday.toLocaleString('fr-FR');
       if(newTxNbArt > 0){
         var sA = document.getElementById('sArticles');
         if(sA) sA.textContent = (parseInt(sA.textContent)||0) + newTxNbArt;
