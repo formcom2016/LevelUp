@@ -485,8 +485,6 @@ body.light-mode .share-block{background:#fff !important;border-color:#DDE3F0 !im
 .stat-mini-num{font-size:18px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- MODE DEV : simulateur backend local. Supprimer en production. -->
-
 </head>
 <body>
 
@@ -1206,7 +1204,7 @@ function renderProgressChart(data) {
 <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">&#9728;&#65039;</button>
 
 <!-- BOUTON RETOUR DASHBOARD -->
-<a id="backDashBtn" href="index.html?admin=FC2026ADMIN" style="display:none;position:fixed;bottom:90px;right:20px;z-index:9999;width:60px;height:60px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:22px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);transition:transform .2s" title="Retour Dashboard">🏠</a>
+<a id="backDashBtn" href="index.html?admin=FC2026ADMIN" style="display:none;position:fixed;bottom:90px;right:20px;z-index:9999;width:60px;height:60px;border-radius:50%;background:var(--card);border:2px solid var(--border);font-size:22px;text-decoration:none;box-shadow:0 4px 20px rgba(0,0,0,.4);align-items:center;justify-content:center;backdrop-filter:blur(10px);transition:transform .2s" title="Retour Dashboard">🏠</a>
 
 <script>
 // Afficher le bouton retour uniquement si venu du Dashboard Admin
