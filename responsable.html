@@ -281,7 +281,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <div class="sec-title" style="margin:0">🧾 Bons de mon équipe</div>
       <button onclick="chargerBons()" style="padding:5px 12px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">↻ Actualiser</button>
     </div>
-    <input id="bonSearchRP" type="text" placeholder="Filtrer par code, apprenant, client..." oninput="filtrerBons()" style="width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:10px" autocomplete="off">
+    <input id="bonSearchRP" type="text" placeholder="🔍 Code, apprenant, client, téléphone..." oninput="filtrerBons()" style="width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:10px" autocomplete="off">
     <div id="bonsStats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"></div>
     <div id="bonsList" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
       <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Appuyez sur ↻ pour charger</div>
@@ -426,37 +426,50 @@ function switchTab(n){
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', i===n); });
   document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
   if(n===3) chargerNotes();
-  if(n===2) chargerBons();
+  if(n===2){ chargerBons(); demarrerPollingBons(); }
+  else arreterPollingBons();
 }
 
 // ─── BONS DE VENTE ────────────────────────────────────────────────────
 var _tousLesBons = [];
+var _bonsPollingInterval = null;
 
-function chargerBons(){
+function chargerBons(silencieux){
   var list = document.getElementById('bonsList');
   var stats = document.getElementById('bonsStats');
-  if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Chargement...</div>';
+  if(!silencieux && list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Chargement...</div>';
 
-  // Récupérer les IDs de l'équipe puis les transactions
-  var idsEquipe = monEquipe.map(function(a){ return a.apprenant_id; });
-  if(!idsEquipe.length){
-    if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans votre équipe.</div>';
-    return;
-  }
+  // CORRECTIF : monEquipe utilise le champ "id" (pas "apprenant_id")
+  var idsEquipe = monEquipe.map(function(a){ return a.id || a.apprenant_id || ''; }).filter(Boolean);
 
   fetch(APPS_URL+'?action=listTransactions&_t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
       var toutes = d.transactions || [];
-      // Filtrer pour l'équipe du RP
-      _tousLesBons = toutes.filter(function(t){
-        return idsEquipe.indexOf(t.apprenant_id) > -1;
-      });
+      if(idsEquipe.length){
+        _tousLesBons = toutes.filter(function(t){
+          return idsEquipe.indexOf(String(t.apprenant_id)) > -1;
+        });
+      } else {
+        _tousLesBons = toutes;
+      }
       afficherBons(_tousLesBons);
     })
     .catch(function(){
-      if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Erreur de chargement.</div>';
+      if(!silencieux && list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Erreur de chargement.</div>';
     });
+}
+
+function demarrerPollingBons(){
+  if(_bonsPollingInterval) clearInterval(_bonsPollingInterval);
+  _bonsPollingInterval = setInterval(function(){
+    var tab2 = document.getElementById('tab2');
+    if(tab2 && tab2.classList.contains('active')) chargerBons(true);
+  }, 30000);
+}
+
+function arreterPollingBons(){
+  if(_bonsPollingInterval){ clearInterval(_bonsPollingInterval); _bonsPollingInterval = null; }
 }
 
 function afficherBons(bons){
@@ -495,7 +508,7 @@ function afficherBons(bons){
       +'<div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);display:flex;align-items:center;justify-content:center;font-size:16px">'+(isAbo?'🔄':'📦')+'</div>'
       +'<div style="flex:1;min-width:0">'
         +'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'
-          +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+b.apprenant_prenom+'</span>'
+          +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+b.apprenant_prenom+' '+b.apprenant_nom+'</span>'
           +'<span style="font-family:monospace;font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px">'+b.code+'</span>'
           +'<span style="font-size:10px;font-weight:700;color:'+statutColor+';font-family:Exo 2,sans-serif">'+b.statut+'</span>'
         +'</div>'
@@ -503,7 +516,7 @@ function afficherBons(bons){
           +(isAbo ? '🔄 Abo '+b.participation_mensuelle+'€/mois' : '📦 '+b.nb_articles+' art. · '+b.montant+'€')
           +' · '+(b.date_formulaire||'—')
         +'</div>'
-        +(b.client_prenom ? '<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px">Client : '+b.client_prenom+' '+b.client_nom+'</div>' : '')
+        +(b.client_prenom ? '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px">👤 Client : '+b.client_prenom+' '+b.client_nom+(b.client_tel?' · 📞 '+b.client_tel:'')+'</div>' : '')
       +'</div>'
     +'</div>';
   }).join('');
@@ -513,9 +526,12 @@ function filtrerBons(){
   var q = (document.getElementById('bonSearchRP').value||'').toLowerCase().trim();
   if(!q){ afficherBons(_tousLesBons); return; }
   var filtered = _tousLesBons.filter(function(b){
-    return b.code.toLowerCase().indexOf(q) > -1
-      || b.apprenant_prenom.toLowerCase().indexOf(q) > -1
-      || (b.client_prenom||'').toLowerCase().indexOf(q) > -1;
+    return (b.code||'').toLowerCase().indexOf(q) > -1
+      || (b.apprenant_prenom||'').toLowerCase().indexOf(q) > -1
+      || (b.apprenant_nom||'').toLowerCase().indexOf(q) > -1
+      || (b.client_prenom||'').toLowerCase().indexOf(q) > -1
+      || (b.client_nom||'').toLowerCase().indexOf(q) > -1
+      || (b.client_tel||'').toLowerCase().indexOf(q) > -1;
   });
   afficherBons(filtered);
 }
@@ -582,11 +598,16 @@ function renderEquipe(){
         +'<div class="ap-status"><span class="status-dot '+dot+'"></span></div>'
       +'</div>'
       +(alertMsg ? '<div class="ap-alert-txt">'+alertMsg+'</div>' : '')
-      +'<div class="ap-stats">'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+a.pts_jour+'</div><div class="ap-stat-lbl">XP</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+a.articles+'</div><div class="ap-stat-lbl">Art.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+a.contacts+'</div><div class="ap-stat-lbl">Cont.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+a.refus+'</div><div class="ap-stat-lbl">Ref.</div></div>'
+      +'<div class="ap-stats" style="grid-template-columns:repeat(3,1fr);gap:6px">'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+(a.pts_jour||0)+'</div><div class="ap-stat-lbl">XP</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+(a.articles||0)+'</div><div class="ap-stat-lbl">Art.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#A78BFA">'+(a.fidel||0)+'</div><div class="ap-stat-lbl">Abos</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+(a.contacts||0)+'</div><div class="ap-stat-lbl">Cont.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+(a.refus||0)+'</div><div class="ap-stat-lbl">Ref.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#FFD166">'+(a.evals||0)+'</div><div class="ap-stat-lbl">Éval.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#06D6A0">'+(a.solidaires||0)+'</div><div class="ap-stat-lbl">Sol.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F472B6">'+(a.parfums_offerts_jour||0)+'</div><div class="ap-stat-lbl">🧴</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#34D399">'+(a.talents||0)+'</div><div class="ap-stat-lbl">Talents</div></div>'
       +'</div>'
       +'<div class="ap-actions">'
         +'<button class="ap-btn btn-note" onclick="ouvrirNote(\''+a.id+'\',\''+a.prenom+'\')">📝 Note</button>'
