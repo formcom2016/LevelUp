@@ -1773,9 +1773,7 @@ function loadDailyStatsFromSheet(){
     var cached = localStorage.getItem(cacheKey);
     if(cached){
       var cv = JSON.parse(cached);
-      counters.contact = cv.contacts||0; counters.refus = cv.refus||0;
-      document.getElementById('cntContact').textContent = counters.contact;
-      document.getElementById('cntRefus').textContent   = counters.refus;
+      // contacts/refus exclus du cache — toujours lus depuis le Sheet
       var sA=document.getElementById('sArticles');  if(sA) sA.textContent=cv.articles||0;
       var sF=document.getElementById('sFidel');     if(sF) sF.textContent=cv.fidel||0;
       var sS=document.getElementById('sSolidaires');if(sS) sS.textContent=cv.solidaires||0;
@@ -2057,15 +2055,12 @@ function saveDailyStatsToSheet(){
   var fid = parseInt((document.getElementById('sFidel')||{textContent:'0'}).textContent)||0;
   var sol = parseInt((document.getElementById('sSolidaires')||{textContent:'0'}).textContent)||0;
   var tal = parseInt((document.getElementById('sTalents')||{textContent:'0'}).textContent)||0;
-  var data = {
-    contacts: counters.contact||0, refus: counters.refus||0,
-    articles: art, fidel: fid, solidaires: sol, talents: tal
-  };
+  // contacts/refus exclus du cache — gérés exclusivement par le GAS via les boutons +/-
+  var data = { articles: art, fidel: fid, solidaires: sol, talents: tal };
   try{
     var cacheKey = 'fc_daily_'+AP.id+'_'+new Date().toISOString().slice(0,10);
     localStorage.setItem(cacheKey, JSON.stringify(data));
   }catch(e){}
-  // contacts et refus exclus — gérés exclusivement par les boutons +/- (anti-farming GAS)
   return fetch(APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
     +'&articles='+art
