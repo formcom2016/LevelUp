@@ -2473,8 +2473,8 @@ function renderTalents(filtre){
     var statutColor = statut.indexOf('CONTACT') > -1 ? '#00FF87'
                     : statut.indexOf('REFUS')   > -1 ? '#E8192C'
                     : '#F5A623';
-    var prenom = (t.filleul_prenom||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-    var tel    = (t.filleul_tel||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    var prenom = String(t.filleul_prenom||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    var tel    = String(t.filleul_tel||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
     var nomAff = (t.filleul_prenom||'') + ' ' + (t.filleul_nom||'');
     var nomData = nomAff.replace(/"/g,'&quot;');
     return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px">'
@@ -2491,7 +2491,7 @@ function renderTalents(filtre){
             +'</div>'
           +'</div>'
           +'<div style="height:1px;background:var(--border);margin:8px 0"></div>'
-          +'<div style="font-family:Exo 2,sans-serif;font-size:12px;color:var(--muted);margin-bottom:3px">&#128222; '+(t.filleul_tel||'—')+(t.filleul_email ? ' &nbsp;&middot;&nbsp; &#9993; '+t.filleul_email : '')+'</div>'
+          +'<div style="font-family:Exo 2,sans-serif;font-size:12px;color:var(--muted);margin-bottom:3px">&#128222; '+String(t.filleul_tel||'—')+(t.filleul_email ? ' &nbsp;&middot;&nbsp; &#9993; '+t.filleul_email : '')+'</div>'
           +(t.note ? '<div style="font-size:11px;color:var(--muted);font-style:italic;background:rgba(255,255,255,.04);border-left:2px solid var(--border);padding:6px 10px;border-radius:0 6px 6px 0;margin-top:6px">&#128172; '+t.note+'</div>' : '')
           +'<div style="font-family:Exo 2,sans-serif;font-size:10px;color:var(--muted);margin-top:8px">R\u00e9v\u00e9l\u00e9 par <strong style="color:var(--text)">'+(t.parrain_prenom||'')+' '+(t.parrain_nom||'')+'</strong> &middot; '+(t.date||'—')+'</div>'
         +'</div>'
