@@ -2065,16 +2065,15 @@ function saveDailyStatsToSheet(){
     var cacheKey = 'fc_daily_'+AP.id+'_'+new Date().toISOString().slice(0,10);
     localStorage.setItem(cacheKey, JSON.stringify(data));
   }catch(e){}
+  // contacts et refus exclus — gérés exclusivement par les boutons +/- (anti-farming GAS)
   return fetch(APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
-    +'&contacts='+data.contacts
-    +'&refus='+data.refus
-    +'&articles='+data.articles
-    +'&fidel='+data.fidel
-    +'&solidaires='+data.solidaires
-    +'&talents='+data.talents,
+    +'&articles='+art
+    +'&fidel='+fid
+    +'&solidaires='+sol
+    +'&talents='+tal,
     {method:'GET',keepalive:true})
-    .catch(function(){ return {ok:false}; }); // toujours retourner une Promise résolue
+    .catch(function(){ return {ok:false}; });
 }
 
 function initPinCheck(){
