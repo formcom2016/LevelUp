@@ -1279,14 +1279,9 @@ function ouvrirInterface(data){
     var _cached = localStorage.getItem('fc_cnt_'+AP.id+'_'+_today);
     if(_cached){
       var _cv = JSON.parse(_cached);
-      if(_cv.contact > 0 || _cv.refus > 0){
-        counters.contact = _cv.contact || 0;
-        counters.refus   = _cv.refus   || 0;
-        var _cC = document.getElementById('cntContact');
-        var _cR = document.getElementById('cntRefus');
-        if(_cC) _cC.textContent = counters.contact;
-        if(_cR) _cR.textContent = counters.refus;
-      }
+      // fc_cnt_ sert uniquement à éviter l'écran vide 1 seconde
+      // mais on ne l'applique PAS ici — le Sheet écrase toujours via loadDailyStatsFromSheet
+      // (ancienne logique supprimée car elle écrasait les vraies valeurs du Sheet)
     }
   }catch(e){}
   try{ sessionStorage.setItem('cockpit_open_date', new Date().toDateString()); }catch(e){}
