@@ -1249,7 +1249,7 @@ function renderFicheRP(rp, d){
             +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+((a.pts_jour||0).toLocaleString('fr-FR'))+' XP · '+(a.articles||0)+' art. · '+(a.contacts||0)+' cont.'+(sil?' · 🔴':' · 🟢')+'</div>'
           +'</div>'
           +'<div style="display:flex;gap:6px" onclick="event.stopPropagation()">'
-            +'<button onclick="ouvrirFicheApprenant(\''+a.id+'\',\''+escHtml(a.prenom)+'\',\''+escHtml(a.nom)+'\',\''+rp.id+'\')" style="padding:5px 8px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:#A78BFA;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;cursor:pointer">👤</button>'
+            +'<button onclick="ouvrirMiniApprenant(\''+a.id+'\',\''+escHtml(a.prenom)+'\',\''+escHtml(a.nom)+'\',\''+rp.id+'\')" style="padding:5px 8px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:#A78BFA;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;cursor:pointer">👤</button>'
             +'<button onclick="envoyerMessageApprenant(\''+a.id+'\',\''+escHtml(a.prenom+' '+a.nom)+'\')" style="padding:5px 8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);color:#F5A623;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;cursor:pointer">💬</button>'
             +'<a href="journee.html?id='+a.id+'" target="_blank" style="padding:5px 8px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:7px;font-size:10px;font-weight:700;font-family:Exo 2,sans-serif;text-decoration:none">🎮</a>'
           +'</div>'
@@ -1325,8 +1325,8 @@ function retirerSelectionRP(rpId){
     }).catch(function(){ alert('Erreur réseau'); });
 }
 
-// ── Fiche apprenant depuis la vue RP ──
-function ouvrirFicheApprenant(apprId, prenom, nom, rpId){
+// ── Mini-fiche apprenant depuis la fiche RP (différent de ouvrirFicheApprenant du dashboard) ──
+function ouvrirMiniApprenant(apprId, prenom, nom, rpId){
   // Chercher les stats dans l'équipe déjà chargée
   var rp = _rpEnCours;
   var equipe = _derniereEquipeRP || [];
