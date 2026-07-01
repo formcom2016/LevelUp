@@ -2050,23 +2050,26 @@ function saveDailyStatsToSheet(){
   var fid = parseInt((document.getElementById('sFidel')||{textContent:'0'}).textContent)||0;
   var sol = parseInt((document.getElementById('sSolidaires')||{textContent:'0'}).textContent)||0;
   var tal = parseInt((document.getElementById('sTalents')||{textContent:'0'}).textContent)||0;
-  // contacts/refus inclus — source de vérité côté client, sauvegardés à chaque changement
+  // contacts/refus : envoyés uniquement si > 0 pour éviter d'écraser des valeurs existantes
+  // lors d'un rechargement où les compteurs locaux seraient encore à 0
   var cnt = counters.contact || 0;
   var ref = counters.refus   || 0;
-  var data = { articles: art, fidel: fid, solidaires: sol, talents: tal, contacts: cnt, refus: ref };
+  var data = { articles: art, fidel: fid, solidaires: sol, talents: tal };
+  if (cnt > 0) data.contacts = cnt;
+  if (ref > 0) data.refus    = ref;
   try{
     var cacheKey = 'fc_daily_'+AP.id+'_'+new Date().toISOString().slice(0,10);
     localStorage.setItem(cacheKey, JSON.stringify(data));
   }catch(e){}
-  return fetch(APPS_URL+'?action=saveDailyStats'
+  var url = APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
     +'&articles='+art
     +'&fidel='+fid
     +'&solidaires='+sol
-    +'&talents='+tal
-    +'&contacts='+cnt
-    +'&refus='+ref,
-    {method:'GET'})
+    +'&talents='+tal;
+  if (cnt > 0) url += '&contacts='+cnt;
+  if (ref > 0) url += '&refus='+ref;
+  return fetch(url, {method:'GET'})
     .catch(function(){ return {ok:false}; });
 }
 
@@ -2360,7 +2363,9 @@ function fermerJournee(){
   var fid      = parseInt((document.getElementById('sFidel')||{textContent:'0'}).textContent)||0;
   var sol      = parseInt((document.getElementById('sSolidaires')||{textContent:'0'}).textContent)||0;
   var tal      = parseInt((document.getElementById('sTalents')||{textContent:'0'}).textContent)||0;
-  var contacts = counters.contact || 0;
+  // Math.max entre counters et affichage visuel — protège contre un refresh où counters serait encore à 0
+  var contacts = Math.max(counters.contact || 0, parseInt((document.getElementById('cntContact')||{textContent:'0'}).textContent)||0);
+  var refus    = Math.max(counters.refus   || 0, parseInt((document.getElementById('cntRefus')  ||{textContent:'0'}).textContent)||0);
   var xpJour   = AP.ptsToday || 0;
 
   var msg = '🏁 Récapitulatif de ta journée\n\n'
@@ -2377,7 +2382,7 @@ function fermerJournee(){
   fetch(APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
     +'&contacts='+contacts
-    +'&refus='+(counters.refus||0)
+    +'&refus='+refus
     +'&articles='+art
     +'&fidel='+fid
     +'&solidaires='+sol
