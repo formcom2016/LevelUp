@@ -156,6 +156,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .rallye-input{width:100%;padding:10px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;resize:none;outline:none;min-height:70px;margin-bottom:8px}
 .rallye-btn{width:100%;padding:12px;background:linear-gradient(135deg,#5B21B6,#7C3AED);color:#fff;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
 
+/* SECTEURS */
+.filtre-type{padding:5px 10px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:20px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
+.filtre-type.actif{background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);color:#A78BFA}
+.secteur-card{padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.secteur-card:hover,.secteur-card:active{background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.4)}
+.secteur-card.en-attente{border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.05)}
+
 /* BARRE FIXE BAS */
 .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:10px 16px;z-index:200}
 .btn-sos{width:100%;padding:13px;background:linear-gradient(135deg,#7F1D1D,#E8192C);color:#fff;border:none;border-radius:var(--r);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px}
@@ -281,7 +288,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <div class="sec-title" style="margin:0">🧾 Bons de mon équipe</div>
       <button onclick="chargerBons()" style="padding:5px 12px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;cursor:pointer">↻ Actualiser</button>
     </div>
-    <input id="bonSearchRP" type="text" placeholder="🔍 Code, apprenant, client, téléphone..." oninput="filtrerBons()" style="width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:10px" autocomplete="off">
+    <input id="bonSearchRP" type="text" placeholder="Filtrer par code, apprenant, client..." oninput="filtrerBons()" style="width:100%;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:10px" autocomplete="off">
     <div id="bonsStats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px"></div>
     <div id="bonsList" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
       <div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Appuyez sur ↻ pour charger</div>
@@ -296,6 +303,73 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
   <!-- TAB 4 : ACTIONS / MESSAGES -->
   <div class="section" id="tab4">
+
+    <!-- ── MISSION DU JOUR ── -->
+    <div class="sec-title">🗺️ Mission du jour</div>
+    <div id="missionDuJourBlock" style="margin-bottom:18px">
+      <!-- Secteur actuel -->
+      <div id="secteurActuelCard" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(96,165,250,.08));border:1px solid rgba(124,58,237,.3);border-radius:var(--r);padding:14px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:10px;color:rgba(167,139,250,.6);font-family:'Exo 2',sans-serif;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">📍 Secteur en cours</div>
+            <div id="secteurActuelNom" style="font-family:'Exo 2',sans-serif;font-size:17px;font-weight:900;color:#A78BFA"></div>
+            <div id="secteurActuelMeta" style="font-size:11px;color:var(--muted);margin-top:3px"></div>
+          </div>
+          <button onclick="ouvrirChoixSecteur()" style="padding:8px 14px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:#A78BFA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">✏️ Changer</button>
+        </div>
+      </div>
+
+      <!-- Pas encore de secteur -->
+      <div id="secteurVideCard" style="background:rgba(245,166,35,.06);border:1px dashed rgba(245,166,35,.3);border-radius:var(--r);padding:14px;margin-bottom:12px;text-align:center">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px">Aucun secteur choisi pour aujourd'hui</div>
+        <button onclick="ouvrirChoixSecteur()" style="padding:10px 20px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.5px">🗺️ Choisir le secteur du jour</button>
+      </div>
+    </div>
+
+    <!-- Modal choix secteur -->
+    <div id="modalSecteur" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:20px">
+      <div style="max-width:500px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-family:'Exo 2',sans-serif;font-size:16px;font-weight:900;color:var(--text)">🗺️ Choisir le secteur</div>
+          <button onclick="fermerModalSecteur()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+        </div>
+
+        <!-- Recherche -->
+        <input id="secteurSearch" type="text" placeholder="🔍 Rechercher..." oninput="filtrerSecteurs()" style="width:100%;padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;margin-bottom:12px;box-sizing:border-box">
+
+        <!-- Filtres type -->
+        <div id="filtresType" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <button onclick="filtrerParType('')" class="filtre-type actif" data-type="">Tous</button>
+          <button onclick="filtrerParType('Centre commercial')" class="filtre-type" data-type="Centre commercial">🏬 CC</button>
+          <button onclick="filtrerParType('Zone géographique')" class="filtre-type" data-type="Zone géographique">🌍 Zone</button>
+          <button onclick="filtrerParType('Quartier')" class="filtre-type" data-type="Quartier">🏘️ Quartier</button>
+          <button onclick="filtrerParType('Résidence')" class="filtre-type" data-type="Résidence">🏠 Résidence</button>
+        </div>
+
+        <!-- Liste secteurs -->
+        <div id="listeSecteurs" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+
+        <!-- Proposer un nouveau -->
+        <div style="border-top:1px solid var(--border);padding-top:14px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-family:'Exo 2',sans-serif">Secteur introuvable ? Propose-en un nouveau :</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <input id="newSecNom" type="text" placeholder="Nom du secteur *" style="padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <select id="newSecType" style="padding:9px 10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+                <option value="Zone géographique">🌍 Zone géo</option>
+                <option value="Quartier">🏘️ Quartier</option>
+                <option value="Centre commercial">🏬 Centre commercial</option>
+                <option value="Résidence">🏠 Résidence</option>
+                <option value="Autre">📍 Autre</option>
+              </select>
+              <input id="newSecVille" type="text" placeholder="Ville *" style="padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+            </div>
+            <button onclick="proposerNouveauSecteur()" style="padding:10px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;cursor:pointer">＋ Proposer ce secteur</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="sec-title">Message de ralliement</div>
     <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:var(--r);padding:14px;margin-bottom:14px">
       <div style="font-size:11px;color:rgba(167,139,250,.6);margin-bottom:8px;font-family:'Exo 2',sans-serif;font-weight:700">Envoyer un message à toute l'équipe — apparaît immédiatement dans leur cockpit</div>
@@ -426,50 +500,183 @@ function switchTab(n){
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', i===n); });
   document.querySelectorAll('.section').forEach(function(s,i){ s.classList.toggle('active', i===n); });
   if(n===3) chargerNotes();
-  if(n===2){ chargerBons(); demarrerPollingBons(); }
-  else arreterPollingBons();
+  if(n===2){ chargerBons(); demarrerPollingBons(); } else arreterPollingBons();
+  if(n===4) chargerSecteurActuel();
+}
+
+// ─── SECTEURS ─────────────────────────────────────────────────────────
+var _secteurs = [];
+var _filtreTypeActif = '';
+var _secteurActuel = null;
+
+function chargerSecteurActuel(){
+  fetch(APPS_URL+'?action=getSecteurDuJour&id='+encodeURIComponent(RP.id)+'&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      _secteurActuel = d.secteur || null;
+      afficherSecteurActuel();
+    }).catch(function(){});
+}
+
+function afficherSecteurActuel(){
+  var cardActuel = document.getElementById('secteurActuelCard');
+  var cardVide   = document.getElementById('secteurVideCard');
+  if(!cardActuel || !cardVide) return;
+  if(_secteurActuel && _secteurActuel.nom){
+    cardActuel.style.display = 'block';
+    cardVide.style.display   = 'none';
+    document.getElementById('secteurActuelNom').textContent  = _secteurActuel.nom;
+    document.getElementById('secteurActuelMeta').textContent =
+      (_secteurActuel.type||'') + (_secteurActuel.ville ? ' · '+_secteurActuel.ville : '') +
+      (_secteurActuel.heure ? ' · Choisi à '+_secteurActuel.heure : '');
+  } else {
+    cardActuel.style.display = 'none';
+    cardVide.style.display   = 'block';
+  }
+}
+
+function ouvrirChoixSecteur(){
+  document.getElementById('modalSecteur').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  chargerListeSecteurs();
+}
+
+function fermerModalSecteur(){
+  document.getElementById('modalSecteur').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function chargerListeSecteurs(){
+  var liste = document.getElementById('listeSecteurs');
+  liste.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Chargement...</div>';
+  fetch(APPS_URL+'?action=listSecteurs&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      _secteurs = d.secteurs || [];
+      afficherListeSecteurs(_secteurs);
+    }).catch(function(){
+      liste.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Erreur de chargement.</div>';
+    });
+}
+
+function filtrerParType(type){
+  _filtreTypeActif = type;
+  document.querySelectorAll('.filtre-type').forEach(function(b){
+    b.classList.toggle('actif', b.dataset.type === type);
+  });
+  filtrerSecteurs();
+}
+
+function filtrerSecteurs(){
+  var q = (document.getElementById('secteurSearch').value||'').toLowerCase().trim();
+  var filtered = _secteurs.filter(function(s){
+    var matchType = !_filtreTypeActif || s.type === _filtreTypeActif;
+    var matchQ    = !q
+      || s.nom.toLowerCase().indexOf(q)   > -1
+      || s.ville.toLowerCase().indexOf(q) > -1
+      || s.type.toLowerCase().indexOf(q)  > -1;
+    return matchType && matchQ;
+  });
+  afficherListeSecteurs(filtered);
+}
+
+function afficherListeSecteurs(list){
+  var liste = document.getElementById('listeSecteurs');
+  if(!list.length){
+    liste.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Aucun secteur trouvé.</div>';
+    return;
+  }
+  var typeIcons = {'Centre commercial':'🏬','Zone géographique':'🌍','Quartier':'🏘️','Résidence':'🏠','Autre':'📍'};
+  liste.innerHTML = list.map(function(s){
+    var icon = typeIcons[s.type] || '📍';
+    var isEnAttente = s.statut === 'EN_ATTENTE';
+    var isCurrent   = _secteurActuel && _secteurActuel.id === s.id;
+    return '<div class="secteur-card'+(isEnAttente?' en-attente':'')+'" onclick="choisirSecteur(\''+s.id+'\',\''+s.nom.replace(/'/g,"\\'")+'\')">'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-family:\'Exo 2\',sans-serif;font-size:13px;font-weight:800;color:'+(isCurrent?'#A78BFA':'var(--text)')+'">'+icon+' '+s.nom+(isCurrent?' ✓':' ')+'</div>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+s.type+(s.ville?' · '+s.ville:'')+(isEnAttente?' · <span style="color:#F5A623">En attente de validation</span>':'')+'</div>'
+      +'</div>'
+      +'<div style="font-size:18px;opacity:.4">›</div>'
+    +'</div>';
+  }).join('');
+}
+
+function choisirSecteur(secId, secNom){
+  if(!confirm('Choisir "'+secNom+'" comme secteur du jour pour toute ton équipe ?')) return;
+  fetch(APPS_URL+'?action=setSecteurDuJour&rp_id='+encodeURIComponent(RP.id)+'&secteur_id='+encodeURIComponent(secId))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        _secteurActuel = d;
+        afficherSecteurActuel();
+        fermerModalSecteur();
+        // Notifier l'équipe
+        var msg = '📍 Mission du jour : '+d.nom+(d.ville?' — '+d.ville:'')+' ('+d.type+')';
+        envoyerRallyeTexte(msg);
+      }
+    }).catch(function(){});
+}
+
+function proposerNouveauSecteur(){
+  var nom   = (document.getElementById('newSecNom').value||'').trim();
+  var type  = document.getElementById('newSecType').value;
+  var ville = (document.getElementById('newSecVille').value||'').trim();
+  if(!nom || !ville){ alert('Remplis le nom et la ville.'); return; }
+  fetch(APPS_URL+'?action=addSecteur&rp_id='+encodeURIComponent(RP.id)
+    +'&nom='+encodeURIComponent(nom)
+    +'&type='+encodeURIComponent(type)
+    +'&ville='+encodeURIComponent(ville))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        document.getElementById('newSecNom').value  = '';
+        document.getElementById('newSecVille').value = '';
+        // Choisir immédiatement ce nouveau secteur
+        choisirSecteur(d.id, d.nom);
+      }
+    }).catch(function(){});
+}
+
+// Variante d'envoi rallye sans prompt utilisateur (pour les secteurs)
+function envoyerRallyeTexte(texte){
+  if(!texte) return;
+  fetch(APPS_URL+'?action=envoyerMessage'
+    +'&expediteur_id='+encodeURIComponent(RP.id)
+    +'&expediteur_nom='+encodeURIComponent(RP.prenom+' '+RP.nom)
+    +'&destinataire=equipe_rp'
+    +'&rp_id='+encodeURIComponent(RP.id)
+    +'&texte='+encodeURIComponent(texte),
+    {method:'GET'}).catch(function(){});
 }
 
 // ─── BONS DE VENTE ────────────────────────────────────────────────────
 var _tousLesBons = [];
-var _bonsPollingInterval = null;
 
-function chargerBons(silencieux){
+function chargerBons(){
   var list = document.getElementById('bonsList');
   var stats = document.getElementById('bonsStats');
-  if(!silencieux && list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Chargement...</div>';
+  if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Chargement...</div>';
 
-  // CORRECTIF : monEquipe utilise le champ "id" (pas "apprenant_id")
-  var idsEquipe = monEquipe.map(function(a){ return a.id || a.apprenant_id || ''; }).filter(Boolean);
+  // Récupérer les IDs de l'équipe puis les transactions
+  var idsEquipe = monEquipe.map(function(a){ return a.apprenant_id; });
+  if(!idsEquipe.length){
+    if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans votre équipe.</div>';
+    return;
+  }
 
   fetch(APPS_URL+'?action=listTransactions&_t='+Date.now())
     .then(function(r){ return r.json(); })
     .then(function(d){
       var toutes = d.transactions || [];
-      if(idsEquipe.length){
-        _tousLesBons = toutes.filter(function(t){
-          return idsEquipe.indexOf(String(t.apprenant_id)) > -1;
-        });
-      } else {
-        _tousLesBons = toutes;
-      }
+      // Filtrer pour l'équipe du RP
+      _tousLesBons = toutes.filter(function(t){
+        return idsEquipe.indexOf(t.apprenant_id) > -1;
+      });
       afficherBons(_tousLesBons);
     })
     .catch(function(){
-      if(!silencieux && list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Erreur de chargement.</div>';
+      if(list) list.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Erreur de chargement.</div>';
     });
-}
-
-function demarrerPollingBons(){
-  if(_bonsPollingInterval) clearInterval(_bonsPollingInterval);
-  _bonsPollingInterval = setInterval(function(){
-    var tab2 = document.getElementById('tab2');
-    if(tab2 && tab2.classList.contains('active')) chargerBons(true);
-  }, 30000);
-}
-
-function arreterPollingBons(){
-  if(_bonsPollingInterval){ clearInterval(_bonsPollingInterval); _bonsPollingInterval = null; }
 }
 
 function afficherBons(bons){
@@ -508,7 +715,7 @@ function afficherBons(bons){
       +'<div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.2);display:flex;align-items:center;justify-content:center;font-size:16px">'+(isAbo?'🔄':'📦')+'</div>'
       +'<div style="flex:1;min-width:0">'
         +'<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'
-          +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+b.apprenant_prenom+' '+b.apprenant_nom+'</span>'
+          +'<span style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+b.apprenant_prenom+'</span>'
           +'<span style="font-family:monospace;font-size:10px;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px">'+b.code+'</span>'
           +'<span style="font-size:10px;font-weight:700;color:'+statutColor+';font-family:Exo 2,sans-serif">'+b.statut+'</span>'
         +'</div>'
@@ -516,7 +723,7 @@ function afficherBons(bons){
           +(isAbo ? '🔄 Abo '+b.participation_mensuelle+'€/mois' : '📦 '+b.nb_articles+' art. · '+b.montant+'€')
           +' · '+(b.date_formulaire||'—')
         +'</div>'
-        +(b.client_prenom ? '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px">👤 Client : '+b.client_prenom+' '+b.client_nom+(b.client_tel?' · 📞 '+b.client_tel:'')+'</div>' : '')
+        +(b.client_prenom ? '<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px">Client : '+b.client_prenom+' '+b.client_nom+'</div>' : '')
       +'</div>'
     +'</div>';
   }).join('');
@@ -526,12 +733,9 @@ function filtrerBons(){
   var q = (document.getElementById('bonSearchRP').value||'').toLowerCase().trim();
   if(!q){ afficherBons(_tousLesBons); return; }
   var filtered = _tousLesBons.filter(function(b){
-    return (b.code||'').toLowerCase().indexOf(q) > -1
-      || (b.apprenant_prenom||'').toLowerCase().indexOf(q) > -1
-      || (b.apprenant_nom||'').toLowerCase().indexOf(q) > -1
-      || (b.client_prenom||'').toLowerCase().indexOf(q) > -1
-      || (b.client_nom||'').toLowerCase().indexOf(q) > -1
-      || (b.client_tel||'').toLowerCase().indexOf(q) > -1;
+    return b.code.toLowerCase().indexOf(q) > -1
+      || b.apprenant_prenom.toLowerCase().indexOf(q) > -1
+      || (b.client_prenom||'').toLowerCase().indexOf(q) > -1;
   });
   afficherBons(filtered);
 }
@@ -598,16 +802,11 @@ function renderEquipe(){
         +'<div class="ap-status"><span class="status-dot '+dot+'"></span></div>'
       +'</div>'
       +(alertMsg ? '<div class="ap-alert-txt">'+alertMsg+'</div>' : '')
-      +'<div class="ap-stats" style="grid-template-columns:repeat(3,1fr);gap:6px">'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+(a.pts_jour||0)+'</div><div class="ap-stat-lbl">XP</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+(a.articles||0)+'</div><div class="ap-stat-lbl">Art.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#A78BFA">'+(a.fidel||0)+'</div><div class="ap-stat-lbl">Abos</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+(a.contacts||0)+'</div><div class="ap-stat-lbl">Cont.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+(a.refus||0)+'</div><div class="ap-stat-lbl">Ref.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#FFD166">'+(a.evals||0)+'</div><div class="ap-stat-lbl">Éval.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#06D6A0">'+(a.solidaires||0)+'</div><div class="ap-stat-lbl">Sol.</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F472B6">'+(a.parfums_offerts_jour||0)+'</div><div class="ap-stat-lbl">🧴</div></div>'
-        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#34D399">'+(a.talents||0)+'</div><div class="ap-stat-lbl">Talents</div></div>'
+      +'<div class="ap-stats">'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#F5A623">'+a.pts_jour+'</div><div class="ap-stat-lbl">XP</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#00C853">'+a.articles+'</div><div class="ap-stat-lbl">Art.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#60A5FA">'+a.contacts+'</div><div class="ap-stat-lbl">Cont.</div></div>'
+        +'<div class="ap-stat"><div class="ap-stat-val" style="color:#E8192C">'+a.refus+'</div><div class="ap-stat-lbl">Ref.</div></div>'
       +'</div>'
       +'<div class="ap-actions">'
         +'<button class="ap-btn btn-note" onclick="ouvrirNote(\''+a.id+'\',\''+a.prenom+'\')">📝 Note</button>'

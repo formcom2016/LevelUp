@@ -162,6 +162,7 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     <button onclick="switchAdminTab('talents')" id="hudTalents" class="hud-btn c-teal">🌿 Talents</button>
     <button onclick="switchAdminTab('emargement')" id="hudEmargement" class="hud-btn c-cyan">📋 Émargement</button>
     <button onclick="switchAdminTab('messages')" id="hudMessages" class="hud-btn c-gold">📢 Messages</button>
+    <button onclick="switchAdminTab('secteurs')" id="hudSecteurs" class="hud-btn" style="color:#F472B6;border-color:rgba(244,114,182,.3)">🗺️ Secteurs</button>
     <button onclick="switchAdminTab('nouveauApprenant')" id="hudNouveauApprenant" class="hud-btn c-green">＋ Nouvel apprenant</button>
     <div style="position:relative;margin-left:auto">
       <button onclick="toggleAdminMenu()" id="adminMenuBtn" style="padding:9px 13px;background:rgba(139,92,246,.08);border:1.5px solid rgba(139,92,246,.2);color:#A78BFA;border-radius:10px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">⚙️</button>
@@ -283,6 +284,61 @@ body:not(.light) .admin-links a.tag-pass{color:#00D464;border-color:rgba(0,212,1
     <!-- Détail apprenant -->
     <div id="emarTable" style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;padding:12px;display:none">
       <div class="admin-loading">Sélectionnez un apprenant</div>
+    </div>
+  </div>
+
+
+  <!-- SECTION SECTEURS -->
+  <div id="sectionSecteurs" style="display:none;padding-top:16px;margin-bottom:60px">
+    <div style="background:linear-gradient(135deg,rgba(244,114,182,.06),rgba(124,58,237,.06));border:1px solid rgba(244,114,182,.2);border-radius:16px;padding:16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>
+        <div style="font-family:Exo 2,sans-serif;font-size:16px;font-weight:900;color:#F472B6">🗺️ Gestion des Secteurs</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:3px">Secteurs actifs, en attente de validation, et missions du jour par équipe</div>
+      </div>
+      <button onclick="chargerSecteursAdmin()" style="padding:9px 16px;background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.2);color:#F472B6;border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔄 Actualiser</button>
+    </div>
+
+    <!-- Missions du jour par RP -->
+    <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(244,114,182,.6);margin-bottom:10px">Missions du jour</div>
+    <div id="missionsDuJourAdmin" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <div style="text-align:center;padding:16px;color:var(--muted);font-size:13px">Chargement...</div>
+    </div>
+
+    <!-- Secteurs en attente de validation -->
+    <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(245,166,35,.6);margin-bottom:10px">En attente de validation</div>
+    <div id="secteursEnAttenteAdmin" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun secteur en attente</div>
+    </div>
+
+    <!-- Tous les secteurs actifs -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div style="font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(96,165,250,.6)">Secteurs actifs</div>
+      <button onclick="ouvrirAjoutSecteurAdmin()" style="padding:7px 12px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">＋ Ajouter un secteur</button>
+    </div>
+    <div id="secteursActifsAdmin" style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
+      <div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Chargement...</div>
+    </div>
+
+    <!-- Formulaire ajout secteur admin -->
+    <div id="formAjoutSecteurAdmin" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
+      <div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px">＋ Nouveau secteur</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input id="adminSecNom" type="text" placeholder="Nom du secteur *" style="padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <select id="adminSecType" style="padding:10px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:12px;outline:none">
+            <option value="Zone géographique">🌍 Zone géo</option>
+            <option value="Quartier">🏘️ Quartier</option>
+            <option value="Centre commercial">🏬 Centre commercial</option>
+            <option value="Résidence">🏠 Résidence</option>
+            <option value="Autre">📍 Autre</option>
+          </select>
+          <input id="adminSecVille" type="text" placeholder="Ville *" style="padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Exo 2,sans-serif;font-size:13px;outline:none">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="ajouterSecteurAdmin()" style="flex:1;padding:10px;background:linear-gradient(135deg,#7C3AED,#A78BFA);border:none;color:#fff;border-radius:10px;font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;cursor:pointer">✅ Ajouter</button>
+          <button onclick="document.getElementById('formAjoutSecteurAdmin').style.display='none'" style="padding:10px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);border-radius:10px;font-family:Exo 2,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Annuler</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -583,6 +639,7 @@ function renderTableImmediat(){
       +'<div style="flex:1;min-width:0;cursor:pointer" onclick="ouvrirFicheApprenant(\''+a.id+'\')">'
         +'<div style="font-family:Exo 2,sans-serif;font-size:14px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+(isFond?' &#x1F451;':'')+'</div>'
         +'<div id="xp_'+a.id+'" style="font-size:12px;color:#8892A4;margin-top:2px">—</div>'
+        +'<div id="daily_'+a.id+'" style="font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;font-family:Exo 2,sans-serif"></div>'
         +'<div style="font-size:11px;color:rgba(255,215,0,.7);font-family:Exo 2,sans-serif;margin-top:3px;font-weight:700;letter-spacing:.5px">'+a.id+' · PIN : '+(a.pin||'—')+'</div>'
       +'</div>'
       +'<div id="statut_'+a.id+'" onclick="ouvrirFicheApprenant(\''+a.id+'\')" style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(136,146,164,.1);color:#8892A4;white-space:nowrap;flex-shrink:0;cursor:pointer">—</div>'
@@ -641,8 +698,29 @@ function loadAdminDashboard(){
       .catch(function(){return {a:a,data:{found:false}};});
   });
 
-  // Mise à jour carte par carte dès qu'une réponse arrive
-  apPromises.forEach(function(p){
+  // Stats du jour en parallèle
+  APPRENANTS.forEach(function(a){
+    fetch(APPS_URL+'?action=getDailyStatsV2&id='+encodeURIComponent(a.id)+'&_t='+Date.now())
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var el = document.getElementById('daily_'+a.id);
+        if(!el) return;
+        if(!d.found){ el.textContent = 'Aucune activité aujourd\'hui'; return; }
+        var art  = Number(d.articles)||0;
+        var fid  = Number(d.fidel)||0;
+        var cont = Number(d.contacts)||0;
+        var ref  = Number(d.refus)||0;
+        var xpJ  = Number(d.pts_jour)||0;
+        var parts = [];
+        if(xpJ>0) parts.push('⚡ '+xpJ.toLocaleString('fr-FR')+' XP');
+        if(art>0)  parts.push('📦 '+art+' art.');
+        if(fid>0)  parts.push('🔄 '+fid+' abo.');
+        if(cont>0) parts.push('🤝 '+cont+' cont.');
+        if(ref>0)  parts.push('❌ '+ref+' ref.');
+        el.textContent = parts.length ? parts.join(' · ') : 'Aucune activité aujourd\'hui';
+        el.style.color = parts.length > 1 ? '#00FF87' : 'rgba(255,255,255,.35)';
+      }).catch(function(){});
+  });
     p.then(function(res){
       var a=res.a, data=res.data;
       if(!data||!data.found) return;
@@ -1159,10 +1237,10 @@ function renderFicheRP(rp, d){
   var equipe = d.equipe || [];
   var totalXP=0, totalVentes=0, totalContacts=0, totalRefus=0, ontVendu=0, silencieux=0;
   equipe.forEach(function(a){
-    totalXP += a.pts_jour||0; totalVentes += a.nb_ventes||0;
+    totalXP += a.pts_jour||0; totalVentes += a.articles||0;
     totalContacts += a.contacts||0; totalRefus += a.refus||0;
-    if((a.nb_ventes||0)>0) ontVendu++;
-    if(!(a.contacts||0) && !(a.nb_ventes||0) && !(a.pts_jour||0)) silencieux++;
+    if((a.articles||0)>0) ontVendu++;
+    if(!(a.contacts||0) && !(a.articles||0) && !(a.pts_jour||0)) silencieux++;
   });
   var letter = rp.prenom.charAt(0).toUpperCase();
 
@@ -1195,12 +1273,12 @@ function renderFicheRP(rp, d){
   // ÉQUIPE
   +'<div id="rptabContent1" style="display:none">'
     +(equipe.length ? equipe.map(function(a){
-      var sil = !(a.contacts||0) && !(a.nb_ventes||0) && !(a.pts_jour||0);
+      var sil = !(a.contacts||0) && !(a.articles||0) && !(a.pts_jour||0);
       return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid '+(sil?'rgba(232,25,44,.3)':'var(--border)')+';border-radius:12px;margin-bottom:8px">'
         +'<div style="width:36px;height:36px;border-radius:50%;background:rgba(96,165,250,.15);border:1.5px solid '+(sil?'#E8192C':'rgba(96,165,250,.4)')+';display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:'+(sil?'#E8192C':'#60A5FA')+'">'+(a.prenom||'?')[0].toUpperCase()+'</div>'
         +'<div style="flex:1"><div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+a.prenom+' '+a.nom+'</div>'
-        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+((a.pts_jour||0).toLocaleString('fr-FR'))+' XP · '+(a.nb_ventes||0)+' ventes'+(sil?' · 🔴':' · 🟢')+'</div></div>'
-        +'<a href="journee.html?id='+a.apprenant_id+'" target="_blank" style="padding:6px 10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;text-decoration:none">🎮</a>'
+        +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+((a.pts_jour||0).toLocaleString('fr-FR'))+' XP · '+(a.articles||0)+' ventes'+(sil?' · 🔴':' · 🟢')+'</div></div>'
+        +'<a href="journee.html?id='+a.id+'" target="_blank" style="padding:6px 10px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:#60A5FA;border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;text-decoration:none">🎮</a>'
       +'</div>';
     }).join('') : '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Aucun apprenant dans l\'équipe</div>')
   +'</div>'
@@ -1896,10 +1974,10 @@ function voirTousLesPins(){
 
 var _talentsData = [];
 var _talentsFiltreActif = 'tous';
-var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages',nouveauApprenant:'hudNouveauApprenant'};
+var _hudMap = {apprenants:'hudApprenants',responsables:'hudResponsables',talents:'hudTalents',emargement:'hudEmargement',messages:'hudMessages',secteurs:'hudSecteurs',nouveauApprenant:'hudNouveauApprenant'};
 
 function switchAdminTab(tab){
-  var tabs = ['responsables','apprenants','talents','emargement','messages','nouveauApprenant'];
+  var tabs = ['responsables','apprenants','talents','emargement','messages','secteurs','nouveauApprenant'];
   tabs.forEach(function(t){
     var sec = document.getElementById('section'+t.charAt(0).toUpperCase()+t.slice(1));
     var hud = document.getElementById(_hudMap[t]);
@@ -1909,6 +1987,7 @@ function switchAdminTab(tab){
   });
   if(tab === 'talents') loadParrainages();
   if(tab === 'responsables') loadResponsables();
+  if(tab === 'secteurs') chargerSecteursAdmin();
   if(tab === 'emargement'){
     var emarDate = document.getElementById('emarDate');
     if(emarDate && !emarDate.value){ emarDate.value = new Date().toISOString().slice(0,10); chargerEmargementJour(); }
@@ -1921,6 +2000,138 @@ function switchAdminTab(tab){
     _msgDest = 'TOUS';
   }
   if(tab === 'nouveauApprenant') reinitialiserFormulaire();
+}
+
+/* ========== SECTEURS ADMIN ========== */
+var _secteursAdmin = [];
+var _missionsDuJour = [];
+
+function chargerSecteursAdmin(){
+  // Charger la liste des secteurs
+  fetch(APPS_URL+'?action=listSecteurs&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      _secteursAdmin = d.secteurs || [];
+      afficherSecteursAdmin();
+    }).catch(function(){});
+
+  // Charger les missions du jour (secteur choisi par chaque RP)
+  fetch(APPS_URL+'?action=listRP&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var rps = d.responsables || [];
+      var promises = rps.map(function(rp){
+        return fetch(APPS_URL+'?action=getSecteurDuJour&id='+encodeURIComponent(rp.id)+'&_t='+Date.now())
+          .then(function(r){ return r.json(); })
+          .then(function(s){ return {rp:rp, secteur:s.secteur}; })
+          .catch(function(){ return {rp:rp, secteur:null}; });
+      });
+      return Promise.all(promises);
+    })
+    .then(function(results){
+      _missionsDuJour = results;
+      afficherMissionsDuJour();
+    }).catch(function(){});
+}
+
+function afficherMissionsDuJour(){
+  var el = document.getElementById('missionsDuJourAdmin');
+  if(!el) return;
+  if(!_missionsDuJour.length){
+    el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun RP actif</div>';
+    return;
+  }
+  el.innerHTML = _missionsDuJour.map(function(m){
+    var hasSecteur = m.secteur && m.secteur.nom;
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border:1px solid '+(hasSecteur?'rgba(124,58,237,.25)':'rgba(245,166,35,.2)')+';border-radius:10px">'
+      +'<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A78BFA);display:flex;align-items:center;justify-content:center;font-family:Exo 2,sans-serif;font-size:14px;font-weight:900;color:#fff;flex-shrink:0">'+m.rp.prenom.charAt(0)+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:var(--text)">'+m.rp.prenom+' '+m.rp.nom+'</div>'
+        +(hasSecteur
+          ? '<div style="font-size:11px;color:#A78BFA;margin-top:2px">📍 '+m.secteur.nom+(m.secteur.ville?' · '+m.secteur.ville:'')+(m.secteur.heure?' · '+m.secteur.heure:'')+'</div>'
+          : '<div style="font-size:11px;color:rgba(245,166,35,.8);margin-top:2px">⚠️ Pas encore de secteur choisi</div>')
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function afficherSecteursAdmin(){
+  var enAttente = _secteursAdmin.filter(function(s){ return s.statut==='EN_ATTENTE'; });
+  var actifs    = _secteursAdmin.filter(function(s){ return s.statut==='ACTIF'; });
+
+  // En attente
+  var elAtt = document.getElementById('secteursEnAttenteAdmin');
+  if(elAtt){
+    if(!enAttente.length){
+      elAtt.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun secteur en attente ✅</div>';
+    } else {
+      elAtt.innerHTML = enAttente.map(function(s){
+        return '<div style="padding:12px 14px;background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.25);border-radius:10px">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">'
+            +'<div>'
+              +'<div style="font-family:Exo 2,sans-serif;font-size:13px;font-weight:800;color:#F5A623">'+s.nom+'</div>'
+              +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+s.type+' · '+s.ville+' · Proposé par RP '+s.propose_par+'</div>'
+            +'</div>'
+            +'<div style="display:flex;gap:6px">'
+              +'<button onclick="validerSecteurAdmin(\''+s.id+'\',\'ACTIF\')" style="padding:7px 12px;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.3);color:#00C853;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">✅ Valider</button>'
+              +'<button onclick="validerSecteurAdmin(\''+s.id+'\',\'ARCHIVE\')" style="padding:7px 12px;background:rgba(232,25,44,.08);border:1px solid rgba(232,25,44,.2);color:#E8192C;border-radius:8px;font-family:Exo 2,sans-serif;font-size:11px;font-weight:700;cursor:pointer">🗑️ Refuser</button>'
+            +'</div>'
+          +'</div>'
+        +'</div>';
+      }).join('');
+    }
+  }
+
+  // Actifs
+  var elAct = document.getElementById('secteursActifsAdmin');
+  if(elAct){
+    if(!actifs.length){
+      elAct.innerHTML = '<div style="text-align:center;padding:12px;color:var(--muted);font-size:13px">Aucun secteur actif</div>';
+    } else {
+      var typeIcons = {'Centre commercial':'🏬','Zone géographique':'🌍','Quartier':'🏘️','Résidence':'🏠','Autre':'📍'};
+      elAct.innerHTML = actifs.map(function(s){
+        return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;flex-wrap:wrap">'
+          +'<div style="flex:1;min-width:0">'
+            +'<div style="font-family:Exo 2,sans-serif;font-size:12px;font-weight:800;color:var(--text)">'+(typeIcons[s.type]||'📍')+' '+s.nom+'</div>'
+            +'<div style="font-size:11px;color:var(--muted);margin-top:2px">'+s.type+(s.ville?' · '+s.ville:'')+'</div>'
+          +'</div>'
+          +'<button onclick="validerSecteurAdmin(\''+s.id+'\',\'ARCHIVE\')" style="padding:6px 10px;background:rgba(232,25,44,.06);border:1px solid rgba(232,25,44,.15);color:rgba(232,25,44,.7);border-radius:8px;font-family:Exo 2,sans-serif;font-size:10px;font-weight:700;cursor:pointer">Archiver</button>'
+        +'</div>';
+      }).join('');
+    }
+  }
+}
+
+function validerSecteurAdmin(secId, decision){
+  var label = decision==='ACTIF' ? 'valider' : 'archiver';
+  if(!confirm('Confirmer : '+label+' ce secteur ?')) return;
+  fetch(APPS_URL+'?action=validerSecteur&secteur_id='+encodeURIComponent(secId)+'&decision='+encodeURIComponent(decision))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok') chargerSecteursAdmin();
+    }).catch(function(){});
+}
+
+function ouvrirAjoutSecteurAdmin(){
+  var f = document.getElementById('formAjoutSecteurAdmin');
+  if(f) f.style.display = f.style.display==='none' ? 'block' : 'none';
+}
+
+function ajouterSecteurAdmin(){
+  var nom   = (document.getElementById('adminSecNom').value||'').trim();
+  var type  = document.getElementById('adminSecType').value;
+  var ville = (document.getElementById('adminSecVille').value||'').trim();
+  if(!nom || !ville){ alert('Remplis le nom et la ville.'); return; }
+  fetch(APPS_URL+'?action=addSecteur&rp_id=ADMIN&nom='+encodeURIComponent(nom)+'&type='+encodeURIComponent(type)+'&ville='+encodeURIComponent(ville))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if(d.status==='ok'){
+        // Valider directement (admin n'a pas besoin de validation)
+        return fetch(APPS_URL+'?action=validerSecteur&secteur_id='+encodeURIComponent(d.id)+'&decision=ACTIF');
+      }
+    })
+    .then(function(){ chargerSecteursAdmin(); document.getElementById('formAjoutSecteurAdmin').style.display='none'; })
+    .catch(function(){});
 }
 
 /* ========== MESSAGERIE ========== */

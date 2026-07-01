@@ -280,6 +280,15 @@ body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--text);min
 </div>
 <div class="container" id="mainContainer" style="display:none">
 
+  <!-- BANNIÈRE SECTEUR DU JOUR — discrète, non intrusive -->
+  <div id="bannerSecteur" style="display:none;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:8px 12px;margin-bottom:10px;display:none;align-items:center;gap:8px">
+    <span style="font-size:14px">📍</span>
+    <div style="flex:1;min-width:0">
+      <span style="font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:rgba(167,139,250,.9)" id="bannerSecteurNom"></span>
+      <span style="font-size:11px;color:var(--muted)" id="bannerSecteurMeta"></span>
+    </div>
+  </div>
+
   <!-- HERO -->
 <div class="hero-pass" id="heroSection">
   <div class="ring-container">
@@ -1334,10 +1343,32 @@ function ouvrirInterface(data){
   setTimeout(loadMessageMatinal, 500);
   loadBourse();
   loadAbonnements();
-  setTimeout(loadBourse, 2500); // filet de sécurité si le 1er appel arrive trop tôt
+  setTimeout(loadBourse, 2500);
   setTimeout(loadAbonnements, 2500);
   setTimeout(loadLeaderboard, 1500);
   setTimeout(loadTrophees, 2000);
+
+  // Secteur du jour — chargé au login, puis toutes les 5 min
+  setTimeout(chargerSecteurDuJour, 800);
+  setInterval(chargerSecteurDuJour, 300000);
+}
+
+function chargerSecteurDuJour(){
+  if(!AP || !AP.id) return;
+  fetch(APPS_URL+'?action=getSecteurDuJour&id='+encodeURIComponent(AP.id)+'&_t='+Date.now())
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var banner = document.getElementById('bannerSecteur');
+      if(!banner) return;
+      if(d.secteur && d.secteur.nom){
+        document.getElementById('bannerSecteurNom').textContent = d.secteur.nom + ' ';
+        document.getElementById('bannerSecteurMeta').textContent =
+          '· ' + (d.secteur.type||'') + (d.secteur.ville ? ', '+d.secteur.ville : '');
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+      }
+    }).catch(function(){});
 }
 
 // Détection changement de jour (page laissée ouverte)
@@ -2050,28 +2081,20 @@ function saveDailyStatsToSheet(){
   var fid = parseInt((document.getElementById('sFidel')||{textContent:'0'}).textContent)||0;
   var sol = parseInt((document.getElementById('sSolidaires')||{textContent:'0'}).textContent)||0;
   var tal = parseInt((document.getElementById('sTalents')||{textContent:'0'}).textContent)||0;
-  // contacts/refus : envoyés uniquement si > 0 pour éviter d'écraser des valeurs existantes
-  // lors d'un rechargement où les compteurs locaux seraient encore à 0
-  var cnt = counters.contact || 0;
-  var ref = counters.refus   || 0;
+  // contacts/refus exclus du cache — gérés exclusivement par le GAS via les boutons +/-
   var data = { articles: art, fidel: fid, solidaires: sol, talents: tal };
-  if (cnt > 0) data.contacts = cnt;
-  if (ref > 0) data.refus    = ref;
   try{
     var cacheKey = 'fc_daily_'+AP.id+'_'+new Date().toISOString().slice(0,10);
     localStorage.setItem(cacheKey, JSON.stringify(data));
   }catch(e){}
-  var url = APPS_URL+'?action=saveDailyStats'
+  return fetch(APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
     +'&articles='+art
     +'&fidel='+fid
     +'&solidaires='+sol
-    +'&talents='+tal;
-  if (cnt > 0) url += '&contacts='+cnt;
-  if (ref > 0) url += '&refus='+ref;
-  return fetch(url, {method:'GET'})
-    .then(function(r){ return r; })
-    .catch(function(){ return Promise.resolve({ok:false}); });
+    +'&talents='+tal,
+    {method:'GET'})
+    .catch(function(){ return {ok:false}; });
 }
 
 function initPinCheck(){
@@ -2364,9 +2387,7 @@ function fermerJournee(){
   var fid      = parseInt((document.getElementById('sFidel')||{textContent:'0'}).textContent)||0;
   var sol      = parseInt((document.getElementById('sSolidaires')||{textContent:'0'}).textContent)||0;
   var tal      = parseInt((document.getElementById('sTalents')||{textContent:'0'}).textContent)||0;
-  // Math.max entre counters et affichage visuel — protège contre un refresh où counters serait encore à 0
-  var contacts = Math.max(counters.contact || 0, parseInt((document.getElementById('cntContact')||{textContent:'0'}).textContent)||0);
-  var refus    = Math.max(counters.refus   || 0, parseInt((document.getElementById('cntRefus')  ||{textContent:'0'}).textContent)||0);
+  var contacts = counters.contact || 0;
   var xpJour   = AP.ptsToday || 0;
 
   var msg = '🏁 Récapitulatif de ta journée\n\n'
@@ -2383,7 +2404,7 @@ function fermerJournee(){
   fetch(APPS_URL+'?action=saveDailyStats'
     +'&id='+encodeURIComponent(AP.id)
     +'&contacts='+contacts
-    +'&refus='+refus
+    +'&refus='+(counters.refus||0)
     +'&articles='+art
     +'&fidel='+fid
     +'&solidaires='+sol
@@ -3059,32 +3080,39 @@ function validerNewTx(){
       try{ loadBourse(); }catch(e){}
       try{ loadAbonnements(); }catch(e){}
 
-      // ── ÉTAPE 4 : Ouvrir la fenêtre du reçu MAINTENANT (avant tout async)
-      // Safari bloque window.open dans les callbacks async — il faut l'ouvrir ici, dans le .then synchrone de createTransaction
-      var fullRecuUrl = recuBase
-        +'&code='    + encodeURIComponent(code)
-        +'&xpToday=' + (AP.ptsToday||0)
-        +'&xpTotal=' + (AP.pts||0)
-        +'&sArt='    + artNow
-        +'&sFid='    + fidNow
-        +'&sSol='    + solNow
-        +'&sTal='    + talNow
-        +'&sCont='   + (counters.contact||0)
-        +'&sRef='    + (counters.refus||0);
-
-      var recuTab = window.open(fullRecuUrl, '_blank');
-      if(!recuTab){
-        var a = document.createElement('a');
-        a.href = fullRecuUrl; a.target = '_blank'; a.rel = 'noopener';
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      }
-
-      // ── ÉTAPE 5 : Sauvegarder en arrière-plan (n'bloque plus le reçu) ──
+      // ── ÉTAPE 4 : Sauvegarder, PUIS ouvrir le reçu (attendre la fin de l'écriture) ──
       saveDailyStatsToSheet().then(function(){
+
+        // ── ÉTAPE 5 : Fermer le modal ─────────────────────────────────
         closeNewTx();
+        // Rafraîchir les stats affichées après transaction
         try{ loadDailyStatsFromSheet(); }catch(e){}
-      }).catch(function(){
-        closeNewTx();
+
+        // ── ÉTAPE 6 : Ouvrir le reçu dans un NOUVEL ONGLET ───────────
+        // Le cockpit reste ouvert → JS garde tous les XP en mémoire
+        var fullRecuUrl = recuBase
+          +'&code='    + encodeURIComponent(code)
+          +'&xpToday=' + (AP.ptsToday||0)
+          +'&xpTotal=' + (AP.pts||0)
+          +'&sArt='    + artNow
+          +'&sFid='    + fidNow
+          +'&sSol='    + solNow
+          +'&sTal='    + talNow
+          +'&sCont='   + (counters.contact||0)
+          +'&sRef='    + (counters.refus||0);
+
+        // Ouvrir dans un nouvel onglet (le cockpit reste intact)
+        var recuTab = window.open(fullRecuUrl, '_blank');
+        if(!recuTab){
+          // Fallback si popup bloqué : créer un lien et cliquer dessus
+          var a = document.createElement('a');
+          a.href = fullRecuUrl;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }
       });
     })
     .catch(function(){
